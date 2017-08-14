@@ -1,0 +1,86 @@
+#pragma once
+
+#include <cstddef>
+
+template<typename Element>
+class DynamicArray {
+public:
+    DynamicArray() noexcept;
+    
+    explicit DynamicArray(size_t size);
+
+    ~DynamicArray() noexcept;
+
+    DynamicArray(const DynamicArray& other);
+
+    DynamicArray(DynamicArray&& other) noexcept;
+
+    DynamicArray& operator=(const DynamicArray& other);
+
+    DynamicArray& operator=(DynamicArray&& other) noexcept;
+
+public:
+    size_t size() const noexcept;
+
+    size_t capacity() const noexcept;
+
+    bool isEmpty() const noexcept;
+
+    bool isFull() const noexcept;
+
+    bool hasElementAt(size_t index) const noexcept;
+
+    const Element& operator[](size_t index) const noexcept;
+
+    const Element& getElement(size_t index) const noexcept;
+
+    const Element* data() const noexcept;
+
+    void push(const Element& element);
+
+    void pushOne(const Element& element);
+
+    void pop() noexcept;
+
+    void empty() noexcept;
+
+    void setElement(size_t index, const Element& element);
+
+    void extend(size_t size);
+
+    void ensureCapacity(size_t capacity);
+    
+    void shrinkToFit();
+
+    void clear() noexcept;
+
+    template<typename ForEachInDynamicArrayFunction>
+    void forEach(ForEachInDynamicArrayFunction& function) const noexcept;
+
+    template<typename ForEachInDynamicArrayFunction>
+    void forEach(const ForEachInDynamicArrayFunction& function) const noexcept;
+
+protected:
+    template<typename ForEachInDynamicArrayFunction>
+    void forEachElement(ForEachInDynamicArrayFunction function) const noexcept;
+
+protected:
+    Element* array;
+
+    size_t arraySize;
+    
+    size_t arrayCapacity;
+
+private:
+    void destroy() noexcept;
+
+    void copyOtherArrayElements(const DynamicArray& other) noexcept;
+
+    void move(DynamicArray& other) noexcept;
+
+    void ensureCapacity();
+
+    void addElement(const Element& element) noexcept;
+};
+
+#include "DynamicArray.tci"

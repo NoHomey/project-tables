@@ -1,0 +1,218 @@
+#pragma once
+
+#include "DynamicArray.htd"
+#include <utility>
+
+template<typename Element>
+DynamicArray<Element>::DynamicArray() noexcept
+: array{nullptr}, arraySize{0}, arrayCapacity{0} {}
+
+template<typename Element>
+DynamicArray<Element>::DynamicArray(size_t size)
+: DynamicArray{} {
+    if(size > 0) {
+        array = new Element[size];
+        arrayCapacity = size;
+    }
+}
+
+template<typename Element>
+DynamicArray<Element>::~DynamicArray() noexcept {
+    delete[] array;
+}
+
+template<typename Element>
+void DynamicArray<Element>::copyOtherArrayElements(const DynamicArray& other) noexcept {
+    for(; arraySize < other.arraySize; ++arraySize) {
+        array[arraySize] = other.array[arraySize];
+    }
+}
+
+template<typename Element>
+DynamicArray<Element>::DynamicArray(const DynamicArray& other)
+: DynamicArray{other.arraySize} {
+    copyOtherArrayElements(other);
+}
+
+template<typename Element>
+DynamicArray<Element>& DynamicArray<Element>::operator=(const DynamicArray& other) {
+    if(this != &other) {
+        DynamicArray copy = other;
+        operator=(std::move(copy));
+    }
+    return *this;
+}
+
+template<typename Element>
+void DynamicArray<Element>::destroy() noexcept {
+    array = nullptr;
+    arraySize = 0;
+    arrayCapacity = 0;
+}
+
+template<typename Element>
+void DynamicArray<Element>::move(DynamicArray& other) noexcept {
+    delete[] array;
+    array = other.array;
+    arraySize = other.arraySize;
+    arrayCapacity = other.arrayCapacity;
+    other.destroy();
+}
+
+template<typename Element>
+DynamicArray<Element>::DynamicArray(DynamicArray&& other) noexcept
+: DynamicArray{} {
+    if(!other.isEmpty()) {
+        move(other);       
+    }
+}
+
+template<typename Element>
+DynamicArray<Element>& DynamicArray<Element>::operator=(DynamicArray&& other) noexcept {
+    if(this != &other) {
+        if(other.arrayCapacity == 0) {
+            clear();
+        } else {
+            move(other);
+        }
+    }
+    return *this;
+}
+
+template<typename Element>
+size_t DynamicArray<Element>::size() const noexcept {
+    return arraySize;
+}
+
+template<typename Element>
+size_t DynamicArray<Element>::capacity() const noexcept {
+    return arrayCapacity;
+}
+
+template<typename Element>
+bool DynamicArray<Element>::isEmpty() const noexcept {
+    return arraySize == 0;
+}
+
+template<typename Element>
+bool DynamicArray<Element>::isFull() const noexcept {
+    return arraySize == arrayCapacity;
+}
+
+template<typename Element>
+bool DynamicArray<Element>::hasElementAt(size_t index) const noexcept {
+    return index < arraySize;
+}
+
+template<typename Element>
+const Element& DynamicArray<Element>::operator[](size_t index) const noexcept {
+    return array[index];
+}
+
+template<typename Element>
+const Element& DynamicArray<Element>::getElement(size_t index) const noexcept {
+    return operator[](index);
+}
+
+template<typename Element>
+const Element* DynamicArray<Element>::data() const noexcept {
+    return array;
+}
+
+template<typename Element>
+void DynamicArray<Element>::ensureCapacity() {
+    if(isFull()) {
+        extend(arrayCapacity + 2);
+    }
+}
+
+template<typename Element>
+void DynamicArray<Element>::addElement(const Element& element) noexcept {
+    array[arraySize] = element;
+    ++arraySize;
+}
+
+template<typename Element>
+void DynamicArray<Element>::push(const Element& element) {
+    ensureCapacity();
+    addElement(element);
+}
+
+template<typename Element>
+void DynamicArray<Element>::pushOne(const Element& element) {
+    if(isFull()) {
+        extend(1);
+    }
+    addElement(element);
+}
+
+template<typename Element>
+void DynamicArray<Element>::pop() noexcept {
+    if(!isEmpty()) {
+        --arraySize;
+    }
+}
+
+template<typename Element>
+void DynamicArray<Element>::empty() noexcept {
+    arraySize = 0;
+}
+
+template<typename Element>
+void DynamicArray<Element>::setElement(size_t index, const Element& element) {
+    if(hasElementAt(index)) {
+        array[index] = element;
+    } else if(index == arraySize) {
+        push(element);
+    }
+}
+
+template<typename Element>
+void DynamicArray<Element>::extend(size_t size) {
+    if(size > 0) {
+        DynamicArray temp{arrayCapacity + size};
+        temp.copyOtherArrayElements(*this);
+        operator=(std::move(temp));
+    }
+}
+
+template<typename Element>
+void DynamicArray<Element>::ensureCapacity(size_t capacity) {
+    if(arrayCapacity < capacity) {
+        extend(capacity - arrayCapacity);
+    }
+}
+
+template<typename Element>
+void DynamicArray<Element>::shrinkToFit() {
+    if(!isFull()) {
+        DynamicArray copy = *this;
+        operator=(std::move(copy));
+    }
+}
+
+template<typename Element>
+void DynamicArray<Element>::clear() noexcept {
+    delete[] array;
+    destroy();
+}
+
+template<typename Element>
+template<typename ForEachInDynamicArrayFunction>
+void DynamicArray<Element>::forEachElement(ForEachInDynamicArrayFunction function) const noexcept {
+    for(size_t index = 0; hasElementAt(index); ++index) {
+        function(array[index], index);
+    }
+}
+
+template<typename Element>
+template<typename ForEachInDynamicArrayFunction>
+void DynamicArray<Element>::forEach(ForEachInDynamicArrayFunction& function) const noexcept {
+    forEachElement<ForEachInDynamicArrayFunction&>(function);
+}
+
+template<typename Element>
+template<typename ForEachInDynamicArrayFunction>
+void DynamicArray<Element>::forEach(const ForEachInDynamicArrayFunction& function) const noexcept {
+    forEachElement<const ForEachInDynamicArrayFunction&>(function);
+}

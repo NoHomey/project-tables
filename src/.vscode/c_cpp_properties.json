@@ -1,0 +1,46 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceRoot}",
+                "/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9",
+                "/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/x86_64-linux-gnu/c++/4.9",
+                "/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/backward",
+                "/usr/local/include",
+                "/usr/lib/llvm-3.6/bin/../lib/clang/3.6.0/include",
+                "/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/include",
+                "/usr/include",
+                "/usr/include/c++/4.9",
+                "/usr/include/x86_64-linux-gnu",
+                "/usr/include/x86_64-linux-gnu/c++/4.9",
+                "/usr/include/c++/4.9/backward",
+                "/usr/lib/gcc/x86_64-linux-gnu/4.9/include",
+                "/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed"
+            ],
+            "defines": ["__TEST__"],
+            "browse": {
+                "path": [
+                    "/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9",
+                    "/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/x86_64-linux-gnu/c++/4.9",
+                    "/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/backward",
+                    "/usr/local/include",
+                    "/usr/lib/llvm-3.6/bin/../lib/clang/3.6.0/include",
+                    "/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/include",
+                    "/usr/include",
+                    "/usr/include/c++/4.9",
+                    "/usr/include/x86_64-linux-gnu",
+                    "/usr/include/x86_64-linux-gnu/c++/4.9",
+                    "/usr/include/c++/4.9/backward",
+                    "/usr/lib/gcc/x86_64-linux-gnu/4.9/include",
+                    "/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed",
+                    "${workspaceRoot}"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 2
+}
