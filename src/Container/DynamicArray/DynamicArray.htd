@@ -30,6 +30,8 @@ public:
 
     bool hasElementAt(size_t index) const noexcept;
 
+    Element& operator[](size_t index) noexcept;
+
     const Element& operator[](size_t index) const noexcept;
 
     const Element& getElement(size_t index) const noexcept;
@@ -39,6 +41,10 @@ public:
     void push(const Element& element);
 
     void pushOne(const Element& element);
+
+    void fill(size_t count);
+
+    void fill(size_t count, const Element& element);
 
     void pop() noexcept;
 

@@ -8,6 +8,16 @@ class Table {
 public:
     Table(FixedSizeString&& name);
 
+    Table() = delete;
+
+    Table(const Table& other) = delete;
+    
+    Table(Table&& other) = delete;
+    
+    Table& operator=(const Table& other) = delete;
+        
+    Table& operator=(Table&& other) = delete;
+
 public:
     const FixedSizeString& getName() const noexcept;
 

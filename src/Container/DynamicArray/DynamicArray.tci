@@ -105,13 +105,18 @@ bool DynamicArray<Element>::hasElementAt(size_t index) const noexcept {
 }
 
 template<typename Element>
+Element& DynamicArray<Element>::operator[](size_t index) noexcept {
+    return array[index];
+}
+
+template<typename Element>
 const Element& DynamicArray<Element>::operator[](size_t index) const noexcept {
     return array[index];
 }
 
 template<typename Element>
 const Element& DynamicArray<Element>::getElement(size_t index) const noexcept {
-    return operator[](index);
+    return array[index];
 }
 
 template<typename Element>
@@ -147,6 +152,23 @@ void DynamicArray<Element>::pushOne(const Element& element) {
 }
 
 template<typename Element>
+void DynamicArray<Element>::fill(size_t count) {
+    if(count > 0) {
+        ensureCapacity(count);
+        arraySize += count;
+    }
+}
+
+template<typename Element>
+void DynamicArray<Element>::fill(size_t count, const Element& element) {
+    size_t oldSize = arraySize;
+    fill(count);
+    for(size_t index = oldSize; index < arraySize; ++index) {
+        array[index] = element;
+    }
+}
+
+template<typename Element>
 void DynamicArray<Element>::pop() noexcept {
     if(!isEmpty()) {
         --arraySize;
@@ -178,8 +200,9 @@ void DynamicArray<Element>::extend(size_t size) {
 
 template<typename Element>
 void DynamicArray<Element>::ensureCapacity(size_t capacity) {
-    if(arrayCapacity < capacity) {
-        extend(capacity - arrayCapacity);
+    const size_t unused = arrayCapacity - arraySize;
+    if(unused < capacity) {
+        extend(capacity - unused);
     }
 }
 

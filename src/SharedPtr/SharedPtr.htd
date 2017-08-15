@@ -15,6 +15,8 @@ private:
         Type value;
 
         ControlBlock(Type&& value) noexcept;
+
+        ControlBlock(const Type& value) noexcept;
     };
 
 public:
@@ -24,6 +26,9 @@ public:
 
     template<typename Type>
     SharedPtr(Type&& value, Deleter deleter);
+
+    template<typename Type>
+    SharedPtr(const Type& value, Deleter deleter);
 
     ~SharedPtr() noexcept;
 
@@ -71,6 +76,9 @@ private:
 
     template<typename Type>
     ControlBlock<Type>* castControlBlock() noexcept;
+
+    template<typename Type>
+    const ControlBlock<Type>* castControlBlock() const noexcept;
 
     Counter* getCounter() noexcept;
 

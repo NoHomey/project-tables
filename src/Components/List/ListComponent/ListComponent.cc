@@ -4,7 +4,7 @@
 ListComponent ListComponent::component;
 
 ListComponent::ListComponent() noexcept
-: model{nullptr}, minWidth{0}, minHeight{0}, leftPadding{0}, width{0} { }
+: model{nullptr}, minWidth{0}, minHeight{0}, width{0}, leftPadding{0} { }
 
 ListComponent& ListComponent::inject(const ListModel* model) noexcept {
     component.setModel(model);
