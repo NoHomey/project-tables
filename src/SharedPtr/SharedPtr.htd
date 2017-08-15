@@ -3,16 +3,19 @@
 #include <cstddef>
 
 class SharedPtr {
+public:
+    using Counter = unsigned long;
+
+    using Deleter = void (*)(SharedPtr&);
+
 private:
     template <typename Type>
     struct ControlBlock {
-        unsigned long counter;
+        Counter counter;
         Type value;
 
         ControlBlock(Type&& value) noexcept;
     };
-
-    using Deleter = void (*)(SharedPtr&);
 
 public:
     SharedPtr() noexcept;
@@ -36,13 +39,19 @@ public:
 
 public:
     template<typename Type>
-    Type get() const noexcept;
+    Type getCopy() const noexcept;
 
     template<typename Type>
     Type& getRef() noexcept;
 
     template<typename Type>
     const Type& getConstRef() const noexcept;
+
+    template<typename Type>
+    Type* getPtr() noexcept;
+
+    template<typename Type>
+    const Type* getConstPtr() const noexcept;
 
     template<typename Type>
     void release() noexcept;
@@ -53,6 +62,8 @@ public:
 
     bool isNullPtr() const noexcept;
 
+    Counter sharedBy() const noexcept;
+
 private:
     void release() noexcept;
 
@@ -60,6 +71,8 @@ private:
 
     template<typename Type>
     ControlBlock<Type>* castControlBlock() noexcept;
+
+    Counter* getCounter() noexcept;
 
     void set(Deleter deleter, void* controlBlock) noexcept;
 

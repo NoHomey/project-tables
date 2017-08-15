@@ -21,10 +21,14 @@ SharedPtr::SharedPtr(Type&& value, Deleter deleter)
     }
 }
 
+SharedPtr::Counter* SharedPtr::getCounter() noexcept {
+    return static_cast<Counter*>(controlBlock);
+}
+
 void SharedPtr::release() noexcept {
-    if(controlBlock != nullptr) {
-        long* counter = static_cast<long*>(controlBlock);
-        long counterValue = *counter;
+    if(!isNullPtr()) {
+        Counter* counter = static_cast<Counter*>(controlBlock);
+        Counter counterValue = *counter;
         *counter = counterValue - 1;
         if(counterValue == 1) {
             deleter(*this);
@@ -37,8 +41,8 @@ SharedPtr::~SharedPtr() noexcept {
 }
 
 void SharedPtr::acquire() noexcept {
-    if(controlBlock != nullptr) {
-        long* counter = static_cast<long*>(controlBlock);
+    if(!isNullPtr()) {
+        Counter* counter = getCounter();
         ++(*counter);
     }
 }
@@ -78,7 +82,7 @@ SharedPtr::ControlBlock<Type>* SharedPtr::castControlBlock() noexcept {
 }
 
 template<typename Type>
-Type SharedPtr::get() const noexcept {
+Type SharedPtr::getCopy() const noexcept {
     return castControlBlock<Type>()->value;
 }
 
@@ -89,7 +93,17 @@ Type& SharedPtr::getRef() noexcept {
 
 template<typename Type>
 const Type& SharedPtr::getConstRef() const noexcept {
-    return const_cast<SharedPtr*>(this)->castControlBlock<Type>()->value;
+    return const_cast<SharedPtr* const>(this)->castControlBlock<Type>()->value;
+}
+
+template<typename Type>
+Type* SharedPtr::getPtr() noexcept {
+    return &getRef<Type>();
+}
+
+template<typename Type>
+const Type* SharedPtr::getConstPtr() const noexcept {
+    return &getConstRef<Type>();
 }
 
 template<typename Type>
@@ -108,4 +122,8 @@ bool SharedPtr::operator!=(const SharedPtr& other) const noexcept {
 
 bool SharedPtr::isNullPtr() const noexcept {
     return controlBlock == nullptr;
+}
+
+SharedPtr::Counter SharedPtr::sharedBy() const noexcept {
+    return isNullPtr() ? 0 : *const_cast<SharedPtr* const>(this)->getCounter();
 }
