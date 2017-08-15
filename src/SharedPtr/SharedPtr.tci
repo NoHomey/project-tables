@@ -1,0 +1,112 @@
+#pragma once
+
+#include "SharedPtr.htd"
+#include <utility>
+
+SharedPtr::SharedPtr() noexcept
+: deleter{nullptr}, controlBlock{nullptr} { }
+
+SharedPtr::SharedPtr(std::nullptr_t) noexcept
+: SharedPtr{} { }
+
+template <typename Type>
+SharedPtr::ControlBlock<Type>::ControlBlock(Type&& value) noexcept
+: counter{1}, value{std::move(value)} { }
+
+
+template<typename Type>
+SharedPtr::SharedPtr(Type&& value, Deleter deleter)
+: SharedPtr{} {
+    if(deleter != nullptr) {
+        set(deleter, static_cast<void*>(new ControlBlock<Type>(std::move(value))));
+    }
+}
+
+void SharedPtr::release() noexcept {
+    if(controlBlock != nullptr) {
+        long* counter = static_cast<long*>(controlBlock);
+        long counterValue = *counter;
+        *counter = counterValue - 1;
+        if(counterValue == 1) {
+            deleter(*this);
+        }
+    }
+}
+
+SharedPtr::~SharedPtr() noexcept {
+    release();
+}
+
+void SharedPtr::acquire() noexcept {
+    if(controlBlock != nullptr) {
+        long* counter = static_cast<long*>(controlBlock);
+        ++(*counter);
+    }
+}
+
+SharedPtr::SharedPtr(const SharedPtr& other) noexcept
+: deleter(other.deleter), controlBlock{other.controlBlock} {
+    acquire();
+}
+
+void SharedPtr::set(Deleter deleter, void* controlBlock) noexcept {
+    this->deleter = deleter;
+    this->controlBlock = controlBlock;
+}
+
+void SharedPtr::null() noexcept {
+    set(nullptr, nullptr);
+}
+
+SharedPtr& SharedPtr::operator=(const SharedPtr& other) noexcept {
+    if(this != &other) {
+        release();
+        set(other.deleter, other.controlBlock);
+        acquire();
+    }
+    return *this;
+}
+
+SharedPtr& SharedPtr::operator=(std::nullptr_t) noexcept {
+    release();
+    null();
+    return *this;
+}
+
+template<typename Type>
+SharedPtr::ControlBlock<Type>* SharedPtr::castControlBlock() noexcept {
+    return static_cast<ControlBlock<Type>*>(controlBlock);
+}
+
+template<typename Type>
+Type SharedPtr::get() const noexcept {
+    return castControlBlock<Type>()->value;
+}
+
+template<typename Type>
+Type& SharedPtr::getRef() noexcept {
+    return castControlBlock<Type>()->value;
+}
+
+template<typename Type>
+const Type& SharedPtr::getConstRef() const noexcept {
+    return const_cast<SharedPtr*>(this)->castControlBlock<Type>()->value;
+}
+
+template<typename Type>
+void SharedPtr::release() noexcept {
+    delete castControlBlock<Type>();
+    null();
+}
+
+bool SharedPtr::operator==(const SharedPtr& other) const noexcept {
+    return controlBlock == other.controlBlock;
+}
+
+bool SharedPtr::operator!=(const SharedPtr& other) const noexcept {
+    return !operator==(other);
+}
+
+bool SharedPtr::isNullPtr() const noexcept {
+    return controlBlock == nullptr;
+}

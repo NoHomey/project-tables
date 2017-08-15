@@ -50,9 +50,9 @@ protected:
     String& operator=(String&& other) noexcept;
 
 protected:
-    char* string;
-
     size_t stringLength;
+
+    char* string;
 
 private:
     void null() noexcept;

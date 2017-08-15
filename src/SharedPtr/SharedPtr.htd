@@ -1,0 +1,74 @@
+#pragma once
+
+#include <cstddef>
+
+class SharedPtr {
+private:
+    template <typename Type>
+    struct ControlBlock {
+        unsigned long counter;
+        Type value;
+
+        ControlBlock(Type&& value) noexcept;
+    };
+
+    using Deleter = void (*)(SharedPtr&);
+
+public:
+    SharedPtr() noexcept;
+
+    SharedPtr(std::nullptr_t) noexcept;
+
+    template<typename Type>
+    SharedPtr(Type&& value, Deleter deleter);
+
+    ~SharedPtr() noexcept;
+
+    SharedPtr(const SharedPtr& other) noexcept;
+
+    SharedPtr(SharedPtr&& other) = delete;
+
+    SharedPtr& operator=(const SharedPtr& other) noexcept;
+
+    SharedPtr& operator=(std::nullptr_t) noexcept;
+
+    SharedPtr& operator=(SharedPtr&& other) = delete;
+
+public:
+    template<typename Type>
+    Type get() const noexcept;
+
+    template<typename Type>
+    Type& getRef() noexcept;
+
+    template<typename Type>
+    const Type& getConstRef() const noexcept;
+
+    template<typename Type>
+    void release() noexcept;
+
+    bool operator==(const SharedPtr& other) const noexcept;
+
+    bool operator!=(const SharedPtr& other) const noexcept;
+
+    bool isNullPtr() const noexcept;
+
+private:
+    void release() noexcept;
+
+    void acquire() noexcept;
+
+    template<typename Type>
+    ControlBlock<Type>* castControlBlock() noexcept;
+
+    void set(Deleter deleter, void* controlBlock) noexcept;
+
+    void null() noexcept;
+
+private:
+    Deleter deleter;
+
+    void* controlBlock;
+};
+
+#include "SharedPtr.tci"

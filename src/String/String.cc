@@ -72,13 +72,13 @@ size_t String::calculateLength(const char* string) noexcept {
 }
 
 String::String() noexcept
-: string{nullptr}, stringLength{0} { }
+: stringLength{0}, string{nullptr} { }
 
 String::String(char* string, size_t length) noexcept
-: string{string}, stringLength{length} { }
+: stringLength{length}, string{string} { }
 
 String::String(const char* string, size_t length) noexcept
-: string{const_cast<char*>(string)}, stringLength{length} { }
+: stringLength{length}, string{const_cast<char*>(string)} { }
 
 String::String(char* string) noexcept
 : String{string, calculateLength(string)} { }
