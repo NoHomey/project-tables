@@ -9,20 +9,20 @@ ConstString ListTableModelAdaptor::StringText{"String"};
 ConstString ListTableModelAdaptor::UnknownText{"Unknown"};
 
 const ListTableModelAdaptor* ListTableModelAdaptor::adapt(const Table* table) noexcept {
-    modelAdaptor.table = table;
+    modelAdaptor.tableName = &table->getName();
+    modelAdaptor.columnsMetaData = &table->getColumnsMetaData();
     return &modelAdaptor;
 }
 
 ListTableModelAdaptor::ListTableModelAdaptor() noexcept
-: table{nullptr} { }
+: tableName{nullptr}, columnsMetaData{nullptr} { }
 
 const String& ListTableModelAdaptor::title() const noexcept {
-    return table->getName();
+    return *tableName;
 }
 
 const String& ListTableModelAdaptor::item(size_t index) const noexcept {
-    const ColumnMetaData& metaData = table->getColumnsMetaData()[index];
-    switch(metaData.getType()) {
+    switch(columnsMetaData->getElement(index).getType()) {
         case ColumnMetaData::Integer: return IntegerText;
         case ColumnMetaData::String: return StringText;
         default: return UnknownText;
@@ -30,5 +30,5 @@ const String& ListTableModelAdaptor::item(size_t index) const noexcept {
 }
 
 size_t ListTableModelAdaptor::itemsCount() const noexcept {
-    return table->getColumnsMetaData().size();
+    return columnsMetaData->size();
 }

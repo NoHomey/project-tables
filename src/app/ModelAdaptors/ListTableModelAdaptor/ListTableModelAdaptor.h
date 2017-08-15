@@ -36,5 +36,7 @@ private:
     static ConstString UnknownText;
 
 private:
-    const Table* table;
+    const FixedSizeString* tableName;
+
+    const DynamicArray<ColumnMetaData>* columnsMetaData;
 };
