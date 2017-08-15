@@ -13,7 +13,6 @@ template <typename Type>
 SharedPtr::ControlBlock<Type>::ControlBlock(Type&& value) noexcept
 : counter{1}, value{std::move(value)} { }
 
-
 template<typename Type>
 SharedPtr::SharedPtr(Type&& value, Deleter deleter)
 : SharedPtr{} {
