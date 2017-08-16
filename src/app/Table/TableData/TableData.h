@@ -30,17 +30,25 @@ public:
 
     void insert(TableTypes::String&& value);
 
+    size_t calculateIndexFor(TableTypes::Row row, TableTypes::Column column) const noexcept;
+
     const SharedPtr& operator()(TableTypes::Row row, TableTypes::Column column) const noexcept;
 
     const SharedPtr& get(TableTypes::Row row, TableTypes::Column column) const noexcept;
 
     RowsFilterResult selectAllRows() const noexcept;
 
-    RowsFilterResult selectRowsMatching(TableTypes::Column column, std::nullptr_t) const noexcept;
+    RowsFilterResult selectRowsMatching(TableTypes::Column column, std::nullptr_t) const;
 
-    RowsFilterResult selectRowsMatching(TableTypes::Column column, TableTypes::Integer value) const noexcept;
+    RowsFilterResult selectRowsMatching(TableTypes::Column column, TableTypes::Integer value) const;
 
-    RowsFilterResult selectRowsMatching(TableTypes::Column column, const TableTypes::String& value) const noexcept;
+    RowsFilterResult selectRowsMatching(TableTypes::Column column, const TableTypes::String& value) const;
+    
+    void updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, std::nullptr_t);
+    
+    void updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::Integer&& value);
+    
+    void updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::String&& value);
 
 private:
     struct FindFirstResult {
@@ -52,23 +60,31 @@ private:
     FindFirstResult findFirstInColumn(TableTypes::Column column, const Type& value) noexcept;
 
     template<typename Type>
-    SharedPtr obtainSharedPtrForValueInColumn(TableTypes::Column column, Type&& value, SharedPtr::Deleter deleter);
+    SharedPtr obtainSharedPtrForValueInColumn(TableTypes::Column column, Type&& value);
 
     template<typename Type>
-    void insert(Type&& value, SharedPtr::Deleter deleter);
+    void insertValue(Type&& value);
 
     template<typename Type>
-    RowsFilterResult selectRowsMatchingValueInColumn(TableTypes::Column column, const Type& value) const noexcept;
+    RowsFilterResult selectRowsMatchingValueInColumn(TableTypes::Column column, const Type& value) const;
+
+    template<typename Type>
+    void updateRowsColumn(const RowsFilterResult& filteredRows, TableTypes::Column column, Type&& value);
 
 private:
-    static const SharedPtr NullValue;
+    template<typename Type>
+    static SharedPtr::Deleter deleterFor() noexcept;
 
+private:
     static void deleteInteger(SharedPtr& ptr) noexcept;
 
     static void deleteString(SharedPtr& ptr) noexcept;
 
 private:
     TableTypes::Row calculateRowFor(size_t index) const noexcept;
+
+private:
+    static const SharedPtr NullValue;
 
 private:
     DynamicArray<SharedPtr> data;

@@ -45,6 +45,9 @@ private:
     RowsFilterResult(size_t allCount) noexcept;
 
 private:
+    static const size_t minUnused = 32;
+
+private:
     size_t allCount;
 
     DynamicArray<TableTypes::Row> filteredRows;

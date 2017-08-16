@@ -9,7 +9,7 @@ namespace TableTypes {
 
     using Row = Dimention;
 
-    using Integer = unsigned long;
+    using Integer = long;
 
     using String = FixedSizeString;
 }

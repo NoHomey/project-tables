@@ -26,14 +26,14 @@ void RowsFilterResult::optimize() {
         filteredRows.clear();
         return;
     }
-    /*if(allCount == 0) {
+    if(allCount == 0) {
         const size_t unused = filteredRows.unused();
-        if((unused > 16) && (unused > ((filteredRows.capacity() / 8) * 3))) {
+        if((unused > minUnused) && (unused > ((filteredRows.capacity() / 8) * 3))) {
             try {
                 filteredRows.shrinkToFit();
             } catch(std::bad_alloc& error) { }
         }
-    }*/
+    }
 }
 
 size_t RowsFilterResult::count() const noexcept {
