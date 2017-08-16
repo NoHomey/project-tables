@@ -15,3 +15,7 @@ const DynamicArray<ColumnMetaData>& Table::getColumnsMetaData() const noexcept {
 void Table::addColumn(const ColumnMetaData& metaData) {
     columnsMetaData.push(metaData);
 }
+
+void Table::rename(FixedSizeString&& newName) noexcept {
+    name = std::move(newName);
+}
