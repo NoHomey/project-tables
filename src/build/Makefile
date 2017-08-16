@@ -1,6 +1,8 @@
-.PHONY: clean
+.PHONY: clean leakCheck run
 
 COMPILER = g++ -std=c++14 -Wall -Wextra -Wpedantic -g
+
+Executable = ./a.out
 
 Renderer = ../Renderer
 
@@ -16,10 +18,12 @@ SharedPtr = ../SharedPtr
 
 Table = $(app)/Table
 
+TableData = $(Table)/TableData
+
 OwnDeps = $(1)/$(2)/$(2).cc $(1)/$(2)/$(2).h
 
 app: ../app/main.cc Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o\
-ListComponent.o ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o TableData.o Table.o Tables.o ListTableModelAdaptor.o
+ListComponent.o ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o
 	$(COMPILER) $^
 
 Window.o: $(call OwnDeps,$(Renderer),Window)
@@ -52,7 +56,10 @@ ColumnMetaData.o: $(call OwnDeps,$(Table),ColumnMetaData)
 SharedPtr.o: $(SharedPtr)/SharedPtr.cc $(SharedPtr)/SharedPtr.htd
 	$(COMPILER) -c $<
 
-TableData.o: $(call OwnDeps,$(Table),TableData) SharedPtr.o FixedSizeString.o
+RowsFilterResult.o: $(call OwnDeps,$(TableData),RowsFilterResult)
+	$(COMPILER) -c $<
+
+TableData.o: $(call OwnDeps,$(Table),TableData) SharedPtr.o FixedSizeString.o RowsFilterResult.o
 	$(COMPILER) -c $<
 
 Table.o: $(call OwnDeps,$(app),Table) ColumnMetaData.o TableData.o
@@ -68,4 +75,10 @@ ListTableModelAdaptor.o: $(call OwnDeps,$(ModelAdaptors),ListTableModelAdaptor)
 	$(COMPILER) -c $<
 
 clean:
-	rm *.o a.out
+	rm -f *.o $(Executable)
+
+leakCheck:
+	valgrind $(Executable)
+
+run:
+	$(Executable)

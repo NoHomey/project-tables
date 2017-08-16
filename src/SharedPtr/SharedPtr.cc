@@ -28,7 +28,7 @@ SharedPtr::~SharedPtr() noexcept {
 void SharedPtr::acquire() noexcept {
     if(!isNullPtr()) {
         Counter* counter = getCounter();
-        ++(*counter);
+        *counter = *counter + 1;
     }
 }
 

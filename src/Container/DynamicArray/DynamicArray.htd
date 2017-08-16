@@ -24,6 +24,8 @@ public:
 
     size_t capacity() const noexcept;
 
+    size_t unused() const noexcept;
+
     bool isEmpty() const noexcept;
 
     bool isFull() const noexcept;
@@ -42,10 +44,6 @@ public:
 
     void pushOne(const Element& element);
 
-    void fill(size_t count);
-
-    void fill(size_t count, const Element& element);
-
     void pop() noexcept;
 
     void empty() noexcept;
@@ -61,14 +59,14 @@ public:
     void clear() noexcept;
 
     template<typename ForEachInDynamicArrayFunction>
-    void forEach(ForEachInDynamicArrayFunction& function) const noexcept;
+    void forEach(ForEachInDynamicArrayFunction& function) const;
 
     template<typename ForEachInDynamicArrayFunction>
-    void forEach(const ForEachInDynamicArrayFunction& function) const noexcept;
+    void forEach(const ForEachInDynamicArrayFunction& function) const;
 
 protected:
     template<typename ForEachInDynamicArrayFunction>
-    void forEachElement(ForEachInDynamicArrayFunction function) const noexcept;
+    void forEachElement(ForEachInDynamicArrayFunction function) const;
 
 protected:
     Element* array;

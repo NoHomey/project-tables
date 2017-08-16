@@ -1,51 +1,54 @@
-#include "../Renderer/Window/Window.h"
-#include "../Renderer/BasicRenderer/BasicRenderer.h"
-#include "ModelAdaptors/ListTableModelAdaptor/ListTableModelAdaptor.h"
-#include "ModelAdaptors/ListTablesModelAdaptor/ListTablesModelAdaptor.h"
-#include "../Components/List/ListComponent/ListComponent.h"
-#include "Tables/Tables.h"
-#include <cstdio>
-#include <unistd.h>
+#include <iostream>
+#include "Table/TableData/TableData.h"
+
+void del(SharedPtr& p) {
+    p.release<int>();
+}
 
 int main() {
-    Window::syncSizes();
-    Window::registerSignal();
-    BasicRenderer::setup();
 
-    Tables& tables = Tables::getAllTables();
+    TableData data;
 
-    Table t1{"table1"};
-    t1.addColumn({ColumnMetaData::Integer});
-    t1.addColumn({ColumnMetaData::Integer});
-    t1.addColumn({ColumnMetaData::Integer});
-    t1.addColumn({ColumnMetaData::Integer});
-    tables.addTable(&t1);
+    data.addColumn();
+    data.addColumn();
+    data.insert(2);
+    data.insert("Ivo");
+    data.insert(2);
+    data.insert("Ivo");
+    data.insert(2);
+    data.insert("Ivo");
+    data.insert(2);
+    data.insert("Test");
+    data.insert(2);
+    data.insert("Ovi");
+    data.insert(9);
+    data.insert("Ivo");
 
-    Table t2{"AAA"};
-    tables.addTable(&t2);
+    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
 
-    Table t3{"LongStoryShort"};
-    tables.addTable(&t3);
+    std::cout << "select 0, 2" << std::endl;
+    data.selectRowsMatching(0, 2).forEach([](TableTypes::Row row, size_t index) {
+        std::cout << row << ' ' << index << std::endl;
+    });
 
-    ListComponent::inject(ListTablesModelAdaptor::adapt(Tables::getAllTables())).render();
+    std::cout << "select 0, 9" << std::endl;
+    data.selectRowsMatching(0, 9).forEach([](TableTypes::Row row, size_t index) {
+        std::cout << row << ' ' << index << std::endl;
+    });
 
-    for(size_t i  = 0; i < 2; ++i) {
-        Window::syncSizes();
-        ListComponent::inject(ListTablesModelAdaptor::adapt(Tables::getAllTables())).render();
-        sleep(4);
+    std::cout << "select 1, Ivo" << std::endl;
+    data.selectRowsMatching(1, "Ivo").forEach([](TableTypes::Row row, size_t index) {
+        std::cout << row << ' ' << index << std::endl;
+    });
 
-        Window::syncSizes();
-        ListComponent::inject(ListTableModelAdaptor::adapt(
-            Tables::getAllTables().getTableByName(ConstString{"table1"})
-        )).render();
-        sleep(4);
+    data.addColumn();
 
-        Window::syncSizes();
-        ListComponent::inject(ListTableModelAdaptor::adapt(
-            Tables::getAllTables().getTableByName(ConstString{"LongStoryShort"})
-        )).render();
-        sleep(4);
-    }
+    std::cout << "select 2, null" << std::endl;
+    data.selectRowsMatching(2, nullptr).forEach([](TableTypes::Row row, size_t index) {
+        std::cout << row << ' ' << index << std::endl;
+    });
+
+    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
 
     return 0;
 }
