@@ -46,6 +46,8 @@ public:
 
     void pop() noexcept;
 
+    void pop(size_t count) noexcept;
+
     void empty() noexcept;
 
     void setElement(size_t index, const Element& element);

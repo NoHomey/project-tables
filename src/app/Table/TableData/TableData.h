@@ -50,6 +50,8 @@ public:
     
     void updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::String&& value);
 
+    void deleteRows(const RowsFilterResult& filteredRows) noexcept;
+
 private:
     struct FindFirstResult {
         SharedPtr& shared;
@@ -85,6 +87,8 @@ private:
 
 private:
     static const SharedPtr NullValue;
+
+    static const size_t initialCapacity = 32;
 
 private:
     DynamicArray<SharedPtr> data;

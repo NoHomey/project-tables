@@ -164,6 +164,15 @@ void DynamicArray<Element>::pop() noexcept {
 }
 
 template<typename Element>
+void DynamicArray<Element>::pop(size_t count) noexcept {
+    if(count >= arraySize) {
+        arraySize = 0;
+    } else {
+        arraySize -= count;
+    }
+}
+
+template<typename Element>
 void DynamicArray<Element>::empty() noexcept {
     arraySize = 0;
 }

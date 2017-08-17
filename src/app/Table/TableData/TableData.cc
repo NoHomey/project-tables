@@ -72,6 +72,9 @@ SharedPtr TableData::obtainSharedPtrForValueInColumn(TableTypes::Column column, 
 template<typename Type>
 void TableData::insertValue(Type&& value) {
     if(columns > 0) {
+        if(data.capacity() == 0) {
+            data.extend(initialCapacity);
+        }
         data.push(obtainSharedPtrForValueInColumn<Type>(data.size() % columns, std::move(value)));
     }
 }
@@ -119,7 +122,7 @@ RowsFilterResult TableData::selectRowsMatching(TableTypes::Column column, std::n
             result.addRow(calculateRowFor(index));
         }
     }
-    result.optimize();
+    result.optimize(rowsCount());
     return result;
 }
 
@@ -150,7 +153,7 @@ RowsFilterResult TableData::selectRowsMatchingValueInColumn(TableTypes::Column c
                 result.addRow(calculateRowFor(index));
             }
         }
-        result.optimize();
+        result.optimize(rowsCount());
         return result;
     }
     return {};
@@ -173,4 +176,44 @@ void TableData::updateRows(const RowsFilterResult& filteredRows, TableTypes::Col
 
 void TableData::updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::String&& value){
     updateRowsColumn<TableTypes::String>(filteredRows, column, std::move(value));
+}
+
+void TableData::deleteRows(const RowsFilterResult& filteredRows) noexcept {
+    const TableTypes::Row count = filteredRows.count();
+    if(count == 0) {
+        return;
+    }
+    TableTypes::Row prevRow = filteredRows[0];
+    TableTypes::Row newRow = prevRow;
+    TableTypes::Row currentRow;
+    TableTypes::Row rows = rowsCount();
+    TableTypes::Row nextIndex;
+    TableTypes::Row indexedRow;
+    TableTypes::Row upToRow;
+    for(TableTypes::Row index = 0; index < count; ++index) {
+        currentRow = filteredRows[index];
+        nextIndex = index + 1;
+        if(((currentRow - prevRow) > 1) || ((nextIndex == count) && ((rows - currentRow) > 1))) {
+            if(nextIndex == count) {
+                indexedRow = currentRow + 1;
+                upToRow = rows;
+            } else {
+                indexedRow = prevRow + 1;
+                upToRow = currentRow;
+            }
+            for(; indexedRow < upToRow; ++indexedRow) {
+                for(TableTypes::Column column = 0; column < columns; ++column) {
+                    data[calculateIndexFor(newRow, column)] = data[calculateIndexFor(indexedRow, column)]; 
+                }
+                ++newRow;
+            }
+        }
+        prevRow = currentRow;
+    }
+    const size_t size = data.size();
+    const size_t removeCount = static_cast<size_t>(count) * static_cast<size_t>(columns);
+    for(size_t index = size - removeCount; index < size; ++index) {
+        data[index] = nullptr;
+    }
+    data.pop(removeCount);
 }

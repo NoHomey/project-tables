@@ -23,7 +23,7 @@ public:
 public:
     void addRow(TableTypes::Row row) noexcept;
 
-    void optimize();
+    void optimize(TableTypes::Row rowsCount);
 
     size_t count() const noexcept;
 
@@ -43,6 +43,9 @@ private:
 
 private:
     RowsFilterResult(size_t allCount) noexcept;
+
+private:
+    static size_t calculateInitialCapacity(TableTypes::Row unFilteredRowsCount) noexcept;
 
 private:
     static const size_t minUnused = 32;

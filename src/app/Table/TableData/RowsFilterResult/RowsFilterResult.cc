@@ -1,6 +1,13 @@
 #include "RowsFilterResult.h"
 #include <new>
 
+size_t RowsFilterResult::calculateInitialCapacity(TableTypes::Row unFilteredRowsCount) noexcept {
+    if(unFilteredRowsCount < minUnused) {
+        return unFilteredRowsCount;
+    }
+    return unFilteredRowsCount / 2 + (unFilteredRowsCount % 2);
+}
+
 RowsFilterResult::RowsFilterResult() noexcept
 : allCount{0}, filteredRows{} { }
 
@@ -9,20 +16,20 @@ RowsFilterResult RowsFilterResult::allRows(size_t all) noexcept {
 }
 
 RowsFilterResult::RowsFilterResult(TableTypes::Row unFilteredRowsCount)
-: allCount{0}, filteredRows{unFilteredRowsCount} { }
+: allCount{0}, filteredRows{calculateInitialCapacity(unFilteredRowsCount)} { }
 
 RowsFilterResult::RowsFilterResult(size_t allCount) noexcept
 : allCount{allCount}, filteredRows{} { }
 
 void RowsFilterResult::addRow(TableTypes::Row row) noexcept {
-    if((allCount == 0) && !filteredRows.isFull()) {
+    if(allCount == 0) {
         return filteredRows.push(row);
     }
 }
 
-void RowsFilterResult::optimize() {
-    if(filteredRows.isFull() && !filteredRows.isEmpty()) {
-        allCount = filteredRows.capacity();
+void RowsFilterResult::optimize(TableTypes::Row rowsCount) {
+    if(filteredRows.size() == rowsCount) {
+        allCount = rowsCount;
         filteredRows.clear();
         return;
     }
