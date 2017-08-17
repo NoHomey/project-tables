@@ -8,6 +8,10 @@ size_t String::length() const noexcept {
     return stringLength;
 }
 
+const char* String::cString() const noexcept {
+    return string;
+}
+
 bool String::compareStrings(const String& other, const bool onEqual, bool (*onDiff)(char a, char b)) const noexcept {
     if(this == &other) {
         return onEqual;

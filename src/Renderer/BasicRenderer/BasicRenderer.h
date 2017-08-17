@@ -1,8 +1,9 @@
 #pragma once
 
+#include "../../CharOutputStream/CharOutputStream.h"
 #include "../../Container/DynamicArray/DynamicArray.htd"
 
-class BasicRenderer {
+class BasicRenderer: public CharOutputStream {
 public:
     static void setup();
 
@@ -20,7 +21,7 @@ public:
 public:
     void ensureCapacity(size_t capacity);
 
-    BasicRenderer& operator<<(char symbol);
+    CharOutputStream& operator<<(char symbol) override;
 
     void clear();
 

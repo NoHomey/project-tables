@@ -8,6 +8,8 @@ public:
 
     size_t length() const noexcept;
 
+    const char* cString() const noexcept;
+
 public:
     static bool constFalse(char, char) noexcept;
 

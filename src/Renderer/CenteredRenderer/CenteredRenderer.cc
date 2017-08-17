@@ -98,7 +98,7 @@ void CenteredRenderer::widthReached() {
     }
 }
 
-CenteredRenderer& CenteredRenderer::operator<<(char symbol) {
+CharOutputStream& CenteredRenderer::operator<<(char symbol) {
     if(heightCounter == centered.getHeight()) {
         return *this;
     }

@@ -20,10 +20,15 @@ Table = $(app)/Table
 
 TableData = $(Table)/TableData
 
+FileIO = ../FileIO
+
+Writer = $(FileIO)/Writer
+
 OwnDeps = $(1)/$(2)/$(2).cc $(1)/$(2)/$(2).h
 
 app: ../app/main.cc Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o\
-ListComponent.o ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o
+ListComponent.o ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o\
+ListTableModelAdaptor.o OutputFile.o Writer.o
 	$(COMPILER) $^
 
 Window.o: $(call OwnDeps,$(Renderer),Window)
@@ -72,6 +77,12 @@ ListTablesModelAdaptor.o: $(call OwnDeps,$(ModelAdaptors),ListTablesModelAdaptor
 	$(COMPILER) -c $<
 
 ListTableModelAdaptor.o: $(call OwnDeps,$(ModelAdaptors),ListTableModelAdaptor)
+	$(COMPILER) -c $<
+
+OutputFile.o: $(call OwnDeps,$(Writer),OutputFile)
+	$(COMPILER) -c $<
+
+Writer.o: $(call OwnDeps,$(FileIO),Writer) OutputFile.o
 	$(COMPILER) -c $<
 
 clean:

@@ -20,7 +20,7 @@ void BasicRenderer::ensureCapacity(size_t capacity) {
     buffer.ensureCapacity(CLEAR_LENGTH + capacity);
 }
 
-BasicRenderer& BasicRenderer::operator<<(char symbol) {
+CharOutputStream& BasicRenderer::operator<<(char symbol) {
     buffer.push(symbol);
     return *this;
 }

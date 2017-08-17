@@ -32,7 +32,7 @@ void Window::syncSizes() noexcept {
 void Window::registerSignal() {
     struct sigaction sigwinchAction;
     sigemptyset(&sigwinchAction.sa_mask);
-    sigwinchAction.sa_flags = 0;
+    sigwinchAction.sa_flags = SA_RESTART;
     sigwinchAction.sa_handler = sigwinchHandler;
     sigaction(SIGWINCH, &sigwinchAction, NULL);
 }

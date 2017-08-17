@@ -3,7 +3,7 @@
 #include "../BasicRenderer/BasicRenderer.h"
 #include "../Centered/Centered.h"
 
-class CenteredRenderer {
+class CenteredRenderer: public CharOutputStream {
 public:
     static CenteredRenderer& getRenderer() noexcept;
 
@@ -23,7 +23,7 @@ public:
     CenteredRenderer& operator=(CenteredRenderer&&) = delete;
 
 public:
-    CenteredRenderer& operator<<(char symbol);
+    CharOutputStream& operator<<(char symbol) final;
 
 private:
     static CenteredRenderer renderer;
