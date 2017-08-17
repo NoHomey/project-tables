@@ -143,6 +143,14 @@ void DynamicArray<Element>::addElement(const Element& element) noexcept {
 }
 
 template<typename Element>
+void DynamicArray<Element>::fill(size_t count) {
+    if(count > 0) {
+        ensureCapacity(count);
+        arraySize += count;
+    }
+}
+
+template<typename Element>
 void DynamicArray<Element>::push(const Element& element) {
     ensureCapacity();
     addElement(element);

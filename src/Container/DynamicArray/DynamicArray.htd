@@ -40,6 +40,8 @@ public:
 
     const Element* data() const noexcept;
 
+    void fill(size_t count);
+
     void push(const Element& element);
 
     void pushOne(const Element& element);

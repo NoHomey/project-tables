@@ -1,4 +1,5 @@
 #include "TableData.h"
+#include <new>
 
 const SharedPtr TableData::NullValue{nullptr};
 
@@ -36,14 +37,22 @@ void TableData::addColumn() {
     const TableTypes::Row rows = rowsCount();
     if(rows > 0) {
         const size_t oldSize = data.size();
-        DynamicArray<SharedPtr> newData{oldSize + data.unused() + rows};
-        for(size_t index = 1; index <= oldSize; ++index) {
-            newData.push(data[index - 1]);
-            if((index % columns) == 0) {
-                newData.push(NullValue);
-            }
+        size_t newIndex = oldSize + rows - 1;
+        if(data.unused() < rows) {
+            try {
+                data.ensureCapacity(2 * rows);
+            } catch(std::bad_alloc& error) { }
         }
-        data = std::move(newData);
+        data.fill(rows);
+        for(size_t index = oldSize; index > columns; --index) {
+            if((index % columns) == 0) {
+                data[newIndex] = nullptr;
+                --newIndex;
+            }
+            data[newIndex] = data[index - 1];
+            --newIndex;
+        }
+        data[columns] = nullptr;
     }
     ++columns;
 }
@@ -126,7 +135,7 @@ RowsFilterResult TableData::selectRowsMatching(TableTypes::Column column, std::n
     return result;
 }
 
-RowsFilterResult TableData::selectRowsMatching(TableTypes::Column column, TableTypes::Integer value) const {
+RowsFilterResult TableData::selectRowsMatching(TableTypes::Column column, const TableTypes::Integer& value) const {
     return selectRowsMatchingValueInColumn<TableTypes::Integer>(column, value);
 }
 

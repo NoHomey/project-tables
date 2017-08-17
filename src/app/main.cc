@@ -3,9 +3,18 @@
 
 void print(const TableData& data) {
     const TableTypes::Row rows = data.rowsCount();
+    const TableTypes::Row cols = data.columnsCount();
     std::cout << "--------------------------" << std::endl;
     for(TableTypes::Row row = 0; row < rows; ++row) {
-        std::cout << data(row, 0).getCopy<TableTypes::Integer>() << ' ' << data(row, 1).getConstRef<TableTypes::String>()[0] << std::endl;
+        std::cout << data(row, 0).getCopy<TableTypes::Integer>() << ' ' << data(row, 1).getConstRef<TableTypes::String>()[0];
+        for(size_t i = 2; i < cols; ++i) {
+            if(data(row, i).isNullPtr()) {
+                std::cout << " NULL";
+            } else {
+                std::cout << ' ' << data(row, 0).getCopy<TableTypes::Integer>();
+            }
+        }
+        std::cout << std::endl;
     }
     std::cout << "--------------------------" << std::endl;
 }
@@ -44,96 +53,13 @@ int main() {
     data.insert(9);
     data.insert("Ivo");
 
-    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
+    for(size_t i  = 0; i < 9; ++i) {
+        print(data);
+        data.addColumn();
+        data.updateRows(data.selectAllRows(), i + 2, i * i);
+    }
 
-    std::cout << "select 1, Ovi" << std::endl;
-    data.selectRowsMatching(1, "Ovi").forEach([](TableTypes::Row row, size_t index) {
-        std::cout << row << ' ' << index << std::endl;
-    });
-
-    print(data);
-
-    data.deleteRows(data.selectRowsMatching(1, "Ovi"));
-
-    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
-    
-    std::cout << "select 1, Ovi" << std::endl;
-    data.selectRowsMatching(1, "Ovi").forEach([](TableTypes::Row row, size_t index) {
-        std::cout << row << ' ' << index << std::endl;
-    });
-
-    print(data);
-
-    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
-    
-    std::cout << "select 1, Test" << std::endl;
-    data.selectRowsMatching(1, "Test").forEach([](TableTypes::Row row, size_t index) {
-        std::cout << row << ' ' << index << std::endl;
-    });
-    
-    data.deleteRows(data.selectRowsMatching(1, "Test"));
-    
-    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
-        
-    std::cout << "select 1, Test" << std::endl;
-    data.selectRowsMatching(1, "Test").forEach([](TableTypes::Row row, size_t index) {
-        std::cout << row << ' ' << index << std::endl;
-    });
-    
-    print(data);
-
-    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
-    
-    std::cout << "select 0, 1000" << std::endl;
-    data.selectRowsMatching(0, 1000).forEach([](TableTypes::Row row, size_t index) {
-        std::cout << row << ' ' << index << std::endl;
-    });
-    
-    data.deleteRows(data.selectRowsMatching(0, 1000));
-    
-    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
-        
-    std::cout << "select 0, 1000" << std::endl;
-    data.selectRowsMatching(0, 1000).forEach([](TableTypes::Row row, size_t index) {
-        std::cout << row << ' ' << index << std::endl;
-    });
-    
-    print(data);
-
-    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
-    
-    std::cout << "select 1, Test" << std::endl;
-    data.selectRowsMatching(1, "Test").forEach([](TableTypes::Row row, size_t index) {
-        std::cout << row << ' ' << index << std::endl;
-    });
-    
-    data.deleteRows(data.selectRowsMatching(1, "Test"));
-    
-    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
-        
-    std::cout << "select 1, Test" << std::endl;
-    data.selectRowsMatching(1, "Test").forEach([](TableTypes::Row row, size_t index) {
-        std::cout << row << ' ' << index << std::endl;
-    });
-    
-    print(data);
-
-    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
-    
-    std::cout << "select 1, Ivo" << std::endl;
-    data.selectRowsMatching(1, "Ivo").forEach([](TableTypes::Row row, size_t index) {
-        std::cout << row << ' ' << index << std::endl;
-    });
-    
-    data.deleteRows(data.selectRowsMatching(1, "Ivo"));
-    
-    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
-        
-    std::cout << "select 1, Ivo" << std::endl;
-    data.selectRowsMatching(1, "Ivo").forEach([](TableTypes::Row row, size_t index) {
-        std::cout << row << ' ' << index << std::endl;
-    });
-    
+    data.addColumn();
     print(data);
 
     return 0;

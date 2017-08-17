@@ -40,7 +40,7 @@ public:
 
     RowsFilterResult selectRowsMatching(TableTypes::Column column, std::nullptr_t) const;
 
-    RowsFilterResult selectRowsMatching(TableTypes::Column column, TableTypes::Integer value) const;
+    RowsFilterResult selectRowsMatching(TableTypes::Column column, const TableTypes::Integer& value) const;
 
     RowsFilterResult selectRowsMatching(TableTypes::Column column, const TableTypes::String& value) const;
     
