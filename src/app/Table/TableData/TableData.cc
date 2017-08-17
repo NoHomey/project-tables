@@ -183,32 +183,29 @@ void TableData::deleteRows(const RowsFilterResult& filteredRows) noexcept {
     if(count == 0) {
         return;
     }
-    TableTypes::Row prevRow = filteredRows[0];
-    TableTypes::Row newRow = prevRow;
-    TableTypes::Row currentRow;
     TableTypes::Row rows = rowsCount();
-    TableTypes::Row nextIndex;
+    TableTypes::Row currentRow = filteredRows[0];
+    TableTypes::Row newRow = currentRow;
+    TableTypes::Row prevRow;
     TableTypes::Row indexedRow;
     TableTypes::Row upToRow;
-    for(TableTypes::Row index = 0; index < count; ++index) {
-        currentRow = filteredRows[index];
-        nextIndex = index + 1;
-        if(((currentRow - prevRow) > 1) || ((nextIndex == count) && ((rows - currentRow) > 1))) {
-            if(nextIndex == count) {
-                indexedRow = currentRow + 1;
-                upToRow = rows;
-            } else {
-                indexedRow = prevRow + 1;
-                upToRow = currentRow;
-            }
-            for(; indexedRow < upToRow; ++indexedRow) {
-                for(TableTypes::Column column = 0; column < columns; ++column) {
-                    data[calculateIndexFor(newRow, column)] = data[calculateIndexFor(indexedRow, column)]; 
-                }
-                ++newRow;
-            }
-        }
+    for(TableTypes::Row index = 1; index <= count; ++index) {
         prevRow = currentRow;
+        if(index == count) {
+            upToRow = rows;
+        } else {
+            currentRow = filteredRows[index];
+            if((currentRow - prevRow) == 1) {
+                continue;
+            }
+            upToRow = currentRow;
+        }
+        for(indexedRow = prevRow + 1; indexedRow < upToRow; ++indexedRow) {
+            for(TableTypes::Column column = 0; column < columns; ++column) {
+                data[calculateIndexFor(newRow, column)] = data[calculateIndexFor(indexedRow, column)]; 
+            }
+            ++newRow;
+        }
     }
     const size_t size = data.size();
     const size_t removeCount = static_cast<size_t>(count) * static_cast<size_t>(columns);

@@ -21,11 +21,23 @@ int main() {
     data.insert("Ivo");
     data.insert(2);
     data.insert("Ivo");
-    data.insert(2);
+    data.insert(100);
     data.insert("Test");
-    data.insert(2);
+    data.insert(22);
     data.insert("Ovi");
-    data.insert(2);
+    data.insert(22);
+    data.insert("Ovi");
+    data.insert(9);
+    data.insert("Ivo");
+    data.insert(9);
+    data.insert("Ivo");
+    data.insert(100);
+    data.insert("Test");
+    data.insert(22);
+    data.insert("Ovi");
+    data.insert(1000);
+    data.insert("AAA");
+    data.insert(22);
     data.insert("Ovi");
     data.insert(9);
     data.insert("Ivo");
@@ -59,8 +71,6 @@ int main() {
         std::cout << row << ' ' << index << std::endl;
     });
     
-    print(data);
-    
     data.deleteRows(data.selectRowsMatching(1, "Test"));
     
     std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
@@ -74,12 +84,28 @@ int main() {
 
     std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
     
-    std::cout << "select 1, Test" << std::endl;
-    data.selectRowsMatching(1, "Test").forEach([](TableTypes::Row row, size_t index) {
+    std::cout << "select 0, 1000" << std::endl;
+    data.selectRowsMatching(0, 1000).forEach([](TableTypes::Row row, size_t index) {
+        std::cout << row << ' ' << index << std::endl;
+    });
+    
+    data.deleteRows(data.selectRowsMatching(0, 1000));
+    
+    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
+        
+    std::cout << "select 0, 1000" << std::endl;
+    data.selectRowsMatching(0, 1000).forEach([](TableTypes::Row row, size_t index) {
         std::cout << row << ' ' << index << std::endl;
     });
     
     print(data);
+
+    std::cout << "data " << data.rowsCount() << ' ' << data.columnsCount() << std::endl;
+    
+    std::cout << "select 1, Test" << std::endl;
+    data.selectRowsMatching(1, "Test").forEach([](TableTypes::Row row, size_t index) {
+        std::cout << row << ' ' << index << std::endl;
+    });
     
     data.deleteRows(data.selectRowsMatching(1, "Test"));
     
@@ -98,8 +124,6 @@ int main() {
     data.selectRowsMatching(1, "Ivo").forEach([](TableTypes::Row row, size_t index) {
         std::cout << row << ' ' << index << std::endl;
     });
-    
-    print(data);
     
     data.deleteRows(data.selectRowsMatching(1, "Ivo"));
     
