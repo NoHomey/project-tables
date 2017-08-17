@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../../Container/DynamicArray/DynamicArray.htd"
-#include "../../../SharedPtr/SharedPtr.htd"
+#include "../../Container/DynamicArray/DynamicArray.htd"
+#include "../../SharedPtr/SharedPtr.htd"
 #include "RowsFilterResult/RowsFilterResult.h"
 #include "../TableTypes.h"
 

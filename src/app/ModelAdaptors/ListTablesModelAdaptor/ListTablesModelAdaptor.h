@@ -2,7 +2,7 @@
 
 #include "../../../Components/List/ListModel/ListModel.h"
 #include "../../../String/ConstString/ConstString.h"
-#include "../../Tables/Tables.h"
+#include "../../../Tables/Tables.h"
 
 class ListTablesModelAdaptor: public ListModel {
 public:

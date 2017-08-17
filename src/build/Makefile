@@ -16,7 +16,7 @@ ModelAdaptors = $(app)/ModelAdaptors
 
 SharedPtr = ../SharedPtr
 
-Table = $(app)/Table
+Table = ../Table
 
 TableData = $(Table)/TableData
 
@@ -43,7 +43,7 @@ BasicRenderer.o: $(call OwnDeps,$(Renderer),BasicRenderer)
 CenteredRenderer.o: $(call OwnDeps,$(Renderer),CenteredRenderer) BasicRenderer.o
 	$(COMPILER) -c $<
 
-String.o: $(String)/String.cc $(String)/String.h
+String.o: $(call OwnDeps,..,String)
 	$(COMPILER) -c $<
 
 ConstString.o: $(call OwnDeps,$(String),ConstString) String.o
@@ -67,10 +67,10 @@ RowsFilterResult.o: $(call OwnDeps,$(TableData),RowsFilterResult)
 TableData.o: $(call OwnDeps,$(Table),TableData) SharedPtr.o FixedSizeString.o RowsFilterResult.o
 	$(COMPILER) -c $<
 
-Table.o: $(call OwnDeps,$(app),Table) ColumnMetaData.o TableData.o
+Table.o: $(call OwnDeps,..,Table) ColumnMetaData.o TableData.o
 	$(COMPILER) -c $<
 
-Tables.o: $(call OwnDeps,$(app),Tables) Table.o
+Tables.o: $(call OwnDeps,..,Tables) Table.o
 	$(COMPILER) -c $<
 
 ListTablesModelAdaptor.o: $(call OwnDeps,$(ModelAdaptors),ListTablesModelAdaptor)

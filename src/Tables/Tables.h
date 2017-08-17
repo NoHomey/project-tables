@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Table/Table.h"
-#include "../../Container/DynamicArray/DynamicArray.htd"
+#include "../Container/DynamicArray/DynamicArray.htd"
 
 class Tables {
 public:

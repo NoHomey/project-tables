@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../../Container/DynamicArray/DynamicArray.htd"
+#include "../../../Container/DynamicArray/DynamicArray.htd"
 #include "../../TableTypes.h"
 
 class RowsFilterResult {

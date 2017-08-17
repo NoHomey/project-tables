@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../String/FixedSizeString/FixedSizeString.h"
+#include "../String/FixedSizeString/FixedSizeString.h"
 
 namespace TableTypes {
     using Dimention = unsigned int;

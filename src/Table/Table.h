@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../String/FixedSizeString/FixedSizeString.h"
+#include "../String/FixedSizeString/FixedSizeString.h"
 #include "ColumnMetaData/ColumnMetaData.h"
-#include "../../Container/DynamicArray/DynamicArray.htd"
+#include "../Container/DynamicArray/DynamicArray.htd"
 
 class Table {
 public:
