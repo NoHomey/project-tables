@@ -23,9 +23,13 @@ public:
 
     static void output(CharOutputStream& outputStream, TableTypes::Integer integer);
 
+    static void output(CharOutputStream& outputStream, TableTypes::FractionalNumber fractionalNumber);
+
 private:
     static void outputInteger(CharOutputStream& outputStream, TableTypes::Integer integer);
 
 private:
     static char integerBuffer[StringifiedIntegerLimits::DigitsCountOfMin];
+
+    static char fpconvBuffer[24];
 };

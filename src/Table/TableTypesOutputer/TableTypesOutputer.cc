@@ -1,8 +1,12 @@
 #include "TableTypesOutputer.h"
 #include "../TableTypes/Integer.h"
 #include "../TableTypes/StringifiedIntegerLimits.h"
+#include "../../String/ConstString/ConstString.h"
+#include "../../dependencies/fpconv/fpconv.h"
 
 char TableTypesOutputer::integerBuffer[StringifiedIntegerLimits::DigitsCountOfMin];
+
+char TableTypesOutputer::fpconvBuffer[24];
 
 void TableTypesOutputer::output(CharOutputStream& outputStream, const String& string) {
     const size_t length = string.length();
@@ -13,11 +17,11 @@ void TableTypesOutputer::output(CharOutputStream& outputStream, const String& st
 
 void TableTypesOutputer::output(CharOutputStream& outputStream, TableTypes::Integer integer) {
     switch(integer) {
-        case Integer::Max: return output(outputStream, StringifiedIntegerLimits::Max);
-        case Integer::Min: return output(outputStream, StringifiedIntegerLimits::Min);
         case 0:
             outputStream << '0';
             break;
+        case Integer::Max: return output(outputStream, StringifiedIntegerLimits::Max);
+        case Integer::Min: return output(outputStream, StringifiedIntegerLimits::Min);
         default: return outputInteger(outputStream, integer);
     }
 }
@@ -36,4 +40,9 @@ void TableTypesOutputer::outputInteger(CharOutputStream& outputStream, TableType
     for(unsigned int revIndex = index; revIndex > 0; --revIndex) {
         outputStream << integerBuffer[revIndex - 1];
     }
+}
+
+void TableTypesOutputer::output(CharOutputStream& outputStream, TableTypes::FractionalNumber fractionalNumber) {
+    const size_t count = fpconv_dtoa(fractionalNumber, fpconvBuffer);
+    output(outputStream, ConstString{fpconvBuffer, count});
 }

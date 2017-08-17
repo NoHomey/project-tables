@@ -24,11 +24,15 @@ FileIO = ../FileIO
 
 Writer = $(FileIO)/Writer
 
+dependencies = ../dependencies
+
+fpconv = $(dependencies)/fpconv
+
 OwnDeps = $(1)/$(2)/$(2).cc $(1)/$(2)/$(2).h
 
 app: ../app/main.cc Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o\
 ListComponent.o ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o\
-ListTableModelAdaptor.o OutputFile.o Writer.o TableTypesOutputer.o
+ListTableModelAdaptor.o OutputFile.o Writer.o fpconv.o TableTypesOutputer.o
 	$(COMPILER) $^
 
 Window.o: $(call OwnDeps,$(Renderer),Window)
@@ -85,7 +89,11 @@ OutputFile.o: $(call OwnDeps,$(Writer),OutputFile)
 Writer.o: $(call OwnDeps,$(FileIO),Writer) OutputFile.o
 	$(COMPILER) -c $<
 
-TableTypesOutputer.o: $(call OwnDeps,$(Table),TableTypesOutputer) Writer.o SharedPtr.o String.o ConstString.o ColumnMetaData.o
+fpconv.o: $(fpconv)/fpconv.c $(fpconv)/fpconv.h $(fpconv)/powers.h
+	$(COMPILER) -c $<
+
+TableTypesOutputer.o: $(call OwnDeps,$(Table),TableTypesOutputer) Writer.o SharedPtr.o String.o ConstString.o\
+ColumnMetaData.o fpconv.o
 	$(COMPILER) -c $<
 	
 clean:
