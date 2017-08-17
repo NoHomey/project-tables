@@ -13,11 +13,11 @@ public:
     TableTypesOutputer() = delete;
 
 public:
-    /*static void output(Writer& writer, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType);
+    static void output(Writer& writer, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType);
 
-    static void output(CharOutputStream& outputStream, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType);
+    static void output(CharOutputStream& outputStream, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType);
 
-    static size_t outputCount(const SharedPtr& sharedPtr);*/
+    //static size_t outputCount(const SharedPtr& sharedPtr);
 
     static void output(CharOutputStream& outputStream, const String& string);
 
@@ -25,10 +25,18 @@ public:
 
     static void output(CharOutputStream& outputStream, TableTypes::FractionalNumber fractionalNumber);
 
+    static void output(Writer& writer, const TableTypes::String& string);
+
+private:
+    template<typename Output>
+    static void outputTableData(Output& outputStream, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType);
+
 private:
     static void outputInteger(CharOutputStream& outputStream, TableTypes::Integer integer);
 
 private:
+    static ConstString NullText;
+
     static char integerBuffer[StringifiedIntegerLimits::DigitsCountOfMin];
 
     static char fpconvBuffer[24];

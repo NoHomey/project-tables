@@ -16,6 +16,8 @@ public:
 
     bool isString() const noexcept;
 
+    bool isUnknown() const noexcept;
+
     ColumnType getType() const noexcept;
 
 private:

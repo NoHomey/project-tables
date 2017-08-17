@@ -18,6 +18,10 @@ bool ColumnMetaData::isString() const noexcept {
     return type == String;
 }
 
+bool ColumnMetaData::isUnknown() const noexcept {
+    return type == Unknown;
+}
+
 ColumnMetaData::ColumnType ColumnMetaData::getType() const noexcept {
     return type;
 }
