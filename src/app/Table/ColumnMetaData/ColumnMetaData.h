@@ -2,7 +2,7 @@
 
 class ColumnMetaData {
 public:
-    enum ColumnType {Integer, String, Unknown};
+    enum ColumnType {Integer, FractionalNumber, String, Unknown};
 
 public:
     ColumnMetaData() noexcept;
@@ -11,6 +11,8 @@ public:
 
 public:
     bool isInteger() const noexcept;
+
+    bool isFractionalNumber() const noexcept;
 
     bool isString() const noexcept;
 

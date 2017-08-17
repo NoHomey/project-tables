@@ -7,6 +7,10 @@ void TableData::deleteInteger(SharedPtr& ptr) noexcept {
     ptr.release<TableTypes::Integer>();
 }
 
+void TableData::deleteFractionalNumber(SharedPtr& ptr) noexcept {
+    ptr.release<TableTypes::FractionalNumber>();
+}
+
 void TableData::deleteString(SharedPtr& ptr) noexcept {
     ptr.release<TableTypes::String>();
 }
@@ -14,6 +18,11 @@ void TableData::deleteString(SharedPtr& ptr) noexcept {
 template<>
 SharedPtr::Deleter TableData::deleterFor<TableTypes::Integer>() noexcept {
     return deleteInteger;
+}
+
+template<>
+SharedPtr::Deleter TableData::deleterFor<TableTypes::FractionalNumber>() noexcept {
+    return deleteFractionalNumber;
 }
 
 template<>
@@ -92,6 +101,10 @@ void TableData::insert(TableTypes::Integer&& value) {
     insertValue<TableTypes::Integer>(std::move(value));
 }
 
+void TableData::insert(TableTypes::FractionalNumber&& value) {
+    insertValue<TableTypes::FractionalNumber>(std::move(value));
+}
+
 void TableData::insert(TableTypes::String&& value) {
     insertValue<TableTypes::String>(std::move(value));
 }
@@ -139,6 +152,10 @@ RowsFilterResult TableData::selectRowsMatching(TableTypes::Column column, const 
     return selectRowsMatchingValueInColumn<TableTypes::Integer>(column, value);
 }
 
+RowsFilterResult TableData::selectRowsMatching(TableTypes::Column column, const TableTypes::FractionalNumber& value) const {
+    return selectRowsMatchingValueInColumn<TableTypes::FractionalNumber>(column, value);
+}
+
 RowsFilterResult TableData::selectRowsMatching(TableTypes::Column column, const TableTypes::String& value) const {
     return selectRowsMatchingValueInColumn<TableTypes::String>(column, value);
 }
@@ -181,6 +198,10 @@ void TableData::updateRowsColumn(const RowsFilterResult& filteredRows, TableType
 
 void TableData::updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::Integer&& value) {
     updateRowsColumn<TableTypes::Integer>(filteredRows, column, std::move(value));
+}
+
+void TableData::updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::FractionalNumber&& value) {
+    updateRowsColumn<TableTypes::FractionalNumber>(filteredRows, column, std::move(value));
 }
 
 void TableData::updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::String&& value){

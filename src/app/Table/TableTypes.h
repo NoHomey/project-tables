@@ -11,5 +11,9 @@ namespace TableTypes {
 
     using Integer = long;
 
+    using NaturalNumber = size_t;
+
+    using FractionalNumber = double;
+
     using String = FixedSizeString;
 }

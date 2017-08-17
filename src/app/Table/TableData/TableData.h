@@ -28,6 +28,8 @@ public:
 
     void insert(TableTypes::Integer&& value);
 
+    void insert(TableTypes::FractionalNumber&& value);
+
     void insert(TableTypes::String&& value);
 
     size_t calculateIndexFor(TableTypes::Row row, TableTypes::Column column) const noexcept;
@@ -42,11 +44,15 @@ public:
 
     RowsFilterResult selectRowsMatching(TableTypes::Column column, const TableTypes::Integer& value) const;
 
+    RowsFilterResult selectRowsMatching(TableTypes::Column column, const TableTypes::FractionalNumber& value) const;    
+
     RowsFilterResult selectRowsMatching(TableTypes::Column column, const TableTypes::String& value) const;
     
     void updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, std::nullptr_t);
     
     void updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::Integer&& value);
+
+    void updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::FractionalNumber&& value);
     
     void updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::String&& value);
 
@@ -79,6 +85,8 @@ private:
 
 private:
     static void deleteInteger(SharedPtr& ptr) noexcept;
+
+    static void deleteFractionalNumber(SharedPtr& ptr) noexcept;
 
     static void deleteString(SharedPtr& ptr) noexcept;
 

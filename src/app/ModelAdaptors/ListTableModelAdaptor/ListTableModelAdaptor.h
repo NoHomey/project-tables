@@ -31,6 +31,8 @@ private:
 
     static ConstString IntegerText;
 
+    static ConstString FractionalNumberText;
+
     static ConstString StringText;
 
     static ConstString UnknownText;
