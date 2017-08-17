@@ -1,4 +1,4 @@
-.PHONY: clean leakCheck run
+.PHONY: clean leakCheck run stringifyIntegerLimits
 
 COMPILER = g++ -std=c++14 -Wall -Wextra -Wpedantic -g
 
@@ -28,7 +28,7 @@ OwnDeps = $(1)/$(2)/$(2).cc $(1)/$(2)/$(2).h
 
 app: ../app/main.cc Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o\
 ListComponent.o ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o\
-ListTableModelAdaptor.o OutputFile.o Writer.o
+ListTableModelAdaptor.o OutputFile.o Writer.o TableTypesOutputer.o
 	$(COMPILER) $^
 
 Window.o: $(call OwnDeps,$(Renderer),Window)
@@ -85,6 +85,9 @@ OutputFile.o: $(call OwnDeps,$(Writer),OutputFile)
 Writer.o: $(call OwnDeps,$(FileIO),Writer) OutputFile.o
 	$(COMPILER) -c $<
 
+TableTypesOutputer.o: $(call OwnDeps,$(Table),TableTypesOutputer) Writer.o SharedPtr.o String.o ConstString.o ColumnMetaData.o
+	$(COMPILER) -c $<
+	
 clean:
 	rm -f *.o $(Executable)
 
@@ -93,3 +96,8 @@ leakCheck:
 
 run:
 	$(Executable)
+
+stringifyIntegerLimits:
+	$(COMPILER) stringifyIntegerLimits.cc
+	./a.out > ../Table/TableTypes/StringifiedIntegerLimits.h
+	rm ./a.out

@@ -1,6 +1,8 @@
 #pragma once
 
-#include "../String/FixedSizeString/FixedSizeString.h"
+#include "../../String/FixedSizeString/FixedSizeString.h"
+#include "Integer.h"
+#include "FractionalNumber.h"
 
 namespace TableTypes {
     using Dimention = unsigned int;
@@ -9,11 +11,11 @@ namespace TableTypes {
 
     using Row = Dimention;
 
-    using Integer = long;
+    using Integer = Integer::Type;
 
     using NaturalNumber = size_t;
 
-    using FractionalNumber = double;
+    using FractionalNumber = FractionalNumber::Type;
 
     using String = FixedSizeString;
 }

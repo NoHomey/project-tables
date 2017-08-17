@@ -3,7 +3,7 @@
 #include "../../Container/DynamicArray/DynamicArray.htd"
 #include "../../SharedPtr/SharedPtr.htd"
 #include "RowsFilterResult/RowsFilterResult.h"
-#include "../TableTypes.h"
+#include "../TableTypes/TableTypes.h"
 
 class TableData {
 public:

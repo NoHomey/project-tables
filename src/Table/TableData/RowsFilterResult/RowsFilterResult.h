@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../../Container/DynamicArray/DynamicArray.htd"
-#include "../../TableTypes.h"
+#include "../../TableTypes/TableTypes.h"
 
 class RowsFilterResult {
 public:
