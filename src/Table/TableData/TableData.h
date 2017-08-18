@@ -32,8 +32,6 @@ public:
 
     void insert(TableTypes::String&& value);
 
-    size_t calculateIndexFor(TableTypes::Row row, TableTypes::Column column) const noexcept;
-
     const SharedPtr& operator()(TableTypes::Row row, TableTypes::Column column) const noexcept;
 
     const SharedPtr& get(TableTypes::Row row, TableTypes::Column column) const noexcept;
@@ -94,6 +92,8 @@ private:
 
 private:
     TableTypes::Row calculateRowFor(size_t index) const noexcept;
+
+    size_t calculateIndexFor(TableTypes::Row row, TableTypes::Column column) const noexcept;
 
 private:
     static const SharedPtr NullValue;

@@ -97,7 +97,7 @@ ColumnMetaData.o fpconv.o
 	$(COMPILER) -c $<
 	
 clean:
-	rm -f *.o $(Executable) massif.out
+	rm -f *.o $(Executable) allocs.txt
 
 leakCheck:
 	valgrind $(Executable)

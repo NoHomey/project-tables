@@ -3,6 +3,7 @@
 #include "../String/FixedSizeString/FixedSizeString.h"
 #include "ColumnMetaData/ColumnMetaData.h"
 #include "../Container/DynamicArray/DynamicArray.htd"
+#include "TableData/TableData.h"
 
 class Table {
 public:
@@ -31,4 +32,6 @@ private:
     FixedSizeString name;
 
     DynamicArray<ColumnMetaData> columnsMetaData;
+
+    TableData tableData;
 };
