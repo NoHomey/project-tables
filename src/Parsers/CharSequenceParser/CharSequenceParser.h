@@ -5,8 +5,8 @@
 class CharSequenceParser {
 public:
     struct ParseResult {
-        ConstString parsed;
-        ConstString substracted;
+        ConstString extracted;
+        ConstString rest;
     };
 
 public:

@@ -1,6 +1,5 @@
 #include "../Renderer/Window/Window.h"
 #include "../Renderer/BasicRenderer/BasicRenderer.h"
-#include "Actions/ExtractCommand/ExtractCommand.h"
 #include "Actions/Action/Action.h"
 
 #include <unistd.h>
@@ -10,7 +9,7 @@ int main() {
     Window::registerSignal();
     BasicRenderer::setup();
 
-    ExtractCommand::exec("Functional Style Showtables")->action()->action()->action()->action();
+    Action::takeAction("Showtables");
 
     for(size_t i  = 0; i < 2; ++i) {
         if(Window::isResized()) {
