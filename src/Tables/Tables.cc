@@ -1,12 +1,6 @@
 #include "Tables.h"
 
-Tables Tables::instance;
-
-Tables& Tables::getAllTables() noexcept {
-    return instance;
-}
-
-Table* Tables::getTableByName(const String& name) const noexcept {
+Table* Tables::getTableByName(const String& name) noexcept {
     const size_t tablesCount = tables.size();
     for(size_t index = 0; index < tablesCount; ++index) {
         if(tables[index]->getName() == name) {
@@ -21,5 +15,5 @@ const DynamicArray<Table*>& Tables::getTables() const noexcept {
 }
 
 void Tables::addTable(Table* table) {
-    tables.pushOne(table);
+    tables.push(table);
 }

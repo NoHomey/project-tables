@@ -9,6 +9,9 @@ void FixedSizeString::fill(const char* content) noexcept {
     filled = stringLength;
 }
 
+FixedSizeString::FixedSizeString() noexcept
+: String{}, filled{0} { }
+
 FixedSizeString::FixedSizeString(const size_t length)
 : String{(length > 0 ? new char[length + 1] : nullptr), length}, filled{0} { }
 

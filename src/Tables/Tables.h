@@ -5,9 +5,8 @@
 
 class Tables {
 public:
-    static Tables& getAllTables() noexcept;
+    Tables() noexcept = default;
 
-public:
     Tables(const Tables& other) = delete;
 
     Tables(Tables&& other) = delete;
@@ -17,17 +16,11 @@ public:
     Tables& operator=(Tables&& other) = delete;
 
 public:
-    Table* getTableByName(const String& name) const noexcept;
+    Table* getTableByName(const String& name) noexcept;
 
     const DynamicArray<Table*>& getTables() const noexcept;
 
     void addTable(Table* table);
-
-private:
-    Tables() noexcept = default;
-
-private:
-    static Tables instance;
 
 private:
     DynamicArray<Table*> tables;

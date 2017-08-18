@@ -13,11 +13,11 @@ public:
 
     TableData(const TableData& other) = delete;
 
-    TableData(TableData&& other) = delete;
+    TableData(TableData&& other) = default;
 
     TableData& operator=(const TableData& other) = delete;
     
-    TableData& operator=(TableData&& other) = delete;
+    TableData& operator=(TableData&& other) = default;
 
 public:
     TableTypes::Row rowsCount() const noexcept;

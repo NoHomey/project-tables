@@ -24,6 +24,10 @@ FileIO = ../FileIO
 
 Writer = $(FileIO)/Writer
 
+Parsers = ../Parsers
+
+Actions = $(app)/Actions
+
 dependencies = ../dependencies
 
 fpconv = $(dependencies)/fpconv
@@ -32,7 +36,8 @@ OwnDeps = $(1)/$(2)/$(2).cc $(1)/$(2)/$(2).h
 
 app: ../app/main.cc Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o\
 ListComponent.o ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o\
-ListTableModelAdaptor.o OutputFile.o Writer.o fpconv.o TableTypesOutputer.o
+ListTableModelAdaptor.o OutputFile.o Writer.o fpconv.o TableTypesOutputer.o CharSequenceParser.o Action.o ShowTables.o\
+ExtractCommand.o
 	$(COMPILER) $^
 
 Window.o: $(call OwnDeps,$(Renderer),Window)
@@ -94,6 +99,18 @@ fpconv.o: $(fpconv)/fpconv.c $(fpconv)/fpconv.h $(fpconv)/powers.h
 
 TableTypesOutputer.o: $(call OwnDeps,$(Table),TableTypesOutputer) Writer.o SharedPtr.o String.o ConstString.o\
 ColumnMetaData.o fpconv.o
+	$(COMPILER) -c $<
+
+CharSequenceParser.o: $(call OwnDeps,$(Parsers),CharSequenceParser) ConstString.o
+	$(COMPILER) -c $<
+
+Action.o: $(call OwnDeps,$(Actions),Action) Tables.o
+	$(COMPILER) -c $<
+
+ShowTables.o: $(call OwnDeps,$(Actions),ShowTables) Action.o ListComponent.o
+	$(COMPILER) -c $<
+
+ExtractCommand.o: $(call OwnDeps,$(Actions),ExtractCommand) Action.o ConstString.o ShowTables.o CharSequenceParser.o
 	$(COMPILER) -c $<
 	
 clean:

@@ -9,15 +9,15 @@ class Table {
 public:
     Table(FixedSizeString&& name);
 
-    Table() = delete;
+    Table() = default;
 
     Table(const Table& other) = delete;
     
-    Table(Table&& other) = delete;
+    Table(Table&& other) = default;
     
     Table& operator=(const Table& other) = delete;
         
-    Table& operator=(Table&& other) = delete;
+    Table& operator=(Table&& other) = default;
 
 public:
     const FixedSizeString& getName() const noexcept;

@@ -11,12 +11,6 @@ public:
     const char* cString() const noexcept;
 
 public:
-    static bool constFalse(char, char) noexcept;
-
-    static bool lessThanOperator(char a, char b) noexcept;
-
-    bool compareStrings(const String& other, const bool onEqual, bool (*onDiff)(char a, char b)) const noexcept;
-
     bool operator==(const String& other) const noexcept;
     
     bool operator!=(const String& other) const noexcept;
@@ -57,5 +51,11 @@ protected:
     char* string;
 
 private:
+    static bool constFalse(char, char) noexcept;
+    
+    static bool lessThanOperator(char a, char b) noexcept;
+    
+    bool compareStrings(const String& other, const bool onEqual, bool (*onDiff)(char a, char b)) const noexcept;
+
     void null() noexcept;
 };

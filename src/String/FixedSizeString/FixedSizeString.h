@@ -4,6 +4,8 @@
 
 class FixedSizeString: public String {
 public:
+    FixedSizeString() noexcept;
+
     explicit FixedSizeString(const size_t length);
 
     FixedSizeString(const char* content, size_t length);

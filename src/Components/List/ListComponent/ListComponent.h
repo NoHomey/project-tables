@@ -6,7 +6,7 @@
 
 class ListComponent: public Component {
 public:
-    static ListComponent& inject(const ListModel* model) noexcept;
+    static ListComponent* inject(const ListModel* model) noexcept;
 
 public:
     void render() final;
