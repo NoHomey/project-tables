@@ -42,6 +42,17 @@ TableTypes::Column TableData::columnsCount() const noexcept {
     return columns;
 }
 
+size_t TableData::calculateOptimalExtending(TableTypes::Row rowsCount) noexcept {
+    size_t multiplier = 2;
+    if(rowsCount < 50) {
+        multiplier = 5;
+    }
+    if(rowsCount < 10) {
+        multiplier = 25;
+    }
+    return multiplier * rowsCount;
+}
+
 void TableData::addColumn() {
     const TableTypes::Row rows = rowsCount();
     if(rows > 0) {
@@ -49,7 +60,7 @@ void TableData::addColumn() {
         size_t newIndex = oldSize + rows - 1;
         if(data.unused() < rows) {
             try {
-                data.ensureCapacity(2 * rows);
+                data.ensureCapacity(calculateOptimalExtending(rows));
             } catch(std::bad_alloc& error) { }
         }
         data.fill(rows);

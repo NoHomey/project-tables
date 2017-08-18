@@ -90,6 +90,8 @@ private:
 
     static void deleteString(SharedPtr& ptr) noexcept;
 
+    static size_t calculateOptimalExtending(TableTypes::Row rowsCount) noexcept;
+
 private:
     TableTypes::Row calculateRowFor(size_t index) const noexcept;
 

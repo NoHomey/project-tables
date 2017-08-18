@@ -4,7 +4,7 @@
 #include "../../String/ConstString/ConstString.h"
 #include "../../dependencies/fpconv/fpconv.h"
 
-ConstString TableTypesOutputer::NullText{"Null"};
+ConstString TableTypesOutputer::NullText{"NULL"};
 
 char TableTypesOutputer::integerBuffer[StringifiedIntegerLimits::DigitsCountOfMin];
 
@@ -69,7 +69,7 @@ void TableTypesOutputer::output(Writer& writer, const TableTypes::String& string
 template<typename Output>
 void TableTypesOutputer::outputTableData(Output& outputStream, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType) {
     if(sharedPtr.isNullPtr()) {
-        output(outputStream, NullText);
+        return output(outputStream, NullText);
     }
     switch(columnType) {
         case ColumnMetaData::Integer: return output(outputStream, sharedPtr.getCopy<TableTypes::Integer>());

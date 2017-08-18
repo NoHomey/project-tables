@@ -1,4 +1,3 @@
-#include <iostream>
 #include "../String/ConstString/ConstString.h"
 #include "../FileIO/Writer/Writer.h"
 #include "../FileIO/Writer/OutputFile/OutputFile.h"
@@ -48,7 +47,11 @@ int main() {
     data.insert(-59.3491);
     data.insert("C:\\temp\\dir");
 
-    write(file, data);
+    for(size_t i  = 0; i < 200; ++i) {
+        write(file, data);
+        data.addColumn();
+        write(file, data);
+    }
 
     file.endFile();
     

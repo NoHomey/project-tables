@@ -28,7 +28,12 @@ CharOutputStream& Writer::operator<<(char symbol) {
 
 void Writer::write() {
     if(charCounter > 0) {
-        charCounter -= file.write(buffer, charCounter);
+        const size_t written = file.write(buffer, charCounter);
+        const size_t difference = charCounter - written;
+        for(size_t index = 0; index < difference; ++index) {
+            buffer[index] = buffer[written + index];
+        }
+        charCounter -= written;
     }
 }
 

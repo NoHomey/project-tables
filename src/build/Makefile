@@ -1,4 +1,4 @@
-.PHONY: clean leakCheck run stringifyIntegerLimits
+.PHONY: clean leakCheck allocs run stringifyIntegerLimits
 
 COMPILER = g++ -std=c++14 -Wall -Wextra -Wpedantic -g
 
@@ -97,10 +97,15 @@ ColumnMetaData.o fpconv.o
 	$(COMPILER) -c $<
 	
 clean:
-	rm -f *.o $(Executable)
+	rm -f *.o $(Executable) massif.out
 
 leakCheck:
 	valgrind $(Executable)
+
+allocs:
+	valgrind --tool=massif --time-unit=B --massif-out-file=massif.out $(Executable)
+	ms_print massif.out > allocs.txt
+	rm massif.out
 
 run:
 	$(Executable)

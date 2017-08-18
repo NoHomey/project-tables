@@ -54,5 +54,5 @@ size_t OutputFile::write(const char* data, size_t count) {
         }*/
         throw errno;
     }
-    return writeCount > 0 ? (count - writeCount) : write(data, count);
+    return writeCount > 0 ? writeCount : write(data, count);
 }
