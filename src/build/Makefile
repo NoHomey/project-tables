@@ -45,8 +45,8 @@ Templates = ../Container/DynamicArrayBase/DynamicArrayBase.htd ../Container/Dyna
 
 Objects = Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o ListComponent.o\
 ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o\
-OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o Error.o InfoComponent.o\
-InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o
+OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o Error.o Result.o InfoComponent.o\
+InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o Rename.o
 
 compileAll: $(Templates) app
 
@@ -139,11 +139,17 @@ ShowTables.o: $(call OwnDeps,$(Actions),ShowTables) Action.o ListComponent.o
 Error.o: $(call OwnDeps,$(Actions),Error) Action.o
 	$(COMPILER) -c $<
 
+Result.o: $(call OwnDeps,$(Actions),Result) Action.o
+	$(COMPILER) -c $<
+
 ParseTableName.o: $(call OwnDeps,$(Actions),ParseTableName) Action.o Error.o TableNameParser.o
 	$(COMPILER) -c $<
 
 Describe.o: $(call OwnDeps,$(Actions),Describe) Action.o Error.o TableNameParser.o ParseTableName.o\
 ListComponent.o ListTableModelAdaptor.o
+	$(COMPILER) -c $<
+
+Rename.o: $(call OwnDeps,$(Actions),Rename) Action.o Error.o Result.o TableNameParser.o ParseTableName.o
 	$(COMPILER) -c $<
 
 clean:

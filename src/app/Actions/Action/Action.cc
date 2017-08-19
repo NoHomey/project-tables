@@ -2,6 +2,7 @@
 #include "../ShowTables/ShowTables.h"
 #include "../Error/Error.h"
 #include "../Describe/Describe.h"
+#include "../Rename/Rename.h"
 #include "../../../Parsers/CharSequenceParser/CharSequenceParser.h"
 
 Tables Action::allTables;
@@ -45,6 +46,9 @@ Action* Action::selectAction(ConstString& action) {
     }
     if(action == Describe::actionString) {
         return Describe::describe();
+    }
+    if(action == Rename::actionString) {
+        return Rename::rename();
     }
     return Error::showError();
 }

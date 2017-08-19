@@ -17,7 +17,25 @@ int main() {
     sleep(2);
     Action::takeAction("Describe AAA");
     sleep(2);
-    Action::takeAction("Describe AAAA");
+    Action::takeAction("Rename AAA III");
+    sleep(2);
+    Action::takeAction("Showtables");
+    sleep(2);
+    Action::takeAction("Rename III III");
+    sleep(2);
+    Action::takeAction("Showtables");
+    sleep(2);
+    Action::takeAction("Rename III Ivo");
+    sleep(2);
+    Action::takeAction("Showtables");
+    sleep(2);
+    Action::takeAction("Rename IIII Ivo");
+    sleep(2);
+    Action::takeAction("Showtables");
+    sleep(2);
+    Action::takeAction("Rename III ");
+    sleep(2);
+    Action::takeAction("Showtables");
 
     /*for(size_t i  = 0; i < 2; ++i) {
         if(Window::isResized()) {
