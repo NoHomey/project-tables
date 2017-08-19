@@ -2,6 +2,8 @@
 
 #include "DynamicArray.htd"
 #include <utility>
+#include <type_traits>
+#include <new>
 
 template<typename Element>
 DynamicArray<Element>::DynamicArray() noexcept
@@ -11,36 +13,25 @@ template<typename Element>
 DynamicArray<Element>::DynamicArray(size_t size)
 : DynamicArray{} {
     if(size > 0) {
-        array = new Element[size];
+        array = reinterpret_cast<Element*>(new char[size * sizeof(Element)]);
+        for(size_t index = 0; index < size; ++index) {
+            new (array + index) Element();
+        }
         arrayCapacity = size;
     }
 }
 
 template<typename Element>
+void DynamicArray<Element>::deAllocate() noexcept {
+    for(size_t index = 0; index < arrayCapacity; ++index) {
+        array[index].~Element();
+    }
+    delete[] reinterpret_cast<char*>(array);
+}
+
+template<typename Element>
 DynamicArray<Element>::~DynamicArray() noexcept {
-    delete[] array;
-}
-
-template<typename Element>
-void DynamicArray<Element>::copyOtherArrayElements(const DynamicArray& other) noexcept {
-    for(; arraySize < other.arraySize; ++arraySize) {
-        array[arraySize] = other.array[arraySize];
-    }
-}
-
-template<typename Element>
-DynamicArray<Element>::DynamicArray(const DynamicArray& other)
-: DynamicArray{other.arraySize} {
-    copyOtherArrayElements(other);
-}
-
-template<typename Element>
-DynamicArray<Element>& DynamicArray<Element>::operator=(const DynamicArray& other) {
-    if(this != &other) {
-        DynamicArray copy = other;
-        operator=(std::move(copy));
-    }
-    return *this;
+    deAllocate();
 }
 
 template<typename Element>
@@ -52,7 +43,7 @@ void DynamicArray<Element>::destroy() noexcept {
 
 template<typename Element>
 void DynamicArray<Element>::move(DynamicArray& other) noexcept {
-    delete[] array;
+    deAllocate();
     array = other.array;
     arraySize = other.arraySize;
     arrayCapacity = other.arrayCapacity;
@@ -137,12 +128,6 @@ void DynamicArray<Element>::ensureCapacity() {
 }
 
 template<typename Element>
-void DynamicArray<Element>::addElement(const Element& element) noexcept {
-    array[arraySize] = element;
-    ++arraySize;
-}
-
-template<typename Element>
 void DynamicArray<Element>::fill(size_t count) {
     if(count > 0) {
         ensureCapacity(count);
@@ -153,15 +138,15 @@ void DynamicArray<Element>::fill(size_t count) {
 template<typename Element>
 void DynamicArray<Element>::push(const Element& element) {
     ensureCapacity();
-    addElement(element);
+    array[arraySize] = element;
+    ++arraySize;
 }
 
 template<typename Element>
-void DynamicArray<Element>::pushOne(const Element& element) {
-    if(isFull()) {
-        extend(1);
-    }
-    addElement(element);
+void DynamicArray<Element>::movePush(Element&& element) {
+    ensureCapacity();
+    array[arraySize] = std::move(element);
+    ++arraySize;
 }
 
 template<typename Element>
@@ -186,20 +171,48 @@ void DynamicArray<Element>::empty() noexcept {
 }
 
 template<typename Element>
-void DynamicArray<Element>::setElement(size_t index, const Element& element) {
+void DynamicArray<Element>::setElement(size_t index, Element&& element) {
     if(hasElementAt(index)) {
-        array[index] = element;
+        array[index] = std::forward(element);
     } else if(index == arraySize) {
-        push(element);
+        push(std::forward(element));
+    }
+}
+
+template<typename Element>
+void MoveHelper<Element, true>::moveElement(Element* dest, Element* source, size_t index) {
+    new (dest + index) Element(std::move(source[index]));
+}
+
+template<typename Element>
+void MoveHelper<Element, false>::moveElement(Element* dest, Element* source, size_t index) {
+    new (dest + index) Element(source[index]);
+}
+
+template<typename Element>
+void DynamicArray<Element>::changeCapacity(size_t capacity) {
+    if(capacity >= arraySize) {
+        Element* temp = reinterpret_cast<Element*>(new char[capacity * sizeof(Element)]);
+        for(size_t index = 0; index < capacity; ++index) {
+            if(index < arraySize) {
+                MoveHelper<Element, std::is_nothrow_move_constructible<Element>::value>::moveElement(temp, array, index);
+            } else {
+                new (temp + index) Element();
+            }
+        }
+        for(size_t index = arraySize; index < arrayCapacity; ++index) {
+            array[index].~Element();
+        }
+        delete[] reinterpret_cast<char*>(array);
+        array = temp;
+        arrayCapacity = capacity; 
     }
 }
 
 template<typename Element>
 void DynamicArray<Element>::extend(size_t size) {
     if(size > 0) {
-        DynamicArray temp{arrayCapacity + size};
-        temp.copyOtherArrayElements(*this);
-        operator=(std::move(temp));
+        changeCapacity(arrayCapacity + size);
     }
 }
 
@@ -214,15 +227,14 @@ void DynamicArray<Element>::ensureCapacity(size_t capacity) {
 template<typename Element>
 void DynamicArray<Element>::shrinkToFit() {
     if(!isFull()) {
-        DynamicArray copy = *this;
-        operator=(std::move(copy));
+        changeCapacity(arraySize);
     }
 }
 
 template<typename Element>
 void DynamicArray<Element>::clear() noexcept {
     if(arrayCapacity > 0) {
-        delete[] array;
+        deAllocate();
         destroy();
     }
 }

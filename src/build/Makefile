@@ -36,7 +36,8 @@ OwnDeps = $(1)/$(2)/$(2).cc $(1)/$(2)/$(2).h
 
 app: ../app/main.cc Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o\
 ListComponent.o ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o\
-ListTableModelAdaptor.o OutputFile.o Writer.o fpconv.o TableTypesOutputer.o CharSequenceParser.o Action.o ShowTables.o
+ListTableModelAdaptor.o OutputFile.o Writer.o fpconv.o TableTypesOutputer.o CharSequenceParser.o Action.o ShowTables.o\
+Argument.o
 	$(COMPILER) $^
 
 Window.o: $(call OwnDeps,$(Renderer),Window)
@@ -101,6 +102,9 @@ ColumnMetaData.o fpconv.o
 	$(COMPILER) -c $<
 
 CharSequenceParser.o: $(call OwnDeps,$(Parsers),CharSequenceParser) ConstString.o
+	$(COMPILER) -c $<
+
+Argument.o: $(call OwnDeps,$(Actions),Argument) ConstString.o FixedSizeString.o
 	$(COMPILER) -c $<
 
 Action.o: $(call OwnDeps,$(Actions),Action) Tables.o ConstString.o CharSequenceParser.o

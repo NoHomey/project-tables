@@ -11,11 +11,11 @@ public:
 
     ~DynamicArray() noexcept;
 
-    DynamicArray(const DynamicArray& other);
+    DynamicArray(const DynamicArray& other) = delete;
 
     DynamicArray(DynamicArray&& other) noexcept;
 
-    DynamicArray& operator=(const DynamicArray& other);
+    DynamicArray& operator=(const DynamicArray& other) = delete;
 
     DynamicArray& operator=(DynamicArray&& other) noexcept;
 
@@ -44,7 +44,7 @@ public:
 
     void push(const Element& element);
 
-    void pushOne(const Element& element);
+    void movePush(Element&& element);
 
     void pop() noexcept;
 
@@ -52,7 +52,9 @@ public:
 
     void empty() noexcept;
 
-    void setElement(size_t index, const Element& element);
+    void setElement(size_t index, Element&& element);
+
+    void changeCapacity(size_t capacity);
 
     void extend(size_t size);
 
@@ -80,15 +82,37 @@ protected:
     size_t arrayCapacity;
 
 private:
-    void destroy() noexcept;
+    void deAllocate() noexcept;
 
-    void copyOtherArrayElements(const DynamicArray& other) noexcept;
+    void destroy() noexcept;
 
     void move(DynamicArray& other) noexcept;
 
     void ensureCapacity();
+};
 
-    void addElement(const Element& element) noexcept;
+template<typename Element, bool b>
+class MoveHelper {
+private:
+    friend class DynamicArray<Element>;
+
+    static void moveElement(Element* dest, Element* source, size_t index);
+};
+
+template<typename Element>
+class MoveHelper<Element, true> {
+private:
+    friend class DynamicArray<Element>;
+    
+    static void moveElement(Element* dest, Element* source, size_t index);
+};
+
+template<typename Element>
+class MoveHelper<Element, false> {
+private:
+    friend class DynamicArray<Element>;
+
+    static void moveElement(Element* dest, Element* source, size_t index);
 };
 
 #include "DynamicArray.tci"

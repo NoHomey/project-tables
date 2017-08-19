@@ -13,8 +13,6 @@ namespace TableTypes {
 
     using Integer = Integer::Type;
 
-    using NaturalNumber = size_t;
-
     using FractionalNumber = FractionalNumber::Type;
 
     using String = FixedSizeString;
