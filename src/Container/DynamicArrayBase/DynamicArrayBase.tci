@@ -2,8 +2,6 @@
 
 #include "DynamicArrayBase.htd"
 #include <utility>
-#include <type_traits>
-#include <new>
 
 template<typename Derived, typename Element>
 DynamicArrayBase<Derived, Element>::DynamicArrayBase() noexcept

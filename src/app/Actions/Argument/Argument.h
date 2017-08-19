@@ -4,9 +4,10 @@
 #include "../../../String/ConstString/ConstString.h"
 
 class Argument {
-private:
+public:
     enum ArgumentType {Column, Integer, FractionalNumber, String, TemporaryString};
 
+private:
     union {
         TableTypes::Column column;
 
@@ -32,17 +33,46 @@ public:
 
     Argument(TableTypes::String&& value) noexcept;
 
-    Argument(ImmutableString value) noexcept;
+    Argument(ConstString& value) noexcept;
 
+    Argument(const Argument& other) = delete;
+
+    Argument(Argument&& other) noexcept;
+
+    Argument& operator=(const Argument& other) = delete;
+
+    Argument& operator=(Argument&& other) noexcept;
+   
+public:
+    ArgumentType getType() const noexcept;
+
+    bool isColumn() const noexcept;
+    
+    bool isInteger() const noexcept;
+    
+    bool isFractionalNumber() const noexcept;
+    
+    bool isString() const noexcept;
+    
+    bool isTemporaryString() const noexcept;
+
+public:
     TableTypes::Column asColumn() const noexcept;
 
     TableTypes::Integer asInteger() const noexcept;
 
     TableTypes::FractionalNumber asFractionalNumber() const noexcept;
 
-    FixedSizeString asString() noexcept;
+    const TableTypes::String& asString() const noexcept;
 
-    ImmutableString asTemporaryString() const noexcept;
+    TableTypes::String moveString() noexcept;
+
+    ConstString& asTemporaryString() const noexcept;
+
+private:
+    void destruct() noexcept;
+
+    void create(Argument&& other) noexcept;
 
 private:
     ArgumentType type;

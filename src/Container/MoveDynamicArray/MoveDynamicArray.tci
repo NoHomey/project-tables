@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MoveDynamicArray.htd"
+#include <new>
 
 template<typename Element>
 MoveDynamicArray<Element>::MoveDynamicArray(size_t size)

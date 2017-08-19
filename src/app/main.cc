@@ -54,7 +54,7 @@ void write(Writer& file, const TableData& data) {
     }
 }
 
-int main() {
+/*int main() {
     Writer file{"test.txt"};
 
     MoveDynamicArray<TableData> array{200};
@@ -84,5 +84,29 @@ int main() {
     file.endFile();
 
     
+    return 0;
+}*/
+
+#include "Actions/Argument/Argument.h"
+#include <iostream>
+
+int main() {
+
+    MoveDynamicArray<Argument> arguments;
+
+    arguments.push({3.14});
+
+    arguments.push(TableTypes::String{"Text"});
+
+    arguments.push(ConstString{"Text"});
+
+    std::cout << arguments[1].asString()[0] << std::endl;
+
+    TableTypes::String string = arguments[1].moveString();
+
+    std::cout << string[0] << std::endl;
+
+    std::cout << (arguments[1].asString()[0] == '\0') << std::endl;
+
     return 0;
 }

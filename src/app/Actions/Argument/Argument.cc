@@ -7,10 +7,11 @@ Argument::Argument() noexcept
     new (&column) TableTypes::Column{0};
 }
 
-Argument::~Argument() noexcept {
+void Argument::destruct() noexcept {
     typedef TableTypes::Column Column;
     typedef TableTypes::Integer Integer;
-    typedef TableTypes::FractionalNumber FractionalNumber;;
+    typedef TableTypes::FractionalNumber FractionalNumber;
+    typedef TableTypes::String TableString;
 
     switch(type) {
         case ArgumentType::Column:
@@ -23,12 +24,16 @@ Argument::~Argument() noexcept {
             fractionalNumber.~FractionalNumber();
             break;
         case ArgumentType::String:
-            string.~String();
+            string.~TableString();
             break;
         case ArgumentType::TemporaryString:
             temporaryString.~ImmutableString();
             break;
     }
+}
+
+Argument::~Argument() noexcept {
+    destruct();
 }
 
 Argument::Argument(TableTypes::Column value) noexcept
@@ -51,9 +56,67 @@ Argument::Argument(TableTypes::String&& value) noexcept
     new (&string) TableTypes::String{std::move(value)};
 }
 
-Argument::Argument(ImmutableString value) noexcept
+Argument::Argument(ConstString& value) noexcept
 : type{TemporaryString} {
     new (&temporaryString) ImmutableString{value};
+}
+
+void Argument::create(Argument&& other) noexcept {
+    switch(other.type) {
+        case ArgumentType::Column:
+            new (&column) TableTypes::Column{other.column};
+            break;
+        case ArgumentType::Integer:
+            new (&integer) TableTypes::Integer{other.integer};
+            break;
+        case ArgumentType::FractionalNumber:
+            new (&fractionalNumber) TableTypes::FractionalNumber{other.fractionalNumber};
+            break;
+        case ArgumentType::String:
+            new (&string) TableTypes::String{std::move(other.string)};
+            break;
+        case ArgumentType::TemporaryString:
+            new (&temporaryString) ImmutableString{other.temporaryString};
+            break;
+    }
+}
+
+Argument::Argument(Argument&& other) noexcept
+: type{other.type} {
+    create(std::move(other));
+}
+
+Argument& Argument::operator=(Argument&& other) noexcept {
+    if(this != &other) {
+        destruct();
+        create(std::move(other));
+        type = other.type;
+    }
+    return *this;
+}
+
+Argument::ArgumentType Argument::getType() const noexcept {
+    return type;
+}
+
+bool Argument::isColumn() const noexcept {
+    return type == Column;
+}
+    
+bool Argument::isInteger() const noexcept {
+    return type == Integer;
+}
+    
+bool Argument::isFractionalNumber() const noexcept {
+    return type == FractionalNumber;
+}
+    
+bool Argument::isString() const noexcept {
+    return type == String;
+}
+    
+bool Argument::isTemporaryString() const noexcept {
+    return type == TemporaryString;
 }
 
 TableTypes::Column Argument::asColumn() const noexcept {
@@ -68,12 +131,16 @@ TableTypes::FractionalNumber Argument::asFractionalNumber() const noexcept {
     return fractionalNumber;
 }
 
-FixedSizeString Argument::asString() noexcept {
-    FixedSizeString tmp = std::move(string);
-    string = std::move(FixedSizeString{});
+const TableTypes::String& Argument::asString() const noexcept {
+    return string;
+}
+
+TableTypes::String Argument::moveString() noexcept {
+    TableTypes::String tmp = std::move(string);
+    string = std::move(TableTypes::String{});
     return tmp;
 }
 
-ImmutableString Argument::asTemporaryString() const noexcept {
+ConstString& Argument::asTemporaryString() const noexcept {
     return temporaryString;
 }
