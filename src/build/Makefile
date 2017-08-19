@@ -10,6 +10,8 @@ String = ../String
 
 List = ../Components/List
 
+Info = ../Components/Info
+
 app = ../app
 
 ModelAdaptors = $(app)/ModelAdaptors
@@ -26,7 +28,11 @@ Writer = $(FileIO)/Writer
 
 Parsers = ../Parsers
 
+Exceptions = $(Parsers)/Exceptions
+
 Actions = $(app)/Actions
+
+Action = $(Actions)/Action
 
 dependencies = ../dependencies
 
@@ -39,7 +45,8 @@ Templates = ../Container/DynamicArrayBase/DynamicArrayBase.htd ../Container/Dyna
 
 Objects = Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o ListComponent.o\
 ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o\
-OutputFile.o Writer.o fpconv.o TableTypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o
+OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o Error.o InfoComponent.o\
+InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o
 
 compileAll: $(Templates) app
 
@@ -67,7 +74,11 @@ ConstString.o: $(call OwnDeps,$(String),ConstString) String.o
 FixedSizeString.o: $(call OwnDeps,$(String),FixedSizeString) String.o
 	$(COMPILER) -c $<
 
-ListComponent.o: $(call OwnDeps,$(List),ListComponent)
+ListComponent.o: $(call OwnDeps,$(List),ListComponent) Window.o CenteredRenderer.o TypesOutputer.o
+	$(COMPILER) -c $<
+
+InfoComponent.o: $(call OwnDeps,$(Info),InfoComponent) Window.o CenteredRenderer.o TypesOutputer.o\
+String.o FixedSizeString.o
 	$(COMPILER) -c $<
 
 ColumnMetaData.o: $(call OwnDeps,$(Table),ColumnMetaData)
@@ -103,14 +114,20 @@ Writer.o: $(call OwnDeps,$(FileIO),Writer) OutputFile.o
 fpconv.o: $(fpconv)/fpconv.c $(fpconv)/fpconv.h $(fpconv)/powers.h
 	$(COMPILER) -c $<
 
-TableTypesOutputer.o: $(call OwnDeps,$(Table),TableTypesOutputer) Writer.o SharedPtr.o String.o ConstString.o\
+TypesOutputer.o: $(call OwnDeps,..,TypesOutputer) Writer.o SharedPtr.o String.o ConstString.o\
 ColumnMetaData.o fpconv.o
 	$(COMPILER) -c $<
 
 CharSequenceParser.o: $(call OwnDeps,$(Parsers),CharSequenceParser) ConstString.o
 	$(COMPILER) -c $<
 
-Argument.o: $(call OwnDeps,$(Actions),Argument) ConstString.o FixedSizeString.o
+InvalidSymbolAtPosition.o: $(call OwnDeps,$(Exceptions),InvalidSymbolAtPosition)
+	$(COMPILER) -c $<
+
+TableNameParser.o: $(call OwnDeps,$(Parsers),TableNameParser) CharSequenceParser.o InvalidSymbolAtPosition.o
+	$(COMPILER) -c $<
+
+Argument.o: $(call OwnDeps,$(Action),Argument) ConstString.o FixedSizeString.o
 	$(COMPILER) -c $<
 
 Action.o: $(call OwnDeps,$(Actions),Action) Tables.o ConstString.o CharSequenceParser.o
@@ -118,7 +135,17 @@ Action.o: $(call OwnDeps,$(Actions),Action) Tables.o ConstString.o CharSequenceP
 
 ShowTables.o: $(call OwnDeps,$(Actions),ShowTables) Action.o ListComponent.o
 	$(COMPILER) -c $<
-	
+
+Error.o: $(call OwnDeps,$(Actions),Error) Action.o
+	$(COMPILER) -c $<
+
+ParseTableName.o: $(call OwnDeps,$(Actions),ParseTableName) Action.o Error.o TableNameParser.o
+	$(COMPILER) -c $<
+
+Describe.o: $(call OwnDeps,$(Actions),Describe) Action.o Error.o TableNameParser.o ParseTableName.o\
+ListComponent.o ListTableModelAdaptor.o
+	$(COMPILER) -c $<
+
 clean:
 	rm -f *.o *.txt $(Executable)
 

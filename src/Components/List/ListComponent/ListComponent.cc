@@ -1,5 +1,6 @@
 #include "ListComponent.h"
 #include "../../../Renderer/CenteredRenderer/CenteredRenderer.h"
+#include "../../../TypesOutputer/TypesOutputer.h"
 
 ListComponent ListComponent::component;
 
@@ -41,11 +42,7 @@ void ListComponent::addPadding(Window::size padding) {
 }
 
 void ListComponent::addText(const String& text) {
-    CenteredRenderer& renderer = CenteredRenderer::getRenderer();
-    const size_t length = text.length();
-    for(Window::size index = 0; index < length; ++index) {
-        renderer << text[index];
-    }
+    TypesOutputer::output(CenteredRenderer::getRenderer(), text);
 }
 
 void ListComponent::addLine(const String& text) {
@@ -94,7 +91,5 @@ void ListComponent::render() {
         }
         --padding;
     }
-    BasicRenderer& renderer = BasicRenderer::getRenderer();
-    renderer.clear();
-    renderer.render();
+    BasicRenderer::getRenderer().clearWindow();
 }

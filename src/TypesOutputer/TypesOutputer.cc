@@ -1,23 +1,23 @@
-#include "TableTypesOutputer.h"
-#include "../TableTypes/Integer.h"
-#include "../TableTypes/StringifiedIntegerLimits.h"
-#include "../../String/ConstString/ConstString.h"
-#include "../../dependencies/fpconv/fpconv.h"
+#include "TypesOutputer.h"
+#include "../Table/TableTypes/Integer.h"
+#include "../Table/TableTypes/StringifiedIntegerLimits.h"
+#include "../String/ConstString/ConstString.h"
+#include "../dependencies/fpconv/fpconv.h"
 
-ConstString TableTypesOutputer::NullText{"NULL"};
+ConstString TypesOutputer::NullText{"NULL"};
 
-char TableTypesOutputer::integerBuffer[StringifiedIntegerLimits::DigitsCountOfMin];
+char TypesOutputer::integerBuffer[StringifiedIntegerLimits::DigitsCountOfMin];
 
-char TableTypesOutputer::fpconvBuffer[24];
+char TypesOutputer::fpconvBuffer[24];
 
-void TableTypesOutputer::output(CharOutputStream& outputStream, const String& string) {
+void TypesOutputer::output(CharOutputStream& outputStream, const String& string) {
     const size_t length = string.length();
     for(size_t index = 0; index < length; ++index) {
         outputStream << string[index];
     }
 }
 
-void TableTypesOutputer::output(CharOutputStream& outputStream, TableTypes::Integer integer) {
+void TypesOutputer::output(CharOutputStream& outputStream, TableTypes::Integer integer) {
     switch(integer) {
         case 0:
             outputStream << '0';
@@ -28,7 +28,7 @@ void TableTypesOutputer::output(CharOutputStream& outputStream, TableTypes::Inte
     }
 }
 
-void TableTypesOutputer::outputInteger(CharOutputStream& outputStream, TableTypes::Integer integer) {
+void TypesOutputer::outputInteger(CharOutputStream& outputStream, TableTypes::Integer integer) {
     TableTypes::Integer copy = integer > 0 ? integer : -integer;
     unsigned int index = 0;
     while(copy != 0) {
@@ -44,12 +44,12 @@ void TableTypesOutputer::outputInteger(CharOutputStream& outputStream, TableType
     }
 }
 
-void TableTypesOutputer::output(CharOutputStream& outputStream, TableTypes::FractionalNumber fractionalNumber) {
+void TypesOutputer::output(CharOutputStream& outputStream, TableTypes::FractionalNumber fractionalNumber) {
     const size_t count = fpconv_dtoa(fractionalNumber, fpconvBuffer);
     output(outputStream, ConstString{fpconvBuffer, count});
 }
 
-void TableTypesOutputer::output(Writer& writer, const TableTypes::String& string) {
+void TypesOutputer::output(Writer& writer, const TableTypes::String& string) {
     const size_t length = string.length();
     char symbol;
     writer << '"';
@@ -67,7 +67,7 @@ void TableTypesOutputer::output(Writer& writer, const TableTypes::String& string
 }
 
 template<typename Output>
-void TableTypesOutputer::outputTableData(Output& outputStream, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType) {
+void TypesOutputer::outputTableData(Output& outputStream, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType) {
     if(sharedPtr.isNullPtr()) {
         return output(outputStream, NullText);
     }
@@ -79,10 +79,10 @@ void TableTypesOutputer::outputTableData(Output& outputStream, const SharedPtr& 
     }
 }
 
-void TableTypesOutputer::output(Writer& writer, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType) {
+void TypesOutputer::output(Writer& writer, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType) {
     outputTableData(writer, sharedPtr, columnType);
 }
 
-void TableTypesOutputer::output(CharOutputStream& outputStream, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType) {
+void TypesOutputer::output(CharOutputStream& outputStream, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType) {
     outputTableData(outputStream, sharedPtr, columnType);
 }

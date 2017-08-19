@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../../Table/TableTypes/TableTypes.h"
-#include "../../../String/ConstString/ConstString.h"
+#include "../../../../Table/TableTypes/TableTypes.h"
+#include "../../../../String/ConstString/ConstString.h"
 
 class Argument {
 public:
@@ -68,6 +68,9 @@ public:
     TableTypes::String moveString() noexcept;
 
     ConstString& asTemporaryString() const noexcept;
+
+public:
+    void null() noexcept;
 
 private:
     void destruct() noexcept;

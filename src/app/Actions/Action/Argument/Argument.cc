@@ -137,10 +137,18 @@ const TableTypes::String& Argument::asString() const noexcept {
 
 TableTypes::String Argument::moveString() noexcept {
     TableTypes::String tmp = std::move(string);
-    string = std::move(TableTypes::String{});
+    string = {};
     return tmp;
 }
 
 ConstString& Argument::asTemporaryString() const noexcept {
     return temporaryString;
+}
+
+void Argument::null() noexcept {
+    if(isTemporaryString()) {
+        temporaryString = {};
+    } else if(isString() && (string.length() != 0)) {
+        string = {};
+    }
 }

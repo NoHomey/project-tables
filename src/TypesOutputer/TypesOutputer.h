@@ -1,16 +1,16 @@
 #pragma once
 
-#include "../../CharOutputStream/CharOutputStream.h"
-#include "../../FileIO/Writer/Writer.h"
-#include "../../SharedPtr/SharedPtr.htd"
-#include "../../String/String.h"
-#include "../TableTypes/TableTypes.h"
-#include "../ColumnMetaData/ColumnMetaData.h"
-#include "../TableTypes/StringifiedIntegerLimits.h"
+#include "../CharOutputStream/CharOutputStream.h"
+#include "../FileIO/Writer/Writer.h"
+#include "../SharedPtr/SharedPtr.htd"
+#include "../String/String.h"
+#include "../Table/TableTypes/TableTypes.h"
+#include "../Table/ColumnMetaData/ColumnMetaData.h"
+#include "../Table/TableTypes/StringifiedIntegerLimits.h"
 
-class TableTypesOutputer {
+class TypesOutputer {
 public:
-    TableTypesOutputer() = delete;
+    TypesOutputer() = delete;
 
 public:
     static void output(Writer& writer, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType);

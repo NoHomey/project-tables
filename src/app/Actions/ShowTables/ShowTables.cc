@@ -4,6 +4,8 @@
 
 ShowTables ShowTables::instance;
 
+ConstString ShowTables::actionString{"Showtables"};
+
 Action* ShowTables::showTables() noexcept {
     return &instance; 
 }

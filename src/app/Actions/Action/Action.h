@@ -3,12 +3,15 @@
 #include "../../../Tables/Tables.h"
 #include "../../../Components/Component.h"
 #include "../../../String/ConstString/ConstString.h"
+#include "Argument/Argument.h"
 
 class Action {
 public:
     static void reRender();
 
     static void takeAction(ConstString& command);
+
+    static void __mock();
 
 public:
     virtual Action* action() = 0;
@@ -26,9 +29,13 @@ protected:
 
     static ImmutableString command;
 
+    static MoveDynamicArray<Argument> arguments;
+
 private:
     static Action* selectAction(ConstString& action);
 
+    static void nullArguments() noexcept;
+
 private:
-    static ConstString ShowTablesAction;
+    static const size_t ArgumentsIntialCapacity = 6; 
 };

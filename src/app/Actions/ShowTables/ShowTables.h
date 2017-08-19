@@ -11,6 +11,9 @@ public:
 private:
     ShowTables() noexcept = default;
 
+public:
+    static ConstString actionString;
+
 private:
     static ShowTables instance;
 };

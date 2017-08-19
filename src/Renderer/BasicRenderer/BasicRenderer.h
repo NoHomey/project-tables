@@ -27,6 +27,8 @@ public:
 
     void render() const;
 
+    void clearWindow();
+
 private:
     static const char* const CLEAR;
 

@@ -35,3 +35,8 @@ void BasicRenderer::clear() {
 void BasicRenderer::render() const {
     write(STDOUT_FILENO, buffer.data(), buffer.size());
 }
+
+void BasicRenderer::clearWindow() {
+    clear();
+    render();
+}
