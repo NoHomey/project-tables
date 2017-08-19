@@ -1,0 +1,184 @@
+#pragma once
+
+#include "DynamicArrayBase.htd"
+#include <utility>
+#include <type_traits>
+#include <new>
+
+template<typename Derived, typename Element>
+DynamicArrayBase<Derived, Element>::DynamicArrayBase() noexcept
+: array{nullptr}, arraySize{0}, arrayCapacity{0} {}
+
+template<typename Derived, typename Element>
+DynamicArrayBase<Derived, Element>::DynamicArrayBase(size_t size)
+: DynamicArrayBase{} {
+    if(size > 0) {
+        array = Derived::initialAllocation(size);
+        arrayCapacity = size;
+    }
+}
+
+template<typename Derived, typename Element>
+DynamicArrayBase<Derived, Element>::~DynamicArrayBase() noexcept {
+    static_cast<Derived*>(this)->deAllocate();
+}
+
+template<typename Derived, typename Element>
+void DynamicArrayBase<Derived, Element>::destroy() noexcept {
+    array = nullptr;
+    arraySize = 0;
+    arrayCapacity = 0;
+}
+
+template<typename Derived, typename Element>
+void DynamicArrayBase<Derived, Element>::move(DynamicArrayBase& other) noexcept {
+    static_cast<Derived*>(this)->deAllocate();
+    array = other.array;
+    arraySize = other.arraySize;
+    arrayCapacity = other.arrayCapacity;
+    other.destroy();
+}
+
+template<typename Derived, typename Element>
+DynamicArrayBase<Derived, Element>::DynamicArrayBase(DynamicArrayBase&& other) noexcept
+: DynamicArrayBase{} {
+    if(!other.isEmpty()) {
+        move(other);       
+    }
+}
+
+template<typename Derived, typename Element>
+DynamicArrayBase<Derived, Element>& DynamicArrayBase<Derived, Element>::operator=(DynamicArrayBase&& other) noexcept {
+    if(this != &other) {
+        if(other.arrayCapacity == 0) {
+            clear();
+        } else {
+            move(other);
+        }
+    }
+    return *this;
+}
+
+template<typename Derived, typename Element>
+size_t DynamicArrayBase<Derived, Element>::size() const noexcept {
+    return arraySize;
+}
+
+template<typename Derived, typename Element>
+size_t DynamicArrayBase<Derived, Element>::capacity() const noexcept {
+    return arrayCapacity;
+}
+
+template<typename Derived, typename Element>
+size_t DynamicArrayBase<Derived, Element>::unused() const noexcept {
+    return arrayCapacity - arraySize;
+}
+
+template<typename Derived, typename Element>
+bool DynamicArrayBase<Derived, Element>::isEmpty() const noexcept {
+    return arraySize == 0;
+}
+
+template<typename Derived, typename Element>
+bool DynamicArrayBase<Derived, Element>::isFull() const noexcept {
+    return arraySize == arrayCapacity;
+}
+
+template<typename Derived, typename Element>
+bool DynamicArrayBase<Derived, Element>::hasElementAt(size_t index) const noexcept {
+    return index < arraySize;
+}
+
+template<typename Derived, typename Element>
+Element& DynamicArrayBase<Derived, Element>::operator[](size_t index) noexcept {
+    return array[index];
+}
+
+template<typename Derived, typename Element>
+const Element& DynamicArrayBase<Derived, Element>::operator[](size_t index) const noexcept {
+    return array[index];
+}
+
+template<typename Derived, typename Element>
+const Element& DynamicArrayBase<Derived, Element>::getElement(size_t index) const noexcept {
+    return array[index];
+}
+
+template<typename Derived, typename Element>
+const Element* DynamicArrayBase<Derived, Element>::data() const noexcept {
+    return array;
+}
+
+template<typename Derived, typename Element>
+void DynamicArrayBase<Derived, Element>::ensureCapacity() {
+    if(isFull()) {
+        extend(arrayCapacity + 2);
+    }
+}
+
+template<typename Derived, typename Element>
+void DynamicArrayBase<Derived, Element>::fill(size_t count) {
+    if(count > 0) {
+        ensureCapacity(count);
+        arraySize += count;
+    }
+}
+
+template<typename Derived, typename Element>
+void DynamicArrayBase<Derived, Element>::pop() noexcept {
+    if(!isEmpty()) {
+        --arraySize;
+    }
+}
+
+template<typename Derived, typename Element>
+void DynamicArrayBase<Derived, Element>::pop(size_t count) noexcept {
+    if(count >= arraySize) {
+        arraySize = 0;
+    } else {
+        arraySize -= count;
+    }
+}
+
+template<typename Derived, typename Element>
+void DynamicArrayBase<Derived, Element>::empty() noexcept {
+    arraySize = 0;
+}
+
+template<typename Derived, typename Element>
+void DynamicArrayBase<Derived, Element>::changeCapacity(size_t capacity) {
+    if(capacity >= arraySize) {
+        static_cast<Derived*>(this)->reAllocate(capacity);
+        arrayCapacity = capacity; 
+    }
+}
+
+template<typename Derived, typename Element>
+void DynamicArrayBase<Derived, Element>::extend(size_t size) {
+    if(size > 0) {
+        changeCapacity(arrayCapacity + size);
+    }
+}
+
+template<typename Derived, typename Element>
+void DynamicArrayBase<Derived, Element>::ensureCapacity(size_t capacity) {
+    const size_t unusedCount = unused();
+    if(unusedCount < capacity) {
+        extend(capacity - unusedCount);
+    }
+}
+
+template<typename Derived, typename Element>
+void DynamicArrayBase<Derived, Element>::shrinkToFit() {
+    if(!isFull()) {
+        changeCapacity(arraySize);
+    }
+}
+
+template<typename Derived, typename Element>
+void DynamicArrayBase<Derived, Element>::clear() noexcept {
+    if(arrayCapacity > 0) {
+        static_cast<Derived*>(this)->deAllocate();
+        destroy();
+    }
+}

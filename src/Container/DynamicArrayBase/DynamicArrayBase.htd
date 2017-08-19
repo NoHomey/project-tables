@@ -1,0 +1,77 @@
+#pragma once
+
+#include <cstddef>
+
+template<typename Derived, typename Element>
+class DynamicArrayBase {
+public:
+    DynamicArrayBase() noexcept;
+    
+    explicit DynamicArrayBase(size_t size);
+
+    ~DynamicArrayBase() noexcept;
+
+    DynamicArrayBase(const DynamicArrayBase& other) = delete;
+
+    DynamicArrayBase(DynamicArrayBase&& other) noexcept;
+
+    DynamicArrayBase& operator=(const DynamicArrayBase& other) = delete;
+
+    DynamicArrayBase& operator=(DynamicArrayBase&& other) noexcept;
+
+public:
+    size_t size() const noexcept;
+
+    size_t capacity() const noexcept;
+
+    size_t unused() const noexcept;
+
+    bool isEmpty() const noexcept;
+
+    bool isFull() const noexcept;
+
+    bool hasElementAt(size_t index) const noexcept;
+
+    Element& operator[](size_t index) noexcept;
+
+    const Element& operator[](size_t index) const noexcept;
+
+    const Element& getElement(size_t index) const noexcept;
+
+    const Element* data() const noexcept;
+
+    void fill(size_t count);
+
+    void pop() noexcept;
+
+    void pop(size_t count) noexcept;
+
+    void empty() noexcept;
+
+    void changeCapacity(size_t capacity);
+
+    void extend(size_t size);
+
+    void ensureCapacity(size_t capacity);
+    
+    void shrinkToFit();
+
+    void clear() noexcept;
+
+protected:
+    void ensureCapacity();
+
+protected:
+    Element* array;
+
+    size_t arraySize;
+    
+    size_t arrayCapacity;
+
+private:
+    void destroy() noexcept;
+
+    void move(DynamicArrayBase& other) noexcept;
+};
+
+#include "DynamicArrayBase.tci"

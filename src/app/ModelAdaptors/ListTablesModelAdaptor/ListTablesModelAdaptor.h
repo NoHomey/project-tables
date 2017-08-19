@@ -32,5 +32,5 @@ private:
     static ConstString titleText;
     
 private:
-    const DynamicArray<Table>* tables;
+    const MoveDynamicArray<Table>* tables;
 };

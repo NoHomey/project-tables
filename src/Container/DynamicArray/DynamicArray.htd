@@ -1,118 +1,41 @@
 #pragma once
 
-#include <cstddef>
+#include "../DynamicArrayBase/DynamicArrayBase.htd"
 
 template<typename Element>
-class DynamicArray {
+class DynamicArray: public DynamicArrayBase<DynamicArray<Element>, Element> {
+private:
+    friend class DynamicArrayBase<DynamicArray<Element>, Element>;
+
+    using Base = DynamicArrayBase<DynamicArray<Element>, Element>;
+
 public:
-    DynamicArray() noexcept;
+    DynamicArray() noexcept = default;
     
     explicit DynamicArray(size_t size);
 
-    ~DynamicArray() noexcept;
+    ~DynamicArray() noexcept = default;
 
     DynamicArray(const DynamicArray& other) = delete;
 
-    DynamicArray(DynamicArray&& other) noexcept;
+    DynamicArray(DynamicArray&& other) noexcept = default;
 
     DynamicArray& operator=(const DynamicArray& other) = delete;
 
-    DynamicArray& operator=(DynamicArray&& other) noexcept;
+    DynamicArray& operator=(DynamicArray&& other) noexcept = default;
 
 public:
-    size_t size() const noexcept;
-
-    size_t capacity() const noexcept;
-
-    size_t unused() const noexcept;
-
-    bool isEmpty() const noexcept;
-
-    bool isFull() const noexcept;
-
-    bool hasElementAt(size_t index) const noexcept;
-
-    Element& operator[](size_t index) noexcept;
-
-    const Element& operator[](size_t index) const noexcept;
-
-    const Element& getElement(size_t index) const noexcept;
-
-    const Element* data() const noexcept;
-
-    void fill(size_t count);
-
     void push(const Element& element);
 
-    void movePush(Element&& element);
+    void setElement(size_t index, const Element& element);
 
-    void pop() noexcept;
-
-    void pop(size_t count) noexcept;
-
-    void empty() noexcept;
-
-    void setElement(size_t index, Element&& element);
-
-    void changeCapacity(size_t capacity);
-
-    void extend(size_t size);
-
-    void ensureCapacity(size_t capacity);
-    
-    void shrinkToFit();
-
-    void clear() noexcept;
-
-    template<typename ForEachInDynamicArrayFunction>
-    void forEach(ForEachInDynamicArrayFunction& function) const;
-
-    template<typename ForEachInDynamicArrayFunction>
-    void forEach(const ForEachInDynamicArrayFunction& function) const;
-
-protected:
-    template<typename ForEachInDynamicArrayFunction>
-    void forEachElement(ForEachInDynamicArrayFunction function) const;
-
-protected:
-    Element* array;
-
-    size_t arraySize;
-    
-    size_t arrayCapacity;
+private:
+    static Element* initialAllocation(size_t size);
 
 private:
     void deAllocate() noexcept;
 
-    void destroy() noexcept;
-
-    void move(DynamicArray& other) noexcept;
-
-    void ensureCapacity();
-};
-
-template<typename Element, bool b>
-class MoveHelper {
-private:
-    friend class DynamicArray<Element>;
-
-    static void moveElement(Element* dest, Element* source, size_t index);
-};
-
-template<typename Element>
-class MoveHelper<Element, true> {
-private:
-    friend class DynamicArray<Element>;
-    
-    static void moveElement(Element* dest, Element* source, size_t index);
-};
-
-template<typename Element>
-class MoveHelper<Element, false> {
-private:
-    friend class DynamicArray<Element>;
-
-    static void moveElement(Element* dest, Element* source, size_t index);
+    void reAllocate(size_t capacity);
 };
 
 #include "DynamicArray.tci"

@@ -1,0 +1,57 @@
+#pragma once
+
+#include "MoveDynamicArray.htd"
+
+template<typename Element>
+MoveDynamicArray<Element>::MoveDynamicArray(size_t size)
+: Base{size} { }
+
+template<typename Element>
+void MoveDynamicArray<Element>::push(Element&& element) {
+    Base::ensureCapacity();
+    Base::array[Base::arraySize] = std::move(element);
+    ++Base::arraySize;
+}
+
+template<typename Element>
+void MoveDynamicArray<Element>::setElement(size_t index, Element&& element) {
+    if(Base::hasElementAt(index)) {
+        Base::array[index] = std::move(element);
+    } else if(index == Base::arraySize) {
+        push(element);
+    }
+}
+
+template<typename Element>
+Element* MoveDynamicArray<Element>::initialAllocation(size_t size) {
+    Element* allocated = reinterpret_cast<Element*>(new char[size * sizeof(Element)]);
+    for(size_t index = 0; index < size; ++index) {
+        new (allocated + index) Element();
+    }
+    return allocated;
+}
+
+template<typename Element>
+void MoveDynamicArray<Element>::deAllocate() noexcept {
+    for(size_t index = 0; index < Base::arrayCapacity; ++index) {
+        Base::array[index].~Element();
+    }
+    delete[] reinterpret_cast<char*>(Base::array);
+}
+    
+template<typename Element>
+void MoveDynamicArray<Element>::reAllocate(size_t capacity) {
+    Element* temp = reinterpret_cast<Element*>(new char[capacity * sizeof(Element)]);
+    for(size_t index = 0; index < capacity; ++index) {
+        if(index < Base::arraySize) {
+            new (temp + index) Element(std::move(Base::array[index]));
+        } else {
+            new (temp + index) Element();
+        }
+    }
+    for(size_t index = Base::arraySize; index < Base::arrayCapacity; ++index) {
+        Base::array[index].~Element();
+    }
+    delete[] reinterpret_cast<char*>(Base::array);
+    Base::array = temp;
+}

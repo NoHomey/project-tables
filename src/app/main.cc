@@ -28,6 +28,8 @@ int main() {
 #include "../Table/TableTypesOutputer/TableTypesOutputer.h"
 #include "../Table/TableData/TableData.h"
 
+#include "../Container/MoveDynamicArray/MoveDynamicArray.htd"
+
 TableTypes::Integer integer(TableTypes::Integer i) {
     return i;
 }
@@ -55,28 +57,29 @@ void write(Writer& file, const TableData& data) {
 int main() {
     Writer file{"test.txt"};
 
-    TableData data;
+    MoveDynamicArray<TableData> array{200};
 
-    data.addColumn();
-    data.addColumn();
-    data.addColumn();
+    for(size_t i = 0; i < 200; ++i) {
+        TableData data;
 
-    data.insert(integer(0));
-    data.insert(3.14);
-    data.insert("Text");
-    data.insert(Integer::Min);
-    data.insert(2.481);
-    data.insert("\"Quoted\"");
-    data.insert(Integer::Max);
-    data.insert(-59.3491);
-    data.insert("C:\\temp\\dir");
+        data.addColumn();
+        data.addColumn();
+        data.addColumn();
 
+        data.insert(integer(0));
+        data.insert(3.14);
+        data.insert("Text");
+        data.insert(Integer::Min);
+        data.insert(2.481);
+        data.insert("\"Quoted\"");
+        data.insert(Integer::Max);
+        data.insert(-59.3491);
+        data.insert("C:\\temp\\dir");
 
-    DynamicArray<TableData> array{1};
+        array.push(std::move(data));
 
-    array.movePush(std::move(data));
-
-    write(file, array[0]);
+        write(file, array[i]);
+    }
 
     file.endFile();
 

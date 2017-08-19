@@ -10,10 +10,10 @@ Table* Tables::getTableByName(const String& name) noexcept {
     return nullptr;
 }
 
-const DynamicArray<Table>& Tables::getTables() const noexcept {
+const MoveDynamicArray<Table>& Tables::getTables() const noexcept {
     return tables;
 }
 
 void Tables::addTable(Table&& table) {
-    tables.movePush(std::move(table));
+    tables.push(std::move(table));
 }

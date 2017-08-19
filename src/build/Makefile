@@ -1,4 +1,4 @@
-.PHONY: clean leakCheck allocs run stringifyIntegerLimits
+.PHONY: clean leakCheck allocs run stringifyIntegerLimits compileAll
 
 COMPILER = g++ -std=c++14 -Wall -Wextra -Wpedantic -g
 
@@ -34,10 +34,16 @@ fpconv = $(dependencies)/fpconv
 
 OwnDeps = $(1)/$(2)/$(2).cc $(1)/$(2)/$(2).h
 
-app: ../app/main.cc Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o\
-ListComponent.o ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o\
-ListTableModelAdaptor.o OutputFile.o Writer.o fpconv.o TableTypesOutputer.o CharSequenceParser.o Action.o ShowTables.o\
-Argument.o
+Templates = ../Container/DynamicArrayBase/DynamicArrayBase.htd ../Container/DynamicArray/DynamicArray.htd\
+../Container/MoveDynamicArray/MoveDynamicArray.htd ../SharedPtr/SharedPtr.htd
+
+Objects = Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o ListComponent.o\
+ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o\
+OutputFile.o Writer.o fpconv.o TableTypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o
+
+compileAll: $(Templates) app
+
+app: ../app/main.cc $(Objects)
 	$(COMPILER) $^
 
 Window.o: $(call OwnDeps,$(Renderer),Window)
@@ -114,7 +120,7 @@ ShowTables.o: $(call OwnDeps,$(Actions),ShowTables) Action.o ListComponent.o
 	$(COMPILER) -c $<
 	
 clean:
-	rm -f *.o $(Executable) allocs.txt
+	rm -f *.o *.txt $(Executable)
 
 leakCheck:
 	valgrind $(Executable)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Table/Table.h"
-#include "../Container/DynamicArray/DynamicArray.htd"
+#include "../Container/MoveDynamicArray/MoveDynamicArray.htd"
 
 class Tables {
 public:
@@ -18,10 +18,10 @@ public:
 public:
     Table* getTableByName(const String& name) noexcept;
 
-    const DynamicArray<Table>& getTables() const noexcept;
+    const MoveDynamicArray<Table>& getTables() const noexcept;
 
     void addTable(Table&& table);
 
 private:
-    DynamicArray<Table> tables;
+    MoveDynamicArray<Table> tables;
 };
