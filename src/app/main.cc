@@ -71,13 +71,15 @@ int main() {
     data.insert(-59.3491);
     data.insert("C:\\temp\\dir");
 
-    for(size_t i  = 0; i < 200; ++i) {
-        write(file, data);
-        data.addColumn();
-        write(file, data);
-    }
+
+    DynamicArray<TableData> array{1};
+
+    array.movePush(std::move(data));
+
+    write(file, array[0]);
 
     file.endFile();
+
     
     return 0;
 }

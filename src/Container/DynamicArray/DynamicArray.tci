@@ -187,6 +187,7 @@ void MoveHelper<Element, true>::moveElement(Element* dest, Element* source, size
 template<typename Element>
 void MoveHelper<Element, false>::moveElement(Element* dest, Element* source, size_t index) {
     new (dest + index) Element(source[index]);
+    source[index].~Element();
 }
 
 template<typename Element>

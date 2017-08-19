@@ -17,7 +17,7 @@ const String& ListTablesModelAdaptor::title() const noexcept {
 }
 
 const String& ListTablesModelAdaptor::item(size_t index) const noexcept {
-    return tables->getElement(index)->getName();
+    return tables->getElement(index).getName();
 }
 
 size_t ListTablesModelAdaptor::itemsCount() const noexcept {

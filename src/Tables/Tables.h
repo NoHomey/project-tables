@@ -18,10 +18,10 @@ public:
 public:
     Table* getTableByName(const String& name) noexcept;
 
-    const DynamicArray<Table*>& getTables() const noexcept;
+    const DynamicArray<Table>& getTables() const noexcept;
 
-    void addTable(Table* table);
+    void addTable(Table&& table);
 
 private:
-    DynamicArray<Table*> tables;
+    DynamicArray<Table> tables;
 };
