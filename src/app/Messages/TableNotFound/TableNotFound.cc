@@ -7,7 +7,7 @@ ConstString TableNotFound::textBeginning{"Query Error: Cannot find table with na
 
 ConstString TableNotFound::textEnsureExists{"'. Ensure table with name: '"};
 
-ConstString TableNotFound::textEnding{"' is loaded or created. For list of all existing tables type: Showtables."};
+ConstString TableNotFound::textEnding{"' is loaded or created. For list of all existing tables type: 'Showtables'."};
 
 const size_t TableNotFound::ownTextLength = textBeginning.length() + textEnsureExists.length() + textEnding.length();
 

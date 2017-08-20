@@ -50,12 +50,12 @@ ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableDa
 OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o InfoComponent.o\
 Message.o UnknownQueryCommand.o MissingTableName.o MessageContainingTableName.o InvalidTableName.o TableNotFound.o\
 InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o SuccessfullyRenamedTable.o NoRename.o Rename.o\
-NewNameIsNotUnique.o
+NewNameIsNotUnique.o Application.o
 
 compileAll: $(Templates) app
 
 app: ../app/main.cc $(Objects)
-	$(COMPILER) $^
+	$(COMPILER) -pthread $^
 
 Window.o: $(call OwnDeps,$(Renderer),Window)
 	$(COMPILER) -c $<
@@ -176,6 +176,9 @@ NewNameIsNotUnique.o: $(call OwnDeps,$(Messages),NewNameIsNotUnique) String.o Co
 Rename.o: $(call OwnDeps,$(Actions),Rename) Action.o TableNameParser.o ParseTableName.o SuccessfullyRenamedTable.o\
 NoRename.o NewNameIsNotUnique.o
 	$(COMPILER) -c $<
+
+Application.o: $(call OwnDeps,$(app),Application)
+	$(COMPILER) -c -pthread $<
 
 clean:
 	rm -f *.o *.txt $(Executable)

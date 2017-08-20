@@ -4,7 +4,7 @@
 
 MissingTableName MissingTableName::instance;
 
-ConstString MissingTableName::textBeginning{"Query command '"};
+ConstString MissingTableName::textBeginning{"Parse Error: Query command '"};
 
 ConstString MissingTableName::textExpects{"' expects table name identificator as "};
 
