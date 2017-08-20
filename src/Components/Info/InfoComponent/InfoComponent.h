@@ -12,7 +12,7 @@ private:
     };
 
 public:
-    static InfoComponent* inject(const InfoModel* model) noexcept;
+    static InfoComponent* inject(InfoModel* model) noexcept;
 
 private:
     InfoComponent() noexcept;
@@ -28,8 +28,10 @@ private:
 public:
     void render() final;
 
+    void onComponentUnmount() noexcept final;
+
 private:
-    void setModel(const InfoModel* infoModel) noexcept;
+    void setModel(InfoModel* infoModel) noexcept;
 
     bool calculateSizes() noexcept;
 
@@ -52,7 +54,7 @@ private:
     static const Ratio ratios[ratiosCount];
 
 private:
-    const InfoModel* model;
+    InfoModel* model;
 
     Window::size width;
 

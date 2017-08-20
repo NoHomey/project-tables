@@ -6,7 +6,7 @@ InfoComponent InfoComponent::component;
 
 const InfoComponent::Ratio InfoComponent::ratios[ratiosCount] = {{2, 5}, {2, 3}, {4, 5}, {7, 8}, {10, 11}};
 
-InfoComponent* InfoComponent::inject(const InfoModel* model) noexcept {
+InfoComponent* InfoComponent::inject(InfoModel* model) noexcept {
     component.setModel(model);
     return &component;
 }
@@ -14,7 +14,7 @@ InfoComponent* InfoComponent::inject(const InfoModel* model) noexcept {
 InfoComponent::InfoComponent() noexcept
 : model{nullptr}, width{0}, height{0}, lastLineLength{0}, linesCount{0} { } 
 
-void InfoComponent::setModel(const InfoModel* infoModel) noexcept {
+void InfoComponent::setModel(InfoModel* infoModel) noexcept {
     model = infoModel;
 }
 
@@ -88,4 +88,10 @@ void InfoComponent::render() {
         return;
     }
     BasicRenderer::getRenderer().clearWindow();
+}
+
+void InfoComponent::onComponentUnmount() noexcept {
+    if(model != nullptr) {
+        model->releaseResources();
+    }
 }

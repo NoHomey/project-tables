@@ -32,6 +32,8 @@ Exceptions = $(Parsers)/Exceptions
 
 Actions = $(app)/Actions
 
+Messages = $(app)/Messages
+
 Action = $(Actions)/Action
 
 dependencies = ../dependencies
@@ -45,7 +47,8 @@ Templates = ../Container/DynamicArrayBase/DynamicArrayBase.htd ../Container/Dyna
 
 Objects = Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o ListComponent.o\
 ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o\
-OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o InfoComponent.o #Action.o ShowTables.o Argument.o InfoComponent.o
+OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o InfoComponent.o\
+Message.o UnknownQueryCommand.o
 #InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o Rename.o
 
 compileAll: $(Templates) app
@@ -129,10 +132,16 @@ TableNameParser.o: $(call OwnDeps,$(Parsers),TableNameParser) CharSequenceParser
 Argument.o: $(call OwnDeps,$(Action),Argument) ConstString.o FixedSizeString.o
 	$(COMPILER) -c $<
 
-Action.o: $(call OwnDeps,$(Actions),Action) Tables.o ConstString.o CharSequenceParser.o
+UnknownQueryCommand.o: $(call OwnDeps,$(Messages),UnknownQueryCommand) ConstString.o FixedSizeString.o TypesOutputer.o
+	$(COMPILER) -c $<
+
+Action.o: $(call OwnDeps,$(Actions),Action) Tables.o ConstString.o CharSequenceParser.o UnknownQueryCommand.o
 	$(COMPILER) -c $<
 
 ShowTables.o: $(call OwnDeps,$(Actions),ShowTables) Action.o ListComponent.o
+	$(COMPILER) -c $<
+
+Message.o: $(call OwnDeps,$(Actions),Message) Action.o InfoComponent.o
 	$(COMPILER) -c $<
 
 ParseTableName.o: $(call OwnDeps,$(Actions),ParseTableName) Action.o Error.o TableNameParser.o

@@ -75,7 +75,9 @@ void CenteredRenderer::addRightMargin() {
 }
 
 void CenteredRenderer::addBottomBorder() {
-    addTopBorder();
+    if(renderer.centered.isBordered()) {
+        addHorizontalBorder('-');
+    }
 }
 
 void CenteredRenderer::addTopPadding() {

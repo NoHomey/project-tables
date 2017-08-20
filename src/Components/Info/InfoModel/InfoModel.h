@@ -9,5 +9,7 @@ public:
 
     virtual void output(CharOutputStream& outputStream) const = 0;
 
+    virtual void releaseResources() noexcept { }
+
     virtual ~InfoModel() noexcept = default;
 };
