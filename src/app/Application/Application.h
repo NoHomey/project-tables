@@ -38,7 +38,7 @@ private:
 
     static std::condition_variable condition;
 
-    static bool readCommand;
+    static volatile bool readCommand;
 
     static ImmutableString command;
 

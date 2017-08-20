@@ -11,7 +11,7 @@ std::mutex Application::commandMutex;
 
 std::condition_variable Application::condition;
 
-bool Application::readCommand = false;
+volatile bool Application::readCommand = false;
 
 ImmutableString Application::command;
 
