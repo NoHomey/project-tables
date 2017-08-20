@@ -68,11 +68,42 @@ void CenteredRenderer::addLeftBorder() {
 
 void CenteredRenderer::addRightBorder() {
     addLeftBorder();
+}
+
+void CenteredRenderer::addRightMargin() {
     addSymbol('\n');
 }
 
 void CenteredRenderer::addBottomBorder() {
-    addHorizontalBorder('-');
+    addTopBorder();
+}
+
+void CenteredRenderer::addTopPadding() {
+    const Window::size topPadding = renderer.centered.getTopPadding();
+    for(Window::size counter = 0; counter < topPadding; ++counter) {
+        addLeftMargin();
+        addLeftBorder();
+        addLeftPadding();
+        loopSymbol(renderer.centered.getWidth(), ' ');
+        addRightPadding();
+        addRightBorder();
+        addRightMargin();
+    }
+}
+
+void CenteredRenderer::addBottomPadding() {
+    addTopPadding();
+}
+    
+void CenteredRenderer::addLeftPadding() {
+    const Window::size leftPadding = renderer.centered.getLeftPadding();
+    if(leftPadding > 0) {
+        loopSymbol(leftPadding, ' ');
+    }
+}
+    
+void CenteredRenderer::addRightPadding() {
+    addLeftPadding();
 }
 
 void CenteredRenderer::clear() {
@@ -81,18 +112,20 @@ void CenteredRenderer::clear() {
     basicRenderer.clear();
     addTopMargin();
     addTopBorder();
+    addTopPadding();
     renderer.widthCounter = 0;
     renderer.heightCounter = 0;
 }
 
 void CenteredRenderer::widthReached() {
     widthCounter = 0;
+    addRightPadding();
     addRightBorder();
+    addRightMargin();
     ++heightCounter;
     if(heightCounter == centered.getHeight()) {
-        if(renderer.centered.isBordered()) {
-            addBottomBorder();
-        }
+        addBottomPadding();
+        addBottomBorder();
         addBottomMargin();
         BasicRenderer::getRenderer().render();
     }
@@ -105,6 +138,7 @@ CharOutputStream& CenteredRenderer::operator<<(char symbol) {
     if(widthCounter == 0) {
         addLeftMargin();
         addLeftBorder();
+        addLeftPadding();
     }
     addSymbol(symbol);
     ++widthCounter;

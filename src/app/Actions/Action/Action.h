@@ -20,6 +20,9 @@ public:
 
     void setComponent(Component* component) noexcept;
 
+public:
+    virtual ~Action() noexcept = default;
+
 protected:
     static Tables allTables;
 

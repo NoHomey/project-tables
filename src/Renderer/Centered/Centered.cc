@@ -9,11 +9,19 @@ Centered& Centered::reset(Window::size width, Window::size height) noexcept {
     hasBorder = false;
     topMargin = 0;
     leftMargin = 0;
+    topPadding = 0;
+    leftPadding = 0;
     return *this;
 }
 
 Centered& Centered::bordered() noexcept {
     hasBorder = true;
+    return *this;
+}
+
+Centered& Centered::padding(Window::size top, Window::size left) noexcept {
+    topPadding = top;
+    leftPadding = left;
     return *this;
 }
 
@@ -66,12 +74,20 @@ Window::size Centered::getLeftMargin() const noexcept {
     return leftMargin;
 }
 
+Window::size Centered::getTopPadding() const noexcept {
+    return topPadding;
+}
+    
+Window::size Centered::getLeftPadding() const noexcept {
+    return leftPadding;
+}
+
 Window::size Centered::totalWidth() const noexcept {
-    return width + (2 * hasBorder) + 1; 
+    return width + (2 * hasBorder) + (2 * leftPadding) + 1; 
 }
 
 Window::size Centered::totalHeight() const noexcept {
-    return height + (2 * hasBorder);
+    return height + (2 * hasBorder) + (2 * topPadding);
 }
 
 Window::size Centered::calculateTopMargin() const noexcept {

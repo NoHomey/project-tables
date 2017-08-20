@@ -11,6 +11,8 @@ public:
 
     Centered& bordered() noexcept;
 
+    Centered& padding(Window::size top, Window::size left) noexcept;
+
     Centered& atLeastMargin(Window::size top, Window::size left) noexcept;
 
     bool exec() const noexcept;
@@ -24,6 +26,10 @@ public:
     Window::size getTopMargin() const noexcept;
     
     Window::size getLeftMargin() const noexcept;
+
+    Window::size getTopPadding() const noexcept;
+    
+    Window::size getLeftPadding() const noexcept;
 
     Window::size totalWidth() const noexcept;
 
@@ -44,6 +50,10 @@ private:
     Window::size height;
 
     bool hasBorder;
+
+    Window::size topPadding;
+    
+    Window::size leftPadding;
 
     Window::size topMargin;
 

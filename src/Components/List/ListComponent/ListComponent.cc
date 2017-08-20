@@ -82,7 +82,7 @@ void ListComponent::renderList(Window::size padding) {
 void ListComponent::render() {
     Window::size padding = 5;
     while(true) {
-        if(CenteredRenderer::queryCentered(minWidth + (2 * padding), minHeight).bordered().exec()) {
+        if(CenteredRenderer::queryCentered(minWidth + (2 * padding), minHeight).bordered().atLeastMargin(1, 1).exec()) {
             renderList(padding);
             return;
         }

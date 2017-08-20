@@ -40,13 +40,23 @@ private:
 
     static void addLeftMargin();
 
+    static void addRightMargin();
+
     static void addTopBorder();
 
     static void addLeftBorder();
 
     static void addRightBorder();
 
-    static void addBottomBorder(); 
+    static void addBottomBorder();
+    
+    static void addTopPadding();
+    
+    static void addBottomPadding();
+        
+    static void addLeftPadding();
+        
+    static void addRightPadding();
 
     static bool isVerticalMarginOdd() noexcept;
 

@@ -45,8 +45,8 @@ Templates = ../Container/DynamicArrayBase/DynamicArrayBase.htd ../Container/Dyna
 
 Objects = Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o ListComponent.o\
 ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o\
-OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o Error.o Result.o InfoComponent.o\
-InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o Rename.o
+OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o InfoComponent.o #Action.o ShowTables.o Argument.o InfoComponent.o
+#InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o Rename.o
 
 compileAll: $(Templates) app
 
@@ -77,8 +77,7 @@ FixedSizeString.o: $(call OwnDeps,$(String),FixedSizeString) String.o
 ListComponent.o: $(call OwnDeps,$(List),ListComponent) Window.o CenteredRenderer.o TypesOutputer.o
 	$(COMPILER) -c $<
 
-InfoComponent.o: $(call OwnDeps,$(Info),InfoComponent) Window.o CenteredRenderer.o TypesOutputer.o\
-String.o FixedSizeString.o
+InfoComponent.o: $(call OwnDeps,$(Info),InfoComponent) Window.o CenteredRenderer.o
 	$(COMPILER) -c $<
 
 ColumnMetaData.o: $(call OwnDeps,$(Table),ColumnMetaData)
@@ -134,12 +133,6 @@ Action.o: $(call OwnDeps,$(Actions),Action) Tables.o ConstString.o CharSequenceP
 	$(COMPILER) -c $<
 
 ShowTables.o: $(call OwnDeps,$(Actions),ShowTables) Action.o ListComponent.o
-	$(COMPILER) -c $<
-
-Error.o: $(call OwnDeps,$(Actions),Error) Action.o
-	$(COMPILER) -c $<
-
-Result.o: $(call OwnDeps,$(Actions),Result) Action.o
 	$(COMPILER) -c $<
 
 ParseTableName.o: $(call OwnDeps,$(Actions),ParseTableName) Action.o Error.o TableNameParser.o
