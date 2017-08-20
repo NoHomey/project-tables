@@ -1,5 +1,10 @@
 #include "Rename.h"
 #include "../ParseTableName/ParseTableName.h"
+#include "../../Messages/TableNotFound/TableNotFound.h"
+#include "../../Messages/SuccessfullyRenamedTable/SuccessfullyRenamedTable.h"
+#include "../../Messages/NoRename/NoRename.h"
+#include "../../Messages/NewNameIsNotUnique/NewNameIsNotUnique.h"
+#include "../Message/Message.h"
 
 Rename Rename:: instance;
 
@@ -26,7 +31,7 @@ Action* Rename::parseTableName() {
 }
 
 Action* Rename::tableNotFound() {
-    return Error::showError();
+    return Message::showMessage(TableNotFound::inject(arguments[0].asTemporaryString()));
 }
 
 Action* Rename::parseNewTableName() {
@@ -46,16 +51,18 @@ Action* Rename::parseNewTableName() {
 
 Action* Rename::renameTable() {
     ConstString& newName = arguments[1].asTemporaryString();
-    currentTable->rename({newName.cString(), newName.length()});
-    return Result::showResult();
+    FixedSizeString oldName = currentTable->rename({newName.cString(), newName.length()});
+    return Message::showMessage(SuccessfullyRenamedTable::inject(std::move(oldName), currentTable->getName()));
 }
 
 Action* Rename::newNameIsNotUnique() {
-    return Error::showError();
+    return Message::showMessage(NewNameIsNotUnique::inject(currentTable->getName(),
+        allTables.getTableByName(arguments[1].asTemporaryString())->getName()
+    ));
 }
 
 Action* Rename::warnForNoRename() {
-    return Error::showError();
+    return Message::showMessage(NoRename::inject(currentTable->getName()));
 }
 
 Action* Rename::action() {

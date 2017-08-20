@@ -17,6 +17,8 @@ void Table::addColumn(const ColumnMetaData& metaData) {
     tableData.addColumn();
 }
 
-void Table::rename(FixedSizeString&& newName) noexcept {
+FixedSizeString Table::rename(FixedSizeString&& newName) noexcept {
+    FixedSizeString oldName = std::move(name);
     name = std::move(newName);
+    return oldName;
 }

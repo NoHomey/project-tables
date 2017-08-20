@@ -26,7 +26,7 @@ public:
 
     void addColumn(const ColumnMetaData& metaData);
 
-    void rename(FixedSizeString&& newName) noexcept;
+    FixedSizeString rename(FixedSizeString&& newName) noexcept;
 
 private:
     FixedSizeString name;

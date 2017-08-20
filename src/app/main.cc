@@ -20,6 +20,12 @@ int main() {
     Action::takeAction("Describe 123");
     sleep(2);
     Action::takeAction("Describe Table");
+    sleep(2);
+    Action::takeAction("Rename Ivo III");
+    sleep(2);
+    Action::takeAction("Rename III III");
+    sleep(2);
+    Action::takeAction("Rename III AAA");
 
     /*for(size_t i  = 0; i < 2; ++i) {
         if(Window::isResized()) {

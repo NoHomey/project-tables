@@ -49,7 +49,8 @@ Objects = Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstS
 ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o\
 OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o InfoComponent.o\
 Message.o UnknownQueryCommand.o MissingTableName.o MessageContainingTableName.o InvalidTableName.o TableNotFound.o\
-InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o # Rename.o
+InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o SuccessfullyRenamedTable.o NoRename.o Rename.o\
+NewNameIsNotUnique.o
 
 compileAll: $(Templates) app
 
@@ -163,7 +164,17 @@ Describe.o: $(call OwnDeps,$(Actions),Describe) Action.o TableNameParser.o Parse
 ListComponent.o ListTableModelAdaptor.o Message.o
 	$(COMPILER) -c $<
 
-Rename.o: $(call OwnDeps,$(Actions),Rename) Action.o Result.o TableNameParser.o ParseTableName.o
+SuccessfullyRenamedTable.o: $(call OwnDeps,$(Messages),SuccessfullyRenamedTable) String.o ConstString.o FixedSizeString.o TypesOutputer.o
+	$(COMPILER) -c $<
+
+NoRename.o: $(call OwnDeps,$(Messages),NoRename) String.o ConstString.o FixedSizeString.o TypesOutputer.o
+	$(COMPILER) -c $<
+
+NewNameIsNotUnique.o: $(call OwnDeps,$(Messages),NewNameIsNotUnique) String.o ConstString.o FixedSizeString.o TypesOutputer.o
+	$(COMPILER) -c $<
+
+Rename.o: $(call OwnDeps,$(Actions),Rename) Action.o TableNameParser.o ParseTableName.o SuccessfullyRenamedTable.o\
+NoRename.o NewNameIsNotUnique.o
 	$(COMPILER) -c $<
 
 clean:

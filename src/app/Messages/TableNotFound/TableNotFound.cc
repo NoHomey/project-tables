@@ -17,7 +17,7 @@ TableNotFound* TableNotFound::inject(const String& tableName) {
 }
 
 size_t TableNotFound::textLength() const noexcept {
-    return ownTextLength + tableName.length();
+    return ownTextLength + 2 * tableName.length();
 }
 
 void TableNotFound::output(CharOutputStream& outputStream) const {
