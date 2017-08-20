@@ -7,7 +7,7 @@ class TableNameParser {
 public:
     class InvalidTableName: public InvalidSymbolAtPosition {
     public:
-        InvalidTableName(size_t position, char symbol) noexcept;
+        InvalidTableName(size_t position, char symbol, ConstString& token) noexcept;
     };
 
 public:

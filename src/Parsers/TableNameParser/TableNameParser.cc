@@ -1,7 +1,7 @@
 #include "TableNameParser.h"
 
-TableNameParser::InvalidTableName::InvalidTableName(size_t position, char symbol) noexcept
-: InvalidSymbolAtPosition{position, symbol} { }
+TableNameParser::InvalidTableName::InvalidTableName(size_t position, char symbol, ConstString& token) noexcept
+: InvalidSymbolAtPosition{position, symbol, token} { }
 
 bool TableNameParser::isLowerCaseLetter(char symbol) noexcept {
     return (symbol >= 'a') && (symbol <= 'z');
@@ -49,13 +49,13 @@ CharSequenceParser::ParseResult TableNameParser::parse(ConstString& string) {
     ConstString& extracted = result.getExtracted();
     char symbol = extracted[0];
     if(!isFirstValid(symbol)) {
-        throw InvalidTableName{0, symbol};
+        throw InvalidTableName{0, symbol, extracted};
     }
     const size_t extractedLength = extracted.length();
     for(size_t index = 2; index < extractedLength; ++index) {
         symbol = extracted[index];
         if(!isSubsequentValid(symbol)) {
-            throw InvalidTableName{index, symbol};
+            throw InvalidTableName{index, symbol, extracted};
         }
     }
     return result;

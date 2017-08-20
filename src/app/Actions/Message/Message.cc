@@ -4,6 +4,15 @@
 
 Message Message::instance;
 
+ConstString Message::mappedArgumentIndexNames[mappedArgumentIndexNamesCount] = {
+    "first",
+    "second",
+    "third",
+    "fourth",
+    "fifth",
+    "sixth"
+};
+
 Action* Message::showMessage(InfoModel* message) noexcept {
     instance.message = message;
     return &instance;

@@ -28,8 +28,6 @@ private:
 public:
     void render() final;
 
-    void onComponentUnmount() noexcept final;
-
 private:
     void setModel(InfoModel* infoModel) noexcept;
 

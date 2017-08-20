@@ -13,6 +13,12 @@ int main() {
 
     Action::takeAction("Showtables");
     sleep(2);
+    Action::takeAction("Describe Ivo");
+    sleep(2);
+    Action::takeAction("Describe ");
+    sleep(2);
+    Action::takeAction("Describe 123");
+    sleep(2);
     Action::takeAction("Describe Table");
 
     /*for(size_t i  = 0; i < 2; ++i) {

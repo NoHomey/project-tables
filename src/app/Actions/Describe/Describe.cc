@@ -2,7 +2,8 @@
 #include "../../ModelAdaptors/ListTableModelAdaptor/ListTableModelAdaptor.h"
 #include "../../../Components/List/ListComponent/ListComponent.h"
 #include "../ParseTableName/ParseTableName.h"
-#include "../Error/Error.h"
+#include "../../Messages/TableNotFound/TableNotFound.h"
+#include "../Message/Message.h"
 
 Describe Describe:: instance;
 
@@ -14,7 +15,7 @@ Action* Describe::describe() noexcept {
 }
 
 Action* Describe::parseTableName() {
-    Action* parseAction = ParseTableName::parseTableName()->action();
+    Action* parseAction = ParseTableName::parseTableName(actionString, 0)->action();
     if(parseAction != nullptr) {
         return parseAction;
     }
@@ -29,7 +30,7 @@ Action* Describe::parseTableName() {
 }
 
 Action* Describe::tableNotFound() {
-    return Error::showError();
+    return Message::showMessage(TableNotFound::inject(arguments[0].asTemporaryString()));
 }
 
 Action* Describe::describeTable() {

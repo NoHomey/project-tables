@@ -2,6 +2,7 @@
 
 #include "../Action/Action.h"
 #include "../../../Components/Info/InfoModel/InfoModel.h"
+#include "../../../String/ConstString/ConstString.h"
 
 class Message: public Action {
 public:
@@ -11,6 +12,11 @@ public:
 
 private:
     Message() noexcept = default;
+
+public:
+    static const unsigned char mappedArgumentIndexNamesCount = 6;
+
+    static ConstString mappedArgumentIndexNames[mappedArgumentIndexNamesCount];
 
 private:
     static Message instance;

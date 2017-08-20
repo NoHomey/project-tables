@@ -48,8 +48,8 @@ Templates = ../Container/DynamicArrayBase/DynamicArrayBase.htd ../Container/Dyna
 Objects = Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o ListComponent.o\
 ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o\
 OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o InfoComponent.o\
-Message.o UnknownQueryCommand.o
-#InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o Rename.o
+Message.o UnknownQueryCommand.o MissingTableName.o MessageContainingTableName.o InvalidTableName.o TableNotFound.o\
+InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o # Rename.o
 
 compileAll: $(Templates) app
 
@@ -144,14 +144,26 @@ ShowTables.o: $(call OwnDeps,$(Actions),ShowTables) Action.o ListComponent.o
 Message.o: $(call OwnDeps,$(Actions),Message) Action.o InfoComponent.o
 	$(COMPILER) -c $<
 
-ParseTableName.o: $(call OwnDeps,$(Actions),ParseTableName) Action.o Error.o TableNameParser.o
+MissingTableName.o: $(call OwnDeps,$(Messages),MissingTableName) String.o ConstString.o TypesOutputer.o
 	$(COMPILER) -c $<
 
-Describe.o: $(call OwnDeps,$(Actions),Describe) Action.o Error.o TableNameParser.o ParseTableName.o\
-ListComponent.o ListTableModelAdaptor.o
+MessageContainingTableName.o: $(call OwnDeps,$(Messages),MessageContainingTableName) String.o ConstString.o FixedSizeString.o TypesOutputer.o
 	$(COMPILER) -c $<
 
-Rename.o: $(call OwnDeps,$(Actions),Rename) Action.o Error.o Result.o TableNameParser.o ParseTableName.o
+InvalidTableName.o: $(call OwnDeps,$(Messages),InvalidTableName) MessageContainingTableName.o
+	$(COMPILER) -c $<
+
+TableNotFound.o: $(call OwnDeps,$(Messages),TableNotFound) MessageContainingTableName.o
+	$(COMPILER) -c $<
+
+ParseTableName.o: $(call OwnDeps,$(Actions),ParseTableName) Action.o TableNameParser.o Message.o
+	$(COMPILER) -c $<
+
+Describe.o: $(call OwnDeps,$(Actions),Describe) Action.o TableNameParser.o ParseTableName.o\
+ListComponent.o ListTableModelAdaptor.o Message.o
+	$(COMPILER) -c $<
+
+Rename.o: $(call OwnDeps,$(Actions),Rename) Action.o Result.o TableNameParser.o ParseTableName.o
 	$(COMPILER) -c $<
 
 clean:

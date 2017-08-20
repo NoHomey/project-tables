@@ -39,6 +39,7 @@ FixedSizeString& FixedSizeString::operator=(FixedSizeString&& other) noexcept {
     if(this != &other) {
         delete[] string;
         String::operator=(std::move(other));
+        filled = other.filled;
     }
     return *this;
 }

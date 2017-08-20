@@ -1,7 +1,5 @@
 #include "Rename.h"
 #include "../ParseTableName/ParseTableName.h"
-#include "../Error/Error.h"
-#include "../Result/Result.h"
 
 Rename Rename:: instance;
 
@@ -13,7 +11,7 @@ Action* Rename::rename() noexcept {
 }
 
 Action* Rename::parseTableName() {
-    Action* parseAction = ParseTableName::parseTableName()->action();
+    Action* parseAction = ParseTableName::parseTableName(actionString, 0)->action();
     if(parseAction != nullptr) {
         return parseAction;
     }
@@ -32,7 +30,7 @@ Action* Rename::tableNotFound() {
 }
 
 Action* Rename::parseNewTableName() {
-    Action* parseAction = ParseTableName::parseTableName()->action();
+    Action* parseAction = ParseTableName::parseTableName(actionString, 1)->action();
     if(parseAction != nullptr) {
         return parseAction;
     }
