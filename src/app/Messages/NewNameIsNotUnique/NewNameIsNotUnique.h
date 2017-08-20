@@ -1,16 +1,12 @@
 #pragma once
 
-#include "../../../Components/Info/InfoModel/InfoModel.h"
-#include "../../../String/ConstString/ConstString.h"
-#include "../../../String/FixedSizeString/FixedSizeString.h"
+#include "../MessageContainingTableName/MessageContainingTableName.h"
 
-class NewNameIsNotUnique: public InfoModel {
+class NewNameIsNotUnique: public MessageContainingTableName<ImmutableString> {
 public:
     static NewNameIsNotUnique* inject(const FixedSizeString& tableName, const FixedSizeString& newTableName) noexcept;
 
 public:
-    size_t textLength() const noexcept final;
-
     void output(CharOutputStream& outputStream) const final;
 
     void releaseResources() noexcept final;
@@ -40,7 +36,5 @@ private:
     static const size_t ownTextLength;
 
 private:
-    ImmutableString tableName;
-
     ImmutableString newName;
 };

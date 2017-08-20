@@ -1,5 +1,4 @@
 #include "SuccessfullyRenamedTable.h"
-#include "../../../String/ConstString/ConstString.h"
 #include "../../../TypesOutputer/TypesOutputer.h"
 
 SuccessfullyRenamedTable SuccessfullyRenamedTable::instance;
@@ -14,23 +13,20 @@ const size_t SuccessfullyRenamedTable::ownTextLength = textBeginning.length() + 
 
 SuccessfullyRenamedTable* SuccessfullyRenamedTable::inject(FixedSizeString&& oldTableName, const FixedSizeString& newTableName) noexcept {
     instance.oldName = std::move(oldTableName);
-    instance.newName = {newTableName.cString(), newTableName.length()};
+    instance.setTableName(newTableName);
+    instance.setTextLength(ownTextLength + oldTableName.length() + newTableName.length());
     return &instance;
-}
-
-size_t SuccessfullyRenamedTable::textLength() const noexcept {
-    return ownTextLength + oldName.length() + newName.length();
 }
 
 void SuccessfullyRenamedTable::output(CharOutputStream& outputStream) const {
     TypesOutputer::output(outputStream, textBeginning);
     TypesOutputer::output(outputStream, oldName);
     TypesOutputer::output(outputStream, textBetweenNames);
-    TypesOutputer::output(outputStream, newName);
+    outputTableName(outputStream);
     TypesOutputer::output(outputStream, textEnding);
 }
 
 void SuccessfullyRenamedTable::releaseResources() noexcept {
+    MessageContainingTableName<ImmutableString>::releaseResources();
     oldName = {};
-    newName = {};
 }

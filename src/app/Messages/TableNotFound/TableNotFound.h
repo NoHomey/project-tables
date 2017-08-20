@@ -1,16 +1,12 @@
 #pragma once
 
 #include "../MessageContainingTableName/MessageContainingTableName.h"
-#include "../../../String/ConstString/ConstString.h"
-#include "../../../String/FixedSizeString/FixedSizeString.h"
 
-class TableNotFound: public MessageContainingTableName {
+class TableNotFound: public MessageContainingTableName<FixedSizeString> {
 public:
     static TableNotFound* inject(const String& tableName);
 
 public:
-    size_t textLength() const noexcept final;
-
     void output(CharOutputStream& outputStream) const final;
 
 private:

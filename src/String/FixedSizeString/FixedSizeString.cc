@@ -33,7 +33,7 @@ FixedSizeString::~FixedSizeString() noexcept {
 }
 
 FixedSizeString::FixedSizeString(FixedSizeString&& other) noexcept
-: String{std::move(other)} {}
+: String{std::move(other)}, filled{other.filled} {}
 
 FixedSizeString& FixedSizeString::operator=(FixedSizeString&& other) noexcept {
     if(this != &other) {

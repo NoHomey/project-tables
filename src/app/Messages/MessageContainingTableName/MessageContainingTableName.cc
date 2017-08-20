@@ -1,14 +1,21 @@
 #include "MessageContainingTableName.h"
 #include "../../../TypesOutputer/TypesOutputer.h"
 
-void MessageContainingTableName::releaseResources() noexcept {
+template<typename TableNameType>
+void MessageContainingTableName<TableNameType>::releaseResources() noexcept {
     tableName = {};
 }
 
-void MessageContainingTableName::setTableName(const String& name) {
+template<typename TableNameType>
+void MessageContainingTableName<TableNameType>::setTableName(const String& name) {
     tableName = {name.cString(), name.length()};
 }
 
-void MessageContainingTableName::outputTableName(CharOutputStream& outputStream) const {
+template<typename TableNameType>
+void MessageContainingTableName<TableNameType>::outputTableName(CharOutputStream& outputStream) const {
     TypesOutputer::output(outputStream, tableName);
 }
+
+template class MessageContainingTableName<FixedSizeString>;
+
+template class MessageContainingTableName<ImmutableString>;

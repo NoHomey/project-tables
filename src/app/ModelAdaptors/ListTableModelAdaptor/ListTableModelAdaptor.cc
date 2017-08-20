@@ -2,14 +2,6 @@
 
 ListTableModelAdaptor ListTableModelAdaptor::modelAdaptor;
 
-ConstString ListTableModelAdaptor::IntegerText{"Integer"};
-
-ConstString ListTableModelAdaptor::FractionalNumberText{"FractionalNumber"};
-
-ConstString ListTableModelAdaptor::StringText{"String"};
-
-ConstString ListTableModelAdaptor::UnknownText{"Unknown"};
-
 const ListTableModelAdaptor* ListTableModelAdaptor::adapt(const Table* table) noexcept {
     modelAdaptor.tableName = &table->getName();
     modelAdaptor.columnsMetaData = &table->getColumnsMetaData();
@@ -25,10 +17,10 @@ const String& ListTableModelAdaptor::title() const noexcept {
 
 const String& ListTableModelAdaptor::item(size_t index) const noexcept {
     switch(columnsMetaData->getElement(index).getType()) {
-        case ColumnMetaData::Integer: return IntegerText;
-        case ColumnMetaData::String: return StringText;
-        case ColumnMetaData::FractionalNumber: return FractionalNumberText;
-        default: return UnknownText;
+        case ColumnMetaData::Integer: return ColumnMetaDataStrings::Integer;
+        case ColumnMetaData::String: return ColumnMetaDataStrings::String;
+        case ColumnMetaData::FractionalNumber: return ColumnMetaDataStrings::FractionalNumber;
+        default: return ColumnMetaDataStrings::Unknown;
     }
 }
 

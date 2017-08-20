@@ -23,8 +23,6 @@ void Application::run() {
     BasicRenderer::setup();
     BasicRenderer::getRenderer().clearWindow();
 
-    Action::__mock();
-
     std::thread reader{readFromStdin};
     std::thread commandInterpreter{takeAction};
     std::thread reRenderer{reRenderOnWidnowResize};

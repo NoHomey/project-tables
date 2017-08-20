@@ -11,8 +11,6 @@ public:
 
     static void takeAction(ConstString& command);
 
-    static void __mock();
-
 public:
     virtual Action* action() = 0;
 

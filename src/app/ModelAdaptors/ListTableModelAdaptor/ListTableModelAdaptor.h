@@ -29,14 +29,6 @@ private:
 private:
     static ListTableModelAdaptor modelAdaptor;
 
-    static ConstString IntegerText;
-
-    static ConstString FractionalNumberText;
-
-    static ConstString StringText;
-
-    static ConstString UnknownText;
-
 private:
     const FixedSizeString* tableName;
 

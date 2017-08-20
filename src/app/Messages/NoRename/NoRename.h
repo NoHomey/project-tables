@@ -1,19 +1,13 @@
 #pragma once
 
-#include "../../../Components/Info/InfoModel/InfoModel.h"
-#include "../../../String/ConstString/ConstString.h"
-#include "../../../String/FixedSizeString/FixedSizeString.h"
+#include "../MessageContainingTableName/MessageContainingTableName.h"
 
-class NoRename: public InfoModel {
+class NoRename: public MessageContainingTableName<ImmutableString> {
 public:
     static NoRename* inject(const FixedSizeString& tableName) noexcept;
 
 public:
-    size_t textLength() const noexcept final;
-
     void output(CharOutputStream& outputStream) const final;
-
-    void releaseResources() noexcept final;
 
 private:
     NoRename() noexcept = default;
@@ -36,7 +30,4 @@ private:
     static ConstString textEnding;
 
     static const size_t ownTextLength;
-
-private:
-    ImmutableString tableName;
 };

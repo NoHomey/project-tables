@@ -1,5 +1,4 @@
 #include "NewNameIsNotUnique.h"
-#include "../../../String/ConstString/ConstString.h"
 #include "../../../TypesOutputer/TypesOutputer.h"
 
 NewNameIsNotUnique NewNameIsNotUnique::instance;
@@ -16,13 +15,10 @@ const size_t NewNameIsNotUnique::ownTextLength = textBeginning.length()
     + textBetweenNames.length() + textNameIsNotUnique.length() + textEnding.length();
 
 NewNameIsNotUnique* NewNameIsNotUnique::inject(const FixedSizeString& tableName, const FixedSizeString& newTableName) noexcept {
-    instance.tableName = {tableName.cString(), tableName.length()};
+    instance.setTableName(tableName);
     instance.newName = {newTableName.cString(), newTableName.length()};
+    instance.setTextLength(ownTextLength + tableName.length() + 2 * newTableName.length());
     return &instance;
-}
-
-size_t NewNameIsNotUnique::textLength() const noexcept {
-    return ownTextLength + tableName.length() + 2 * newName.length();
 }
 
 void NewNameIsNotUnique::output(CharOutputStream& outputStream) const {
@@ -36,6 +32,6 @@ void NewNameIsNotUnique::output(CharOutputStream& outputStream) const {
 }
 
 void NewNameIsNotUnique::releaseResources() noexcept {
-    tableName = {};
+    MessageContainingTableName<ImmutableString>::releaseResources();
     newName = {};
 }

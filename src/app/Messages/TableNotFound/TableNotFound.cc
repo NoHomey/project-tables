@@ -13,11 +13,8 @@ const size_t TableNotFound::ownTextLength = textBeginning.length() + textEnsureE
 
 TableNotFound* TableNotFound::inject(const String& tableName) {
     instance.setTableName(tableName);
+    instance.setTextLength(ownTextLength + 2 * tableName.length());
     return &instance;
-}
-
-size_t TableNotFound::textLength() const noexcept {
-    return ownTextLength + 2 * tableName.length();
 }
 
 void TableNotFound::output(CharOutputStream& outputStream) const {

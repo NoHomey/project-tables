@@ -9,8 +9,6 @@ public:
     static UnknownQueryCommand* inject(const String& command);
 
 public:
-    size_t textLength() const noexcept final;
-
     void output(CharOutputStream& outputStream) const final;
 
     void releaseResources() noexcept final;

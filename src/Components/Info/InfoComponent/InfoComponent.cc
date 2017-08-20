@@ -15,7 +15,7 @@ InfoComponent::InfoComponent() noexcept
 : model{nullptr}, width{0}, height{0}, lastLineLength{0}, linesCount{0} { } 
 
 void InfoComponent::setModel(InfoModel* infoModel) noexcept {
-    if(model != nullptr) {
+    if((model != nullptr) && (infoModel != model)) {
         model->releaseResources();
     }
     model = infoModel;

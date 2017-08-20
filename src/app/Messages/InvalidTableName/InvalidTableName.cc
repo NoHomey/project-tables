@@ -1,5 +1,4 @@
 #include "InvalidTableName.h"
-#include "../../../String/ConstString/ConstString.h"
 #include "../../../TypesOutputer/TypesOutputer.h"
 
 InvalidTableName InvalidTableName::instance;
@@ -12,11 +11,8 @@ const size_t InvalidTableName::ownTextLength = textBeginning.length() + textEndi
 
 InvalidTableName* InvalidTableName::inject(const String& tableName) {
     instance.setTableName(tableName);
+    instance.setTextLength(ownTextLength + tableName.length());
     return &instance;
-}
-
-size_t InvalidTableName::textLength() const noexcept {
-    return ownTextLength + tableName.length();
 }
 
 void InvalidTableName::output(CharOutputStream& outputStream) const {

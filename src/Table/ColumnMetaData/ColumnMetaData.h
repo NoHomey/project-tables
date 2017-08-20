@@ -1,5 +1,17 @@
 #pragma once
 
+#include "../../String/ConstString/ConstString.h"
+
+namespace ColumnMetaDataStrings {
+    ConstString Integer{"Integer"};
+    
+    ConstString FractionalNumber{"FractionalNumber"};
+    
+    ConstString String{"String"};
+
+    ConstString Unknown{"Unknown"};
+}
+
 class ColumnMetaData {
 public:
     enum ColumnType {Integer, FractionalNumber, String, Unknown};

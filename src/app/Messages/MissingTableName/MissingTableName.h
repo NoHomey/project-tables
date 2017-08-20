@@ -8,8 +8,6 @@ public:
     static MissingTableName* inject(ConstString& command, ConstString& argument);
 
 public:
-    size_t textLength() const noexcept final;
-
     void output(CharOutputStream& outputStream) const final;
 
 private:
@@ -22,6 +20,9 @@ private:
     MissingTableName& operator=(const MissingTableName& other) = delete;
 
     MissingTableName& operator=(MissingTableName&& other) = delete;
+
+protected:
+    void releaseResources() noexcept final;
 
 private:
     static MissingTableName instance;

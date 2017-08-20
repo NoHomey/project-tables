@@ -4,9 +4,10 @@
 #include "../../../String/ConstString/ConstString.h"
 #include "../../../String/FixedSizeString/FixedSizeString.h"
 
+template<typename TableNameType>
 class MessageContainingTableName: public InfoModel {
 public:
-    void releaseResources() noexcept final;
+    void releaseResources() noexcept override;
 
 protected:
     MessageContainingTableName() noexcept = default;
@@ -25,5 +26,5 @@ protected:
     void outputTableName(CharOutputStream& outputStream) const;
 
 protected:
-    FixedSizeString tableName;
+    TableNameType tableName;
 };

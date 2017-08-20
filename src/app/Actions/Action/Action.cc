@@ -2,6 +2,7 @@
 #include "../ShowTables/ShowTables.h"
 #include "../Describe/Describe.h"
 #include "../Rename/Rename.h"
+#include "../CreateTable/CreateTable.h"
 #include "../../../Parsers/CharSequenceParser/CharSequenceParser.h"
 #include "../../Messages/UnknownQueryCommand/UnknownQueryCommand.h"
 #include "../Message/Message.h"
@@ -15,11 +16,6 @@ Component* Action::component = nullptr;
 ImmutableString Action::command;
 
 MoveDynamicArray<Argument> Action::arguments;
-
-void Action::__mock() {
-    allTables.addTable({"AAA"});
-    allTables.addTable({"Ivo"});
-}
 
 void Action::reRender() {
     if(component != nullptr) {
@@ -47,6 +43,9 @@ Action* Action::selectAction(ConstString& action) {
     }
     if(action == Rename::actionString) {
         return Rename::rename();
+    }
+    if(action == CreateTable::actionString) {
+        return CreateTable::createTable();
     }
     return Message::showMessage(UnknownQueryCommand::inject(action));
 }

@@ -1,5 +1,4 @@
 #include "UnknownQueryCommand.h"
-#include "../../../String/ConstString/ConstString.h"
 #include "../../../TypesOutputer/TypesOutputer.h"
 
 UnknownQueryCommand UnknownQueryCommand::instance;
@@ -12,11 +11,8 @@ const size_t UnknownQueryCommand::ownTextLength = textBeginning.length() + textE
 
 UnknownQueryCommand* UnknownQueryCommand::inject(const String& command) {
     instance.unknownCommand = {command.cString(), command.length()};
+    instance.setTextLength(ownTextLength + command.length());
     return &instance;
-}
-
-size_t UnknownQueryCommand::textLength() const noexcept {
-    return ownTextLength + unknownCommand.length();
 }
 
 void UnknownQueryCommand::output(CharOutputStream& outputStream) const {

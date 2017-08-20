@@ -1,5 +1,4 @@
 #include "MissingTableName.h"
-#include "../../../String/ConstString/ConstString.h"
 #include "../../../TypesOutputer/TypesOutputer.h"
 
 MissingTableName MissingTableName::instance;
@@ -15,11 +14,8 @@ const size_t MissingTableName::ownTextLength = textBeginning.length() + textExpe
 MissingTableName* MissingTableName::inject(ConstString& command, ConstString& argument) {
     instance.commandName = command;
     instance.argument = argument;
+    instance.setTextLength(ownTextLength + command.length() + argument.length());
     return &instance;
-}
-
-size_t MissingTableName::textLength() const noexcept {
-    return ownTextLength + commandName.length() + argument.length();
 }
 
 void MissingTableName::output(CharOutputStream& outputStream) const {
@@ -28,4 +24,9 @@ void MissingTableName::output(CharOutputStream& outputStream) const {
     TypesOutputer::output(outputStream, textExpects);
     TypesOutputer::output(outputStream, argument);
     TypesOutputer::output(outputStream, textEnding);
+}
+
+void MissingTableName::releaseResources() noexcept {
+    commandName = {};
+    argument = {};
 }

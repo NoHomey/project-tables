@@ -47,10 +47,10 @@ Templates = ../Container/DynamicArrayBase/DynamicArrayBase.htd ../Container/Dyna
 
 Objects = Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o ListComponent.o\
 ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o\
-OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o InfoComponent.o\
+OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o InfoModel.o InfoComponent.o\
 Message.o UnknownQueryCommand.o MissingTableName.o MessageContainingTableName.o InvalidTableName.o TableNotFound.o\
 InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o SuccessfullyRenamedTable.o NoRename.o Rename.o\
-NewNameIsNotUnique.o Application.o
+NewNameIsNotUnique.o TableCreated.o TableExists.o CreateTable.o Application.o
 
 compileAll: $(Templates) app
 
@@ -81,7 +81,10 @@ FixedSizeString.o: $(call OwnDeps,$(String),FixedSizeString) String.o
 ListComponent.o: $(call OwnDeps,$(List),ListComponent) Window.o CenteredRenderer.o TypesOutputer.o
 	$(COMPILER) -c $<
 
-InfoComponent.o: $(call OwnDeps,$(Info),InfoComponent) Window.o CenteredRenderer.o
+InfoModel.o: $(call OwnDeps,$(Info),InfoModel)
+	$(COMPILER) -c $<
+
+InfoComponent.o: $(call OwnDeps,$(Info),InfoComponent) Window.o CenteredRenderer.o InfoModel.o
 	$(COMPILER) -c $<
 
 ColumnMetaData.o: $(call OwnDeps,$(Table),ColumnMetaData)
@@ -133,7 +136,8 @@ TableNameParser.o: $(call OwnDeps,$(Parsers),TableNameParser) CharSequenceParser
 Argument.o: $(call OwnDeps,$(Action),Argument) ConstString.o FixedSizeString.o
 	$(COMPILER) -c $<
 
-UnknownQueryCommand.o: $(call OwnDeps,$(Messages),UnknownQueryCommand) ConstString.o FixedSizeString.o TypesOutputer.o
+UnknownQueryCommand.o: $(call OwnDeps,$(Messages),UnknownQueryCommand) ConstString.o FixedSizeString.o\
+TypesOutputer.o InfoModel.o
 	$(COMPILER) -c $<
 
 Action.o: $(call OwnDeps,$(Actions),Action) Tables.o ConstString.o CharSequenceParser.o UnknownQueryCommand.o
@@ -142,7 +146,7 @@ Action.o: $(call OwnDeps,$(Actions),Action) Tables.o ConstString.o CharSequenceP
 ShowTables.o: $(call OwnDeps,$(Actions),ShowTables) Action.o ListComponent.o
 	$(COMPILER) -c $<
 
-Message.o: $(call OwnDeps,$(Actions),Message) Action.o InfoComponent.o
+Message.o: $(call OwnDeps,$(Actions),Message) Action.o InfoComponent.o InfoModel.o
 	$(COMPILER) -c $<
 
 MissingTableName.o: $(call OwnDeps,$(Messages),MissingTableName) String.o ConstString.o TypesOutputer.o
@@ -167,14 +171,24 @@ ListComponent.o ListTableModelAdaptor.o Message.o
 SuccessfullyRenamedTable.o: $(call OwnDeps,$(Messages),SuccessfullyRenamedTable) String.o ConstString.o FixedSizeString.o TypesOutputer.o
 	$(COMPILER) -c $<
 
-NoRename.o: $(call OwnDeps,$(Messages),NoRename) String.o ConstString.o FixedSizeString.o TypesOutputer.o
+NoRename.o: $(call OwnDeps,$(Messages),NoRename) MessageContainingTableName.o
 	$(COMPILER) -c $<
 
-NewNameIsNotUnique.o: $(call OwnDeps,$(Messages),NewNameIsNotUnique) String.o ConstString.o FixedSizeString.o TypesOutputer.o
+NewNameIsNotUnique.o: $(call OwnDeps,$(Messages),NewNameIsNotUnique) MessageContainingTableName.o
 	$(COMPILER) -c $<
 
 Rename.o: $(call OwnDeps,$(Actions),Rename) Action.o TableNameParser.o ParseTableName.o SuccessfullyRenamedTable.o\
 NoRename.o NewNameIsNotUnique.o
+	$(COMPILER) -c $<
+
+TableCreated.o: $(call OwnDeps,$(Messages),TableCreated) MessageContainingTableName.o
+	$(COMPILER) -c $<
+
+TableExists.o: $(call OwnDeps,$(Messages),TableExists) MessageContainingTableName.o
+	$(COMPILER) -c $<
+
+CreateTable.o: $(call OwnDeps,$(Actions),CreateTable) Action.o TableNameParser.o ParseTableName.o Message.o\
+TableCreated.o TableExists.o
 	$(COMPILER) -c $<
 
 Application.o: $(call OwnDeps,$(app),Application)

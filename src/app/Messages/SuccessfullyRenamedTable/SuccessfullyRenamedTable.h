@@ -1,16 +1,12 @@
 #pragma once
 
-#include "../../../Components/Info/InfoModel/InfoModel.h"
-#include "../../../String/ConstString/ConstString.h"
-#include "../../../String/FixedSizeString/FixedSizeString.h"
+#include "../MessageContainingTableName/MessageContainingTableName.h"
 
-class SuccessfullyRenamedTable: public InfoModel {
+class SuccessfullyRenamedTable: public MessageContainingTableName<ImmutableString> {
 public:
     static SuccessfullyRenamedTable* inject(FixedSizeString&& oldTableName, const FixedSizeString& newTableName) noexcept;
 
 public:
-    size_t textLength() const noexcept final;
-
     void output(CharOutputStream& outputStream) const final;
 
     void releaseResources() noexcept final;
@@ -39,6 +35,4 @@ private:
 
 private:
     FixedSizeString oldName;
-
-    ImmutableString newName;
 };
