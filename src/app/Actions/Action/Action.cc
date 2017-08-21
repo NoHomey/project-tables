@@ -3,6 +3,7 @@
 #include "../Describe/Describe.h"
 #include "../Rename/Rename.h"
 #include "../CreateTable/CreateTable.h"
+#include "../AddColumn/AddColumn.h"
 #include "../Help/Help.h"
 #include "../../../Parsers/CharSequenceParser/CharSequenceParser.h"
 #include "../../Messages/UnknownQueryCommand/UnknownQueryCommand.h"
@@ -50,6 +51,9 @@ Action* Action::selectAction(ConstString& action) {
     }
     if(action == CreateTable::actionString) {
         return CreateTable::createTable();
+    }
+    if(action == AddColumn::actionString) {
+        return AddColumn::addColumn();
     }
     return Message::showMessage(UnknownQueryCommand::inject(action));
 }

@@ -16,7 +16,7 @@ public:
     Action* action() final;
 
 private:
-    CreateTable() noexcept = default;
+    CreateTable() noexcept;
 
 private:
     Action* parseTableName();

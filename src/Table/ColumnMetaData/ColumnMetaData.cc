@@ -1,5 +1,14 @@
 #include "ColumnMetaData.h"
 
+ConstString& ColumnMetaData::columnTypeAsString(ColumnType columnType) noexcept {
+    switch(columnType) {
+        case ColumnMetaData::Integer: return ColumnMetaDataStrings::Integer;
+        case ColumnMetaData::String: return ColumnMetaDataStrings::String;
+        case ColumnMetaData::FractionalNumber: return ColumnMetaDataStrings::FractionalNumber;
+        default: return ColumnMetaDataStrings::Unknown;
+    }
+}
+
 ColumnMetaData::ColumnMetaData() noexcept
 : type{Unknown} { }
 

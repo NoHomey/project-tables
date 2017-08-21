@@ -36,6 +36,7 @@ private:
         Describe,
         Rename,
         Create,
+        AddColumn,
         CommandsCount
     };
 };

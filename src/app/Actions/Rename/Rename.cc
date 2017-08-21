@@ -1,6 +1,5 @@
 #include "Rename.h"
 #include "../ParseTableName/ParseTableName.h"
-#include "../../Messages/TableNotFound/TableNotFound.h"
 #include "../../Messages/SuccessfullyRenamedTable/SuccessfullyRenamedTable.h"
 #include "../../Messages/NoRename/NoRename.h"
 #include "../../Messages/NewNameIsNotUnique/NewNameIsNotUnique.h"
@@ -10,28 +9,16 @@ Rename Rename:: instance;
 
 ConstString Rename::actionString{"Rename"};
 
+Rename::Rename() noexcept
+: Base{RenameState::ParseTableName} { }
+
 Action* Rename::rename() noexcept {
-    instance.state = ParseTableName;
+    instance.setState(RenameState::ParseTableName);
     return &instance;
 }
 
 Action* Rename::parseTableName() {
-    Action* parseAction = ParseTableName::parseTableName(actionString, 0)->action();
-    if(parseAction != nullptr) {
-        return parseAction;
-    }
-    Table* table = allTables.getTableByName(arguments[0].asTemporaryString());
-    if(table == nullptr) {
-        state = TableNotFound;
-    } else {
-        setCurrentTable(table);
-        state = ParseNewTableName;
-    }
-    return this;
-}
-
-Action* Rename::tableNotFound() {
-    return Message::showMessage(TableNotFound::inject(arguments[0].asTemporaryString()));
+    return Base::parseTableName<Rename>(RenameState::ParseNewTableName, RenameState::TableNotFound);
 }
 
 Action* Rename::parseNewTableName() {
@@ -42,9 +29,9 @@ Action* Rename::parseNewTableName() {
     ConstString& newName = arguments[1].asTemporaryString();
     Table* table = allTables.getTableByName(newName);
     if(table != nullptr) {
-        state = currentTable->getName() == newName ? WarnForNoRename : NewNameIsNotUnique;
+        setState(currentTable->getName() == newName ? RenameState::WarnForNoRename : RenameState::NewNameIsNotUnique);
     } else {
-        state = RenameTable;
+        setState(RenameState::RenameTable);
     }
     return this;
 }
@@ -66,13 +53,13 @@ Action* Rename::warnForNoRename() {
 }
 
 Action* Rename::action() {
-    switch(state) {
-        case ParseTableName: return parseTableName();
-        case TableNotFound: return tableNotFound();
-        case ParseNewTableName: return parseNewTableName();
-        case NewNameIsNotUnique: return newNameIsNotUnique();
-        case WarnForNoRename: return warnForNoRename();
-        case RenameTable: return renameTable();
+    switch(getState()) {
+        case RenameState::ParseTableName: return parseTableName();
+        case RenameState::TableNotFound: return tableNotFound();
+        case RenameState::ParseNewTableName: return parseNewTableName();
+        case RenameState::NewNameIsNotUnique: return newNameIsNotUnique();
+        case RenameState::WarnForNoRename: return warnForNoRename();
+        case RenameState::RenameTable: return renameTable();
+        default: return nullptr;
     }
-    return nullptr;
 }

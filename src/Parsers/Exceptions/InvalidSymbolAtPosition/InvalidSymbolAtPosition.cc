@@ -1,7 +1,7 @@
 #include "InvalidSymbolAtPosition.h"
 
 InvalidSymbolAtPosition::InvalidSymbolAtPosition(size_t position, char symbol, ConstString& token) noexcept
-: position{position}, symbol{symbol}, token{token} {}
+: TokenException{token}, position{position}, symbol{symbol} { }
 
 size_t InvalidSymbolAtPosition::getPosition() const noexcept {
     return position;
@@ -9,8 +9,4 @@ size_t InvalidSymbolAtPosition::getPosition() const noexcept {
 
 char InvalidSymbolAtPosition::getSymbol() const noexcept {
     return symbol;
-}
-
-ConstString& InvalidSymbolAtPosition::getToken() const noexcept {
-    return token;
 }

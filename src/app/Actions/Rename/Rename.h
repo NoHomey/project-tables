@@ -1,17 +1,19 @@
 #pragma once
 
-#include "../Action/Action.h"
+#include "../ActionRequiringTable/ActionRequiringTable.htd"
 
-class Rename: public Action {
+enum class RenameState {
+    ParseTableName,
+    TableNotFound,
+    ParseNewTableName,
+    NewNameIsNotUnique,
+    WarnForNoRename,
+    RenameTable
+};
+
+class Rename: public ActionRequiringTable<RenameState> {
 private:
-    enum State {
-        ParseTableName,
-        TableNotFound,
-        ParseNewTableName,
-        NewNameIsNotUnique,
-        WarnForNoRename,
-        RenameTable
-    };
+    using Base = ActionRequiringTable<RenameState>;
 
 public:
     static Action* rename() noexcept;
@@ -19,12 +21,10 @@ public:
     Action* action() final;
 
 private:
-    Rename() noexcept = default;
+    Rename() noexcept;
 
 private:
     Action* parseTableName();
-
-    Action* tableNotFound();
 
     Action* parseNewTableName();
 
@@ -39,7 +39,4 @@ public:
 
 private:
     static Rename instance;
-
-private:
-    State state;
 };

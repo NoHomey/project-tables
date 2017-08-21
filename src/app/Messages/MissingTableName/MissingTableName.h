@@ -10,6 +10,8 @@ public:
 public:
     void output(CharOutputStream& outputStream) const final;
 
+    void releaseResources() noexcept final;
+
 private:
     MissingTableName() noexcept = default;
 
@@ -20,9 +22,6 @@ private:
     MissingTableName& operator=(const MissingTableName& other) = delete;
 
     MissingTableName& operator=(MissingTableName&& other) = delete;
-
-protected:
-    void releaseResources() noexcept final;
 
 private:
     static MissingTableName instance;

@@ -1,10 +1,9 @@
 #pragma once
 
 #include <cstddef>
-#include "../Exception.h"
-#include "../../../String/ConstString/ConstString.h"
+#include "../TokenException/TokenException.h"
 
-class InvalidSymbolAtPosition: public Exception {
+class InvalidSymbolAtPosition: public TokenException {
 public:
     InvalidSymbolAtPosition(size_t position, char symbol, ConstString& token) noexcept;
 
@@ -12,12 +11,8 @@ public:
 
     char getSymbol() const noexcept;
 
-    ConstString& getToken() const noexcept;
-
 protected:
     const size_t position;
 
     const char symbol;
-
-    ConstString token;
 };

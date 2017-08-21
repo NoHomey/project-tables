@@ -17,6 +17,9 @@ public:
     enum ColumnType {Integer, FractionalNumber, String, Unknown};
 
 public:
+    static ConstString& columnTypeAsString(ColumnType columnType) noexcept;
+
+public:
     ColumnMetaData() noexcept;
 
     ColumnMetaData(ColumnType type) noexcept;

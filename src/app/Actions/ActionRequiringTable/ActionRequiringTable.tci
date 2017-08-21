@@ -1,0 +1,42 @@
+#pragma once
+
+#include "ActionRequiringTable.htd"
+#include "../ParseTableName/ParseTableName.h"
+#include "../../Messages/TableNotFound/TableNotFound.h"
+#include "../Message/Message.h"
+
+template<typename State>
+ActionRequiringTable<State>::ActionRequiringTable(State state) noexcept
+: state{state} { }
+
+template<typename State>
+void ActionRequiringTable<State>::setState(State newState) noexcept {
+    state = newState;
+}
+
+template<typename State>
+State ActionRequiringTable<State>::getState() const noexcept {
+    return state;
+}
+
+template<typename State>
+template<typename Derived>
+Action* ActionRequiringTable<State>::parseTableName(State tableFound, State tableNotFound) {
+    Action* parseAction = ParseTableName::parseTableName(Derived::actionString, 0)->action();
+    if(parseAction != nullptr) {
+        return parseAction;
+    }
+    Table* table = allTables.getTableByName(arguments[0].asTemporaryString());
+    if(table == nullptr) {
+        setState(tableNotFound);
+    } else {
+        setCurrentTable(table);
+        setState(tableFound);
+    }
+    return this;
+}
+
+template<typename State>
+Action* ActionRequiringTable<State>::tableNotFound() {
+    return Message::showMessage(TableNotFound::inject(arguments[0].asTemporaryString()));
+}

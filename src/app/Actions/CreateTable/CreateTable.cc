@@ -10,6 +10,9 @@ CreateTable CreateTable:: instance;
 
 ConstString CreateTable::actionString{"Create"};
 
+CreateTable::CreateTable() noexcept
+: state{ParseTableName} { }
+
 Action* CreateTable::createTable() noexcept {
     instance.state = ParseTableName;
     return &instance;

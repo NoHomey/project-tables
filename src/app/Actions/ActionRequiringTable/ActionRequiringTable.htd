@@ -1,0 +1,26 @@
+#pragma once
+
+#include "../Action/Action.h"
+
+template<typename State>
+class ActionRequiringTable: public Action {
+protected:
+    ActionRequiringTable(State state) noexcept;
+
+protected:
+    static Action* tableNotFound();
+
+protected:
+    template<typename Derived>
+    Action* parseTableName(State tableFound, State tableNotFound);
+
+protected:
+    void setState(State newState) noexcept;
+
+    State getState() const noexcept;
+
+protected:
+    State state;
+};
+
+#include "ActionRequiringTable.tci"

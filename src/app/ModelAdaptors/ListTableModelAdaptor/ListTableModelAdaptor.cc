@@ -16,12 +16,7 @@ const String& ListTableModelAdaptor::title() const noexcept {
 }
 
 const String& ListTableModelAdaptor::item(size_t index) const noexcept {
-    switch(columnsMetaData->getElement(index).getType()) {
-        case ColumnMetaData::Integer: return ColumnMetaDataStrings::Integer;
-        case ColumnMetaData::String: return ColumnMetaDataStrings::String;
-        case ColumnMetaData::FractionalNumber: return ColumnMetaDataStrings::FractionalNumber;
-        default: return ColumnMetaDataStrings::Unknown;
-    }
+    return ColumnMetaData::columnTypeAsString(columnsMetaData->getElement(index).getType());
 }
 
 size_t ListTableModelAdaptor::itemsCount() const noexcept {

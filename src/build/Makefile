@@ -45,14 +45,16 @@ fpconv = $(dependencies)/fpconv
 OwnDeps = $(1)/$(2)/$(2).cc $(1)/$(2)/$(2).h
 
 Templates = ../Container/DynamicArrayBase/DynamicArrayBase.htd ../Container/DynamicArray/DynamicArray.htd\
-../Container/MoveDynamicArray/MoveDynamicArray.htd ../SharedPtr/SharedPtr.htd
+../Container/MoveDynamicArray/MoveDynamicArray.htd ../SharedPtr/SharedPtr.htd\
+$(Actions)/ActionRequiringTable/ActionRequiringTable.htd $(Actions)/ActionRequiringTable/ActionRequiringTable.tci
 
 Objects = Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o ListComponent.o\
 ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o\
 OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o InfoModel.o InfoComponent.o\
-Message.o UnknownQueryCommand.o MissingTableName.o MessageContainingTableName.o InvalidTableName.o TableNotFound.o\
+Message.o UnknownQueryCommand.o MissingTableName.o MessageContainingTableName.o InvalidTableName.o TableNotFound.o TokenException.o\
 InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o SuccessfullyRenamedTable.o NoRename.o Rename.o\
-NewNameIsNotUnique.o TableCreated.o TableExists.o CreateTable.o ListOfCommands.o Help.o Application.o
+NewNameIsNotUnique.o TableCreated.o TableExists.o CreateTable.o InvalidColumnType.o ListOfCommands.o MissingColumnType.o\
+InvalidColumnType.o NewColumnAdded.o ColumnTypeParser.o AddColumn.o Help.o Application.o
 
 compileAll: $(Templates) app
 
@@ -131,10 +133,16 @@ ColumnMetaData.o fpconv.o
 CharSequenceParser.o: $(call OwnDeps,$(Parsers),CharSequenceParser) ConstString.o
 	$(COMPILER) -c $<
 
-InvalidSymbolAtPosition.o: $(call OwnDeps,$(Exceptions),InvalidSymbolAtPosition)
+TokenException.o: $(call OwnDeps,$(Exceptions),TokenException)
+	$(COMPILER) -c $<
+
+InvalidSymbolAtPosition.o: $(call OwnDeps,$(Exceptions),InvalidSymbolAtPosition) TokenException.o
 	$(COMPILER) -c $<
 
 TableNameParser.o: $(call OwnDeps,$(Parsers),TableNameParser) CharSequenceParser.o InvalidSymbolAtPosition.o
+	$(COMPILER) -c $<
+
+ColumnTypeParser.o: $(call OwnDeps,$(Parsers),ColumnTypeParser) CharSequenceParser.o TokenException.o ColumnMetaData.o
 	$(COMPILER) -c $<
 
 Argument.o: $(call OwnDeps,$(Action),Argument) ConstString.o FixedSizeString.o
@@ -193,6 +201,19 @@ TableExists.o: $(call OwnDeps,$(Messages),TableExists) MessageContainingTableNam
 
 CreateTable.o: $(call OwnDeps,$(Actions),CreateTable) Action.o TableNameParser.o ParseTableName.o Message.o\
 TableCreated.o TableExists.o
+	$(COMPILER) -c $<
+
+InvalidColumnType.o: $(call OwnDeps,$(Messages),InvalidColumnType) String.o ConstString.o FixedSizeString.o InfoModel.o TypesOutputer.o
+	$(COMPILER) -c $<
+
+MissingColumnType.o: $(call OwnDeps,$(Messages),MissingColumnType) String.o ConstString.o FixedSizeString.o InfoModel.o TypesOutputer.o
+	$(COMPILER) -c $<
+
+NewColumnAdded.o: $(call OwnDeps,$(Messages),NewColumnAdded) MessageContainingTableName.o
+	$(COMPILER) -c $<
+
+AddColumn.o: $(call OwnDeps,$(Actions),AddColumn) Action.o TableNameParser.o ParseTableName.o Message.o\
+InvalidColumnType.o MissingColumnType.o NewColumnAdded.o ColumnMetaData.o
 	$(COMPILER) -c $<
 
 ListOfCommands.o: $(call OwnDeps,$(Help),ListOfCommands)

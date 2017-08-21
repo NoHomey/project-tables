@@ -1,14 +1,16 @@
 #pragma once
 
-#include "../Action/Action.h"
+#include "../ActionRequiringTable/ActionRequiringTable.htd"
 
-class Describe: public Action {
+enum class DescribeState {
+    ParseTableName,
+    TableNotFound,
+    DescribeTable
+};
+
+class Describe: public ActionRequiringTable<DescribeState> {
 private:
-    enum State {
-        ParseTableName,
-        TableNotFound,
-        DescribeTable
-    };
+    using Base = ActionRequiringTable<DescribeState>;
 
 public:
     static Action* describe() noexcept;
@@ -16,12 +18,10 @@ public:
     Action* action() final;
 
 private:
-    Describe() noexcept = default;
+    Describe() noexcept;
 
 private:
     Action* parseTableName();
-
-    Action* tableNotFound();
 
     Action* describeTable();
 
@@ -30,7 +30,4 @@ public:
 
 private:
     static Describe instance;
-
-private:
-    State state;
 };
