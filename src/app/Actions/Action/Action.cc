@@ -3,6 +3,7 @@
 #include "../Describe/Describe.h"
 #include "../Rename/Rename.h"
 #include "../CreateTable/CreateTable.h"
+#include "../Help/Help.h"
 #include "../../../Parsers/CharSequenceParser/CharSequenceParser.h"
 #include "../../Messages/UnknownQueryCommand/UnknownQueryCommand.h"
 #include "../Message/Message.h"
@@ -35,6 +36,9 @@ void Action::setComponent(Component* component) noexcept {
 }
 
 Action* Action::selectAction(ConstString& action) {
+    if(action == Help::actionString) {
+        return Help::help();
+    }
     if(action == ShowTables::actionString) {
         return ShowTables::showTables();
     }

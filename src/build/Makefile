@@ -1,4 +1,4 @@
-.PHONY: clean leakCheck allocs run stringifyIntegerLimits compileAll
+.PHONY: clean leakCheck allocs run stringifyIntegerLimits dependencies removeDeps compileAll
 
 COMPILER = g++ -std=c++14 -Wall -Wextra -Wpedantic -g
 
@@ -36,6 +36,8 @@ Messages = $(app)/Messages
 
 Action = $(Actions)/Action
 
+Help = $(Actions)/Help
+
 dependencies = ../dependencies
 
 fpconv = $(dependencies)/fpconv
@@ -50,12 +52,14 @@ ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableDa
 OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o InfoModel.o InfoComponent.o\
 Message.o UnknownQueryCommand.o MissingTableName.o MessageContainingTableName.o InvalidTableName.o TableNotFound.o\
 InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o SuccessfullyRenamedTable.o NoRename.o Rename.o\
-NewNameIsNotUnique.o TableCreated.o TableExists.o CreateTable.o Application.o
+NewNameIsNotUnique.o TableCreated.o TableExists.o CreateTable.o ListOfCommands.o Help.o Application.o
 
 compileAll: $(Templates) app
 
 app: ../app/main.cc $(Objects)
 	$(COMPILER) -pthread $^
+
+all: stringifyIntegerLimits dependencies app
 
 Window.o: $(call OwnDeps,$(Renderer),Window)
 	$(COMPILER) -c $<
@@ -191,8 +195,20 @@ CreateTable.o: $(call OwnDeps,$(Actions),CreateTable) Action.o TableNameParser.o
 TableCreated.o TableExists.o
 	$(COMPILER) -c $<
 
+ListOfCommands.o: $(call OwnDeps,$(Help),ListOfCommands)
+	$(COMPILER) -c $<
+
+Help.o: $(call OwnDeps,$(Actions),Help) ListComponent.o ListOfCommands.o
+	$(COMPILER) -c $<
+
 Application.o: $(call OwnDeps,$(app),Application)
 	$(COMPILER) -c -pthread $<
+
+dependencies:
+	cd ../dependencies && $(MAKE)
+
+removeDeps:
+	cd ../dependencies && $(MAKE) remove
 
 clean:
 	rm -f *.o *.txt $(Executable)
