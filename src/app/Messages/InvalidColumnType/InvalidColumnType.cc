@@ -10,7 +10,7 @@ ConstString InvalidColumnType::textEnding{"' is invalid column type identificato
 const size_t InvalidColumnType::ownTextLength = textBeginning.length() + textEnding.length();
 
 InvalidColumnType* InvalidColumnType::inject(const String& argument) {
-    instance.argument = {argument.cString(), argument.length()};
+    instance.argument = FixedSizeString::fromString(argument);
     instance.setTextLength(ownTextLength + argument.length());
     return &instance;
 }

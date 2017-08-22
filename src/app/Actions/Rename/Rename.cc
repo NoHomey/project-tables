@@ -1,6 +1,6 @@
 #include "Rename.h"
 #include "../ParseTableName/ParseTableName.h"
-#include "../../Messages/SuccessfullyRenamedTable/SuccessfullyRenamedTable.h"
+#include "../../Messages/TableRenamed/TableRenamed.h"
 #include "../../Messages/NoRename/NoRename.h"
 #include "../../Messages/NewNameIsNotUnique/NewNameIsNotUnique.h"
 #include "../Message/Message.h"
@@ -22,7 +22,7 @@ Action* Rename::parseTableName() {
 }
 
 Action* Rename::parseNewTableName() {
-    Action* parseAction = ParseTableName::parseTableName(actionString, 1)->action();
+    Action* parseAction = ParseTableName::parseTableName(actionString)->action();
     if(parseAction != nullptr) {
         return parseAction;
     }
@@ -38,8 +38,8 @@ Action* Rename::parseNewTableName() {
 
 Action* Rename::renameTable() {
     ConstString& newName = arguments[1].asTemporaryString();
-    FixedSizeString oldName = currentTable->rename({newName.cString(), newName.length()});
-    return Message::showMessage(SuccessfullyRenamedTable::inject(std::move(oldName), currentTable->getName()));
+    FixedSizeString oldName = currentTable->rename(FixedSizeString::fromString(newName));
+    return Message::showMessage(TableRenamed::inject(std::move(oldName), currentTable->getName()));
 }
 
 Action* Rename::newNameIsNotUnique() {

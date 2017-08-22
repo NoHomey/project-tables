@@ -16,7 +16,7 @@ const size_t NewNameIsNotUnique::ownTextLength = textBeginning.length()
 
 NewNameIsNotUnique* NewNameIsNotUnique::inject(const FixedSizeString& tableName, const FixedSizeString& newTableName) noexcept {
     instance.setTableName(tableName);
-    instance.newName = {newTableName.cString(), newTableName.length()};
+    instance.newName = ImmutableString::fromString(newTableName);
     instance.setTextLength(ownTextLength + tableName.length() + 2 * newTableName.length());
     return &instance;
 }

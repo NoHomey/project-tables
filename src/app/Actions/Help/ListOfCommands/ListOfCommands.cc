@@ -3,6 +3,7 @@
 #include "../../Describe/Describe.h"
 #include "../../Rename/Rename.h"
 #include "../../CreateTable/CreateTable.h"
+#include "../../Save/Save.h"
 #include "../../AddColumn/AddColumn.h"
 
 ListOfCommands ListOfCommands::instance;
@@ -25,6 +26,7 @@ const String& ListOfCommands::item(size_t index) const noexcept {
         case Commands::Rename: return Rename::actionString;
         case Commands::Create: return CreateTable::actionString;
         case Commands::AddColumn: return AddColumn::actionString;
+        case Commands::Save: return Save::actionString;
         default: return titleText;
     }
 }

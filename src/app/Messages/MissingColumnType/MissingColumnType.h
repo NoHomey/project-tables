@@ -11,7 +11,7 @@ public:
     void output(CharOutputStream& outputStream) const final;
 
 private:
-    MissingColumnType() noexcept = default;
+    MissingColumnType() noexcept;
 
     MissingColumnType(const MissingColumnType& other) = delete;
 

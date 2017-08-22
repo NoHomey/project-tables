@@ -4,6 +4,7 @@
 #include "../Rename/Rename.h"
 #include "../CreateTable/CreateTable.h"
 #include "../AddColumn/AddColumn.h"
+#include "../Save/Save.h"
 #include "../Help/Help.h"
 #include "../../../Parsers/CharSequenceParser/CharSequenceParser.h"
 #include "../../Messages/UnknownQueryCommand/UnknownQueryCommand.h"
@@ -54,6 +55,9 @@ Action* Action::selectAction(ConstString& action) {
     }
     if(action == AddColumn::actionString) {
         return AddColumn::addColumn();
+    }
+    if(action == Save::actionString) {
+        return Save::save();
     }
     return Message::showMessage(UnknownQueryCommand::inject(action));
 }

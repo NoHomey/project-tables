@@ -44,6 +44,22 @@ fpconv = $(dependencies)/fpconv
 
 OwnDeps = $(1)/$(2)/$(2).cc $(1)/$(2)/$(2).h
 
+define FileIOMessage
+
+$(1).o: $(call OwnDeps,$(Messages)/FileIO/$(2),$(1)) FileIOMessage.o
+	$(COMPILER) -c $$<
+
+endef
+
+OpenMessages = CannotCreateFile CannotOpenFile FileIsLocatedOnReadOnlyFileSystem FileIsSealed FileIsTooLarge\
+FileNameIsTooLong ItIsADirectory PermitionDenied
+
+WriteMessages = CannotWrite FileIsTooBig FileSystemDiskBlocksQuotaExhausted LowLevelException UnexpectedWriteError
+
+OpenMessageObjects = $(addsuffix .o,$(OpenMessages))
+
+WriteMessageObjects = $(addsuffix .o,$(WriteMessages))
+
 Templates = ../Container/DynamicArrayBase/DynamicArrayBase.htd ../Container/DynamicArray/DynamicArray.htd\
 ../Container/MoveDynamicArray/MoveDynamicArray.htd ../SharedPtr/SharedPtr.htd\
 $(Actions)/ActionRequiringTable/ActionRequiringTable.htd $(Actions)/ActionRequiringTable/ActionRequiringTable.tci
@@ -51,10 +67,11 @@ $(Actions)/ActionRequiringTable/ActionRequiringTable.htd $(Actions)/ActionRequir
 Objects = Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o ListComponent.o\
 ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o\
 OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o InfoModel.o InfoComponent.o\
-Message.o UnknownQueryCommand.o MissingTableName.o MessageContainingTableName.o InvalidTableName.o TableNotFound.o TokenException.o\
-InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o SuccessfullyRenamedTable.o NoRename.o Rename.o\
+Message.o UnknownQueryCommand.o MissingArgument.o MissingTableName.o MessageContainingTableName.o InvalidTableName.o TableNotFound.o\
+TokenException.o InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o TableRenamed.o NoRename.o Rename.o\
 NewNameIsNotUnique.o TableCreated.o TableExists.o CreateTable.o InvalidColumnType.o ListOfCommands.o MissingColumnType.o\
-InvalidColumnType.o NewColumnAdded.o ColumnTypeParser.o AddColumn.o Help.o Application.o
+InvalidColumnType.o NewColumnAdded.o ColumnTypeParser.o AddColumn.o TableOutputerToFile.o MissingFileName.o ParseFileName.o\
+TableSaved.o FileIOMessage.o $(OpenMessageObjects) $(WriteMessageObjects) Save.o Help.o Application.o
 
 compileAll: $(Templates) app
 
@@ -161,7 +178,10 @@ ShowTables.o: $(call OwnDeps,$(Actions),ShowTables) Action.o ListComponent.o
 Message.o: $(call OwnDeps,$(Actions),Message) Action.o InfoComponent.o InfoModel.o
 	$(COMPILER) -c $<
 
-MissingTableName.o: $(call OwnDeps,$(Messages),MissingTableName) String.o ConstString.o TypesOutputer.o
+MissingArgument.o: $(call OwnDeps,$(Messages),MissingArgument) String.o ConstString.o TypesOutputer.o
+	$(COMPILER) -c $<
+
+MissingTableName.o: $(call OwnDeps,$(Messages),MissingTableName) MissingArgument.o
 	$(COMPILER) -c $<
 
 MessageContainingTableName.o: $(call OwnDeps,$(Messages),MessageContainingTableName) String.o ConstString.o FixedSizeString.o TypesOutputer.o
@@ -173,14 +193,14 @@ InvalidTableName.o: $(call OwnDeps,$(Messages),InvalidTableName) MessageContaini
 TableNotFound.o: $(call OwnDeps,$(Messages),TableNotFound) MessageContainingTableName.o
 	$(COMPILER) -c $<
 
-ParseTableName.o: $(call OwnDeps,$(Actions),ParseTableName) Action.o TableNameParser.o Message.o
+ParseTableName.o: $(call OwnDeps,$(Actions),ParseTableName) Action.o TableNameParser.o Message.o MissingTableName.o
 	$(COMPILER) -c $<
 
 Describe.o: $(call OwnDeps,$(Actions),Describe) Action.o TableNameParser.o ParseTableName.o\
 ListComponent.o ListTableModelAdaptor.o Message.o
 	$(COMPILER) -c $<
 
-SuccessfullyRenamedTable.o: $(call OwnDeps,$(Messages),SuccessfullyRenamedTable) String.o ConstString.o FixedSizeString.o TypesOutputer.o
+TableRenamed.o: $(call OwnDeps,$(Messages),TableRenamed) String.o ConstString.o FixedSizeString.o TypesOutputer.o
 	$(COMPILER) -c $<
 
 NoRename.o: $(call OwnDeps,$(Messages),NoRename) MessageContainingTableName.o
@@ -189,7 +209,7 @@ NoRename.o: $(call OwnDeps,$(Messages),NoRename) MessageContainingTableName.o
 NewNameIsNotUnique.o: $(call OwnDeps,$(Messages),NewNameIsNotUnique) MessageContainingTableName.o
 	$(COMPILER) -c $<
 
-Rename.o: $(call OwnDeps,$(Actions),Rename) Action.o TableNameParser.o ParseTableName.o SuccessfullyRenamedTable.o\
+Rename.o: $(call OwnDeps,$(Actions),Rename) Action.o TableNameParser.o ParseTableName.o TableRenamed.o\
 NoRename.o NewNameIsNotUnique.o
 	$(COMPILER) -c $<
 
@@ -220,6 +240,29 @@ ListOfCommands.o: $(call OwnDeps,$(Help),ListOfCommands)
 	$(COMPILER) -c $<
 
 Help.o: $(call OwnDeps,$(Actions),Help) ListComponent.o ListOfCommands.o
+	$(COMPILER) -c $<
+
+TableOutputerToFile.o: $(call OwnDeps,$(Table),TableOutputerToFile) ConstString.o Writer.o TypesOutputer.o
+	$(COMPILER) -c $<
+
+MissingFileName.o: $(call OwnDeps,$(Messages),MissingFileName) MissingArgument.o
+	$(COMPILER) -c $<
+
+ParseFileName.o: $(call OwnDeps,$(Actions),ParseFileName) Action.o Message.o MissingFileName.o
+	$(COMPILER) -c $<
+
+TableSaved.o: $(call OwnDeps,$(Messages),TableSaved) MessageContainingTableName.o
+	$(COMPILER) -c $<
+
+FileIOMessage.o: $(call OwnDeps,$(Messages)/FileIO,FileIOMessage) InfoModel.o ConstString.o FixedSizeString.o TypesOutputer.o
+	$(COMPILER) -c $<
+
+$(foreach message,$(OpenMessages),$(eval $(call FileIOMessage,$(message),OpenMessage)))
+
+$(foreach message,$(WriteMessages),$(eval $(call FileIOMessage,$(message),WriteMessage)))
+
+Save.o: $(call OwnDeps,$(Actions),Save) TableOutputerToFile.o MissingFileName.o ParseFileName.o\
+TableSaved.o FileIOMessage.o $(OpenMessageObjects) $(WriteMessageObjects)
 	$(COMPILER) -c $<
 
 Application.o: $(call OwnDeps,$(app),Application)

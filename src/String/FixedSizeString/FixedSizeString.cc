@@ -1,6 +1,10 @@
 #include "FixedSizeString.h"
 #include <utility>
 
+FixedSizeString FixedSizeString::fromString(const String& string) {
+    return {string.cString(), string.length()};
+}
+
 void FixedSizeString::fill(const char* content) noexcept {
     for(size_t index = 0; index < stringLength; ++index) {
         string[index] = content[index];

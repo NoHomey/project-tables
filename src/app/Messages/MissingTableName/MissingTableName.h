@@ -1,19 +1,13 @@
 #pragma once
 
-#include "../../../Components/Info/InfoModel/InfoModel.h"
-#include "../../../String/ConstString/ConstString.h"
+#include "../MissingArgument/MissingArgument.h"
 
-class MissingTableName: public InfoModel {
+class MissingTableName: public MissingArgument {
 public:
-    static MissingTableName* inject(ConstString& command, ConstString& argument);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-    void releaseResources() noexcept final;
+    static MissingTableName* inject(ConstString& command, ConstString& argument) noexcept;
 
 private:
-    MissingTableName() noexcept = default;
+    MissingTableName() noexcept;
 
     MissingTableName(const MissingTableName& other) = delete;
 
@@ -24,18 +18,7 @@ private:
     MissingTableName& operator=(MissingTableName&& other) = delete;
 
 private:
+    static ConstString tableNameIdentificator;
+
     static MissingTableName instance;
-
-    static ConstString textBeginning;
-
-    static ConstString textExpects;
-
-    static ConstString textEnding;
-
-    static const size_t ownTextLength;
-
-private:
-    ImmutableString commandName;
-
-    ImmutableString argument;
 };

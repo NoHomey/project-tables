@@ -6,9 +6,8 @@
 
 ParseTableName ParseTableName::instance;
 
-Action* ParseTableName::parseTableName(ConstString& commandName, unsigned char argument) noexcept {
+Action* ParseTableName::parseTableName(ConstString& commandName) noexcept {
     instance.commandName = commandName;
-    instance.argument = argument;
     return &instance;
 }
 
@@ -19,7 +18,10 @@ Action* ParseTableName::action() {
     } catch(const TableNameParser::InvalidTableName& error) {
         return Message::showMessage(InvalidTableName::inject(error.getToken()));
     } catch(const Exception& error) {
-        return Message::showMessage(MissingTableName::inject(commandName, Message::mappedArgumentIndexNames[argument]));
+        return Message::showMessage(MissingTableName::inject(
+            commandName,
+            Message::mappedArgumentIndexNames[arguments.size()]
+        ));
     }
     Action::command = result.getRest();
     arguments.push(result.getExtracted());

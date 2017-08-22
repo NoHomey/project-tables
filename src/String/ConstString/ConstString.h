@@ -4,6 +4,9 @@
 
 class ImmutableString: public String {
 public:
+    static ImmutableString fromString(const String& string) noexcept;
+
+public:
     ImmutableString() noexcept = default;
 
     ImmutableString(const char* string, size_t length) noexcept;

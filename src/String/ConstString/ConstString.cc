@@ -1,5 +1,9 @@
 #include "ConstString.h"
 
+ImmutableString ImmutableString::fromString(const String& string) noexcept {
+    return {string.cString(), string.length()};
+}
+
 ImmutableString::ImmutableString(const char* string, size_t length) noexcept
 : String{string, length} { }
 

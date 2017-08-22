@@ -5,7 +5,7 @@
 
 class ParseTableName: public Action {
 public:
-    static Action* parseTableName(ConstString& commandName, unsigned char argument) noexcept;
+    static Action* parseTableName(ConstString& commandName) noexcept;
 
     Action* action() final;
 
@@ -25,6 +25,4 @@ private:
 
 private:
     ImmutableString commandName;
-
-    unsigned char argument;
 };

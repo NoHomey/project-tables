@@ -28,6 +28,10 @@ public:
 
     FixedSizeString rename(FixedSizeString&& newName) noexcept;
 
+    TableData& data() noexcept;
+
+    const TableData& data() const noexcept;
+
 private:
     FixedSizeString name;
 

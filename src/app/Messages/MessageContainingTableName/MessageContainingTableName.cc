@@ -8,7 +8,7 @@ void MessageContainingTableName<TableNameType>::releaseResources() noexcept {
 
 template<typename TableNameType>
 void MessageContainingTableName<TableNameType>::setTableName(const String& name) {
-    tableName = {name.cString(), name.length()};
+    tableName = TableNameType::fromString(name);
 }
 
 template<typename TableNameType>

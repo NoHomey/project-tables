@@ -19,7 +19,7 @@ Action* CreateTable::createTable() noexcept {
 }
 
 Action* CreateTable::parseTableName() {
-    Action* parseAction = ParseTableName::parseTableName(actionString, 0)->action();
+    Action* parseAction = ParseTableName::parseTableName(actionString)->action();
     if(parseAction != nullptr) {
         return parseAction;
     }
@@ -39,7 +39,7 @@ Action* CreateTable::tableNameIsNotUnique() {
 
 Action* CreateTable::createNewTable() {
     ConstString tableName = arguments[0].asTemporaryString();
-    allTables.addTable({{tableName.cString(), tableName.length()}});
+    allTables.addTable({FixedSizeString::fromString(tableName)});
     return Message::showMessage(TableCreated::inject(allTables.getTableByName(tableName)->getName()));
 }
 

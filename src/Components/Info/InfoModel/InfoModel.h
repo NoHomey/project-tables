@@ -5,7 +5,7 @@
 
 class InfoModel {
 public:
-    InfoModel() noexcept = default;
+    InfoModel(size_t length = 0) noexcept;
 
     size_t textLength() const noexcept;
 
@@ -19,5 +19,5 @@ protected:
     void setTextLength(size_t textLength) noexcept;
 
 private:
-    size_t length = 0;
+    size_t length;
 };

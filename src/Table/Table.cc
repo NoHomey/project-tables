@@ -22,3 +22,11 @@ FixedSizeString Table::rename(FixedSizeString&& newName) noexcept {
     name = std::move(newName);
     return oldName;
 }
+
+TableData& Table::data() noexcept {
+    return tableData;
+}
+
+const TableData& Table::data() const noexcept {
+    return tableData;
+}

@@ -4,13 +4,24 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include "Exceptions/Exceptions.h"
 
 OutputFile::OutputFile(const char* file)
 : fd{-1} {
     errno = 0;
     fd = TEMP_FAILURE_RETRY(::open(file, WRITE_FLAGS, ALL_READ_WRITE));
     if(fd == -1) {
-        throw errno;
+        switch(errno) {
+            case EACCES: throw OpenException::PermitionDenied{};
+            case EDQUOT: throw OpenException::CannotCreateFile{};
+            case EISDIR: throw OpenException::ItIsADirectory{};
+            case ENAMETOOLONG: throw OpenException::FileNameIsTooLong{};
+            case ENOSPC: throw OpenException::CannotCreateFile{};
+            case EOVERFLOW: throw OpenException::FileIsTooLarge{};
+            case EPERM: throw OpenException::FileIsSealed{};
+            case EROFS: throw OpenException::ReadOnlyFileSystem{};
+            default: throw OpenException::CannotOpenFile{};
+        }
     }
 }
 
@@ -44,15 +55,13 @@ size_t OutputFile::write(const char* data, size_t count) {
     errno = 0;
     const ssize_t writeCount = TEMP_FAILURE_RETRY(::write(fd, data, count));
     if(writeCount == -1) {
-        /*switch(errno) {
-            case EDQUOT: break;
-            case EFBIG: break;
-            case EINVAL: break;
-            case EIO: break;
-            case ENOSPC: break;
-            default: throw errno;
-        }*/
-        throw errno;
+        switch(errno) {
+            case EDQUOT: throw WriteException::FileSystemDiskBlocksQuotaExhausted{};
+            case EFBIG: throw WriteException::FileIsTooBig{};
+            case EINVAL: throw WriteException::CannotWrite{};
+            case EIO: throw WriteException::LowLevelException{};
+            default: throw WriteException::UnexpectedWriteError{};
+        }
     }
     return writeCount > 0 ? writeCount : write(data, count);
 }

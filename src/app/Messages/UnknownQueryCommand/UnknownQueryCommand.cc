@@ -10,7 +10,7 @@ ConstString UnknownQueryCommand::textEnding{"' is uknown query command."};
 const size_t UnknownQueryCommand::ownTextLength = textBeginning.length() + textEnding.length();
 
 UnknownQueryCommand* UnknownQueryCommand::inject(const String& command) {
-    instance.unknownCommand = {command.cString(), command.length()};
+    instance.unknownCommand = FixedSizeString::fromString(command);
     instance.setTextLength(ownTextLength + command.length());
     return &instance;
 }
