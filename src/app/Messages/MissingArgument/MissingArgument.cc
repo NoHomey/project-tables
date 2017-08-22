@@ -12,14 +12,23 @@ ConstString MissingArgument::textEnding{" argument. But none was found."};
 const size_t MissingArgument::ownTextLength = textBeginning.length() + textExpects.length()
                                                     + textAs.length() + textEnding.length();
 
-MissingArgument::MissingArgument(ConstString& argumentDescription) noexcept
-: argumentDescription{argumentDescription}, commandName{}, argument{} { }
+ConstString MissingArgument::mappedArgumentIndexNames[mappedArgumentIndexNamesCount] = {
+    "first",
+    "second",
+    "third",
+    "fourth",
+    "fifth",
+    "sixth"
+};
 
-void MissingArgument::set(ConstString& command, ConstString& argument) noexcept {
-    commandName = command;
-    this->argument = argument;
-    setTextLength(ownTextLength + argumentDescription.length() + command.length() + argument.length());
+size_t MissingArgument::calculateTextLength(ConstString& argumentDescription, ConstString& command, unsigned int argument) noexcept {
+    return ownTextLength + command.length() + argumentDescription.length() + mappedArgumentIndexNames[argument].length();
 }
+
+MissingArgument::MissingArgument(ConstString& argumentDescription, ConstString& command, unsigned int argument) noexcept
+: InfoModel{calculateTextLength(argumentDescription, command, argument), true},
+argumentDescription{argumentDescription}, commandName{command},
+argument{mappedArgumentIndexNames[argument]} { }
 
 void MissingArgument::output(CharOutputStream& outputStream) const {
     TypesOutputer::output(outputStream, textBeginning);
@@ -29,9 +38,4 @@ void MissingArgument::output(CharOutputStream& outputStream) const {
     TypesOutputer::output(outputStream, textAs);
     TypesOutputer::output(outputStream, argument);
     TypesOutputer::output(outputStream, textEnding);
-}
-
-void MissingArgument::releaseResources() noexcept {
-    commandName = {};
-    argument = {};
 }

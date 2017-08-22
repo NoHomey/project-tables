@@ -5,17 +5,10 @@
 
 class MissingArgument: public InfoModel {
 public:
-    void output(CharOutputStream& outputStream) const final;
+    MissingArgument(ConstString& argumentDescription, ConstString& command, unsigned int argument) noexcept;
 
-    void releaseResources() noexcept final;
+    virtual ~MissingArgument() noexcept = default;
 
-protected:
-    void set(ConstString& command, ConstString& argument) noexcept;
-
-protected:
-    MissingArgument(ConstString& argumentDescription) noexcept;
-
-private:
     MissingArgument(const MissingArgument& other) = delete;
 
     MissingArgument(MissingArgument&& other) = delete;
@@ -23,6 +16,12 @@ private:
     MissingArgument& operator=(const MissingArgument& other) = delete;
 
     MissingArgument& operator=(MissingArgument&& other) = delete;
+
+public:
+    void output(CharOutputStream& outputStream) const final;
+
+private:
+    static size_t calculateTextLength(ConstString& argumentDescription, ConstString& command, unsigned int argument) noexcept;
 
 private:
     static ConstString textBeginning;
@@ -35,10 +34,14 @@ private:
 
     static const size_t ownTextLength;
 
+    static const unsigned char mappedArgumentIndexNamesCount = 6;
+    
+    static ConstString mappedArgumentIndexNames[mappedArgumentIndexNamesCount];
+
 private:
     ConstString argumentDescription;
 
-    ImmutableString commandName;
+    ConstString commandName;
 
-    ImmutableString argument;
+    ConstString argument;
 };

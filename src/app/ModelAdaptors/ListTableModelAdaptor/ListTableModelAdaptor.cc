@@ -1,24 +1,16 @@
 #include "ListTableModelAdaptor.h"
 
-ListTableModelAdaptor ListTableModelAdaptor::modelAdaptor;
-
-const ListTableModelAdaptor* ListTableModelAdaptor::adapt(const Table* table) noexcept {
-    modelAdaptor.tableName = &table->getName();
-    modelAdaptor.columnsMetaData = &table->getColumnsMetaData();
-    return &modelAdaptor;
-}
-
-ListTableModelAdaptor::ListTableModelAdaptor() noexcept
-: tableName{nullptr}, columnsMetaData{nullptr} { }
+ListTableModelAdaptor::ListTableModelAdaptor(const Table* table) noexcept
+: ListModel{true}, tableName{table->getName()}, columnsMetaData{table->getColumnsMetaData()} { }
 
 const String& ListTableModelAdaptor::title() const noexcept {
-    return *tableName;
+    return tableName;
 }
 
 const String& ListTableModelAdaptor::item(size_t index) const noexcept {
-    return ColumnMetaData::columnTypeAsString(columnsMetaData->getElement(index).getType());
+    return ColumnMetaData::columnTypeAsString(columnsMetaData.getElement(index).getType());
 }
 
 size_t ListTableModelAdaptor::itemsCount() const noexcept {
-    return columnsMetaData->size();
+    return columnsMetaData.size();
 }

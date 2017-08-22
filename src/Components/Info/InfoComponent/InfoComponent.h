@@ -1,10 +1,10 @@
 #pragma once
 
 #include "../InfoModel/InfoModel.h"
-#include "../../Component.h"
+#include "../../ComponentWithModel/ComponentWithModel.htd"
 #include "../../../Renderer/Window/Window.h"
 
-class InfoComponent: public Component {
+class InfoComponent: public ComponentWithModel<InfoModel> {
 private:
     struct Ratio {
         Window::size numerator;
@@ -12,10 +12,7 @@ private:
     };
 
 public:
-    static InfoComponent* inject(InfoModel* model) noexcept;
-
-private:
-    InfoComponent() noexcept;
+    InfoComponent(const InfoModel* model) noexcept;
 
     InfoComponent(const InfoComponent& other) = delete;
 
@@ -29,8 +26,6 @@ public:
     void render() final;
 
 private:
-    void setModel(InfoModel* infoModel) noexcept;
-
     bool calculateSizes() noexcept;
 
     void fillEmpty(Window::size count) const;
@@ -45,15 +40,11 @@ private:
     static Window::size calculateRatio(Window::size size, unsigned short index) noexcept;
 
 private:
-    static InfoComponent component;
-
     static const unsigned int ratiosCount = 5;
 
     static const Ratio ratios[ratiosCount];
 
 private:
-    InfoModel* model;
-
     Window::size width;
 
     Window::size height;

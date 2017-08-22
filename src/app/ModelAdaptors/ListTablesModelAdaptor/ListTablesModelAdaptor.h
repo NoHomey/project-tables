@@ -6,17 +6,7 @@
 
 class ListTablesModelAdaptor: public ListModel {
 public:
-    static const ListTablesModelAdaptor* adapt(const Tables& tables) noexcept;
-
-public:
-    const String& title() const noexcept;
-    
-    const String& item(size_t index) const noexcept;
-
-    size_t itemsCount() const noexcept;
-    
-private:
-    ListTablesModelAdaptor() noexcept;
+    ListTablesModelAdaptor(const Tables& tables) noexcept;
 
     ListTablesModelAdaptor(const ListTablesModelAdaptor& other) = delete;
 
@@ -26,11 +16,16 @@ private:
 
     ListTablesModelAdaptor& operator=(ListTablesModelAdaptor& other) = delete;
 
-private:
-    static ListTablesModelAdaptor modelAdaptor;
+public:
+    const String& title() const noexcept;
+    
+    const String& item(size_t index) const noexcept;
 
+    size_t itemsCount() const noexcept;
+
+private:
     static ConstString titleText;
     
 private:
-    const MoveDynamicArray<Table>* tables;
+    const MoveDynamicArray<Table>& tables;
 };

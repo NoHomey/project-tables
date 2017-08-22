@@ -1,18 +1,17 @@
 #pragma once
 
 #include "../ListModel/ListModel.h"
-#include "../../Component.h"
+#include "../../ComponentWithModel/ComponentWithModel.htd"
 #include "../../../Renderer/Window/Window.h"
 
-class ListComponent: public Component {
-public:
-    static ListComponent* inject(const ListModel* model) noexcept;
-
+class ListComponent: public ComponentWithModel<ListModel> {
 public:
     void render() final;
 
-private:
-    ListComponent() noexcept;
+public:
+    ListComponent(const ListModel* model) noexcept;
+
+    ~ListComponent() noexcept = default;
 
     ListComponent(const ListComponent& other) = delete;
 
@@ -30,8 +29,6 @@ private:
     static void addText(const String& text);
 
 private:
-    void setModel(const ListModel* listModel) noexcept;
-
     void calculateMinWidth() noexcept;
 
     void addLine(const String& text);
@@ -43,11 +40,6 @@ private:
     void renderList(Window::size padding);
 
 private:
-    static ListComponent component;
-
-private:
-    const ListModel* model;
-
     Window::size minWidth;
 
     Window::size minHeight;

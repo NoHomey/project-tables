@@ -4,15 +4,7 @@
 
 class TableRenamed: public MessageContainingTableName<ImmutableString> {
 public:
-    static TableRenamed* inject(FixedSizeString&& oldTableName, const FixedSizeString& newTableName) noexcept;
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-    void releaseResources() noexcept final;
-
-private:
-    TableRenamed() noexcept = default;
+    TableRenamed(FixedSizeString&& oldTableName, const FixedSizeString& newTableName);
 
     TableRenamed(const TableRenamed& other) = delete;
 
@@ -22,9 +14,10 @@ private:
 
     TableRenamed& operator=(TableRenamed&& other) = delete;
 
-private:
-    static TableRenamed instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
 
     static ConstString textBetweenNames;

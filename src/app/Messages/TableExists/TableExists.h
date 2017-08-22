@@ -4,13 +4,7 @@
 
 class TableExists: public MessageContainingTableName<ImmutableString> {
 public:
-    static TableExists* inject(const FixedSizeString& tableName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    TableExists() noexcept = default;
+    TableExists(const FixedSizeString& tableName) noexcept;
 
     TableExists(const TableExists& other) = delete;
 
@@ -20,9 +14,10 @@ private:
 
     TableExists& operator=(TableExists&& other) = delete;
 
-private:
-    static TableExists instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
 
     static ConstString textEnding;

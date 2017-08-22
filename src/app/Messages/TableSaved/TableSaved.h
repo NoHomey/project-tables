@@ -4,15 +4,7 @@
 
 class TableSaved: public MessageContainingTableName<ImmutableString> {
 public:
-    static TableSaved* inject(const FixedSizeString& tableName, ConstString& fileName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-    void releaseResources() noexcept final;
-
-private:
-    TableSaved() noexcept = default;
+    TableSaved(const FixedSizeString& tableName, ConstString& fileName);
 
     TableSaved(const TableSaved& other) = delete;
 
@@ -22,9 +14,10 @@ private:
 
     TableSaved& operator=(TableSaved&& other) = delete;
 
-private:
-    static TableSaved instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
 
     static ConstString textAfterTableName;

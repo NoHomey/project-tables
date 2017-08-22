@@ -6,15 +6,7 @@
 
 class InvalidColumnType: public InfoModel {
 public:
-    static InvalidColumnType* inject(const String& argument);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-    
-    void releaseResources() noexcept final;
-
-private:
-    InvalidColumnType() noexcept = default;
+    InvalidColumnType(const String& argument);
 
     InvalidColumnType(const InvalidColumnType& other) = delete;
 
@@ -24,9 +16,10 @@ private:
 
     InvalidColumnType& operator=(InvalidColumnType&& other) = delete;
 
-private:
-    static InvalidColumnType instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
 
     static ConstString textEnding;

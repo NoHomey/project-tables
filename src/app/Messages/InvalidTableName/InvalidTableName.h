@@ -4,13 +4,7 @@
 
 class InvalidTableName: public MessageContainingTableName<FixedSizeString> {
 public:
-    static InvalidTableName* inject(const String& tableName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    InvalidTableName() noexcept = default;
+    InvalidTableName(const String& tableName);
 
     InvalidTableName(const InvalidTableName& other) = delete;
 
@@ -20,9 +14,10 @@ private:
 
     InvalidTableName& operator=(InvalidTableName&& other) = delete;
 
-private:
-    static InvalidTableName instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
 
     static ConstString textEnding;

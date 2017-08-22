@@ -7,6 +7,8 @@ class ActionRequiringTable: public Action {
 protected:
     ActionRequiringTable(State state) noexcept;
 
+    virtual ~ActionRequiringTable() noexcept = default;
+
 protected:
     static Action* tableNotFound();
 

@@ -4,13 +4,7 @@
 
 class TableCreated: public MessageContainingTableName<ImmutableString> {
 public:
-    static TableCreated* inject(const FixedSizeString& tableName) noexcept;
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    TableCreated() noexcept = default;
+    TableCreated(const FixedSizeString& tableName) noexcept;
 
     TableCreated(const TableCreated& other) = delete;
 
@@ -20,9 +14,10 @@ private:
 
     TableCreated& operator=(TableCreated&& other) = delete;
 
-private:
-    static TableCreated instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
 
     static ConstString textEnding;

@@ -2,22 +2,19 @@
 
 #include <cstddef>
 #include "../../../CharOutputStream/CharOutputStream.h"
+#include "../../Model/Model.h"
 
-class InfoModel {
+class InfoModel: public Model {
 public:
-    InfoModel(size_t length = 0) noexcept;
-
-    size_t textLength() const noexcept;
-
-    virtual void output(CharOutputStream& outputStream) const = 0;
-
-    virtual void releaseResources() noexcept;
+    InfoModel(size_t length, bool deletable) noexcept;
 
     virtual ~InfoModel() noexcept = default;
 
-protected:
-    void setTextLength(size_t textLength) noexcept;
+public:
+    virtual void output(CharOutputStream& outputStream) const = 0;
+
+    size_t textLength() const noexcept;
 
 private:
-    size_t length;
+    const size_t length;
 };

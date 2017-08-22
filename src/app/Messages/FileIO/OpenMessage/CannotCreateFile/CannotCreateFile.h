@@ -4,13 +4,7 @@
 
 class CannotCreateFile: public FileIOMessage {
 public:
-    static CannotCreateFile* inject(const String& fileName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    CannotCreateFile() noexcept = default;
+    CannotCreateFile(const String& fileName);
 
     CannotCreateFile(const CannotCreateFile& other) = delete;
 
@@ -20,12 +14,13 @@ private:
 
     CannotCreateFile& operator=(CannotCreateFile&& other) = delete;
 
-private:
-    static CannotCreateFile instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
     
     static ConstString textEnding;
-    
+
     static const size_t ownTextLength;
 };

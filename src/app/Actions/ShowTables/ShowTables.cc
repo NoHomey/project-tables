@@ -11,6 +11,6 @@ Action* ShowTables::showTables() noexcept {
 }
 
 Action* ShowTables::action() {
-    setComponent(ListComponent::inject(ListTablesModelAdaptor::adapt(allTables)));
+    setComponent(new ListComponent(new ListTablesModelAdaptor(allTables)));
     return nullptr;
 }

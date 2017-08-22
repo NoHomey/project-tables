@@ -2,7 +2,6 @@
 #include "../../../Parsers/TableNameParser/TableNameParser.h"
 #include "../../Messages/MissingTableName/MissingTableName.h"
 #include "../../Messages/InvalidTableName/InvalidTableName.h"
-#include "../Message/Message.h"
 
 ParseTableName ParseTableName::instance;
 
@@ -16,12 +15,9 @@ Action* ParseTableName::action() {
     try {
         result = TableNameParser::parse(command);
     } catch(const TableNameParser::InvalidTableName& error) {
-        return Message::showMessage(InvalidTableName::inject(error.getToken()));
+        return showMessage(new InvalidTableName(error.getToken()));
     } catch(const Exception& error) {
-        return Message::showMessage(MissingTableName::inject(
-            commandName,
-            Message::mappedArgumentIndexNames[arguments.size()]
-        ));
+        return showMessage(new MissingTableName(commandName, arguments.size()));
     }
     Action::command = result.getRest();
     arguments.push(result.getExtracted());

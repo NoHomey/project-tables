@@ -6,11 +6,10 @@
 
 template<typename TableNameType>
 class MessageContainingTableName: public InfoModel {
-public:
-    void releaseResources() noexcept override;
-
 protected:
-    MessageContainingTableName() noexcept = default;
+    MessageContainingTableName(const String& tableName, size_t textLength);
+
+    virtual ~MessageContainingTableName() noexcept = default;
 
     MessageContainingTableName(const MessageContainingTableName& other) = delete;
 
@@ -21,8 +20,6 @@ protected:
     MessageContainingTableName& operator=(MessageContainingTableName&& other) = delete;
 
 protected:
-    void setTableName(const String& name);
-
     void outputTableName(CharOutputStream& outputStream) const;
 
 protected:

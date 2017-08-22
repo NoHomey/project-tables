@@ -1,6 +1,5 @@
 #include "AddColumn.h"
 #include "../ParseTableName/ParseTableName.h"
-#include "../Message/Message.h"
 #include "../../../Parsers/ColumnTypeParser/ColumnTypeParser.h"
 #include "../../Messages/MissingColumnType/MissingColumnType.h"
 #include "../../Messages/InvalidColumnType/InvalidColumnType.h"
@@ -27,9 +26,9 @@ Action* AddColumn::parseColumnType() {
     try {
         result = ColumnTypeParser::parse(command);
     } catch(const ColumnTypeParser::InvalidColumnType& error) {
-        return Message::showMessage(InvalidColumnType::inject(error.getToken()));
+        return showMessage(new InvalidColumnType(error.getToken()));
     } catch(const Exception& error) {
-        return Message::showMessage(MissingColumnType::missingColumnType());
+        return showMessage(MissingColumnType::missingColumnType());
     }
     Action::command = result.getRest();
     arguments.push(static_cast<TableTypes::Integer>(result.getColumnType()));
@@ -41,7 +40,7 @@ Action* AddColumn::addNewColumn() {
     const ColumnMetaData::ColumnType columnType
         = static_cast<ColumnMetaData::ColumnType>(arguments[1].asInteger());
     currentTable->addColumn({columnType});
-    return Message::showMessage(NewColumnAdded::inject(currentTable->getName(), columnType));
+    return showMessage(new NewColumnAdded(currentTable->getName(), columnType));
 }
 
 Action* AddColumn::action() {

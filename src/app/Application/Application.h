@@ -19,6 +19,8 @@ public:
 public:
     static void run();
 
+    static void quit();
+
 private:
     static bool waitForAction();
 
@@ -29,8 +31,6 @@ private:
     static void takeAction();
 
 private:
-    static ConstString quitString;
-
     static const size_t initialCapacityOfBuffer = 100;
 
 private:

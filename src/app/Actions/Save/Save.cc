@@ -1,6 +1,5 @@
 #include "Save.h"
 #include "../ParseTableName/ParseTableName.h"
-#include "../Message/Message.h"
 #include "../ParseFileName/ParseFileName.h"
 #include "../../../Table/TableOutputerToFile/TableOutputerToFile.h"
 #include "../../Messages/FileIO/WriterMessages.h"
@@ -38,33 +37,33 @@ Action* Save::saveTable() {
     try {
         outputer.outputToFile(file);
     } catch(const OpenException::PermitionDenied& error) {
-        return Message::showMessage(PermitionDenied::inject(file));
+        return showMessage(new PermitionDenied(file));
     } catch(const OpenException::CannotCreateFile& error) {
-        return Message::showMessage(CannotCreateFile::inject(file));
+        return showMessage(new CannotCreateFile(file));
     } catch(const OpenException::ItIsADirectory& error) {
-        return Message::showMessage(ItIsADirectory::inject(file));
+        return showMessage(new ItIsADirectory(file));
     } catch(const OpenException::FileNameIsTooLong& error) {
-        return Message::showMessage(FileNameIsTooLong::inject(file));
+        return showMessage(new FileNameIsTooLong(file));
     } catch(const OpenException::FileIsTooLarge& error) {
-        return Message::showMessage(FileIsTooLarge::inject(file));
+        return showMessage(new FileIsTooLarge(file));
     } catch(const OpenException::FileIsSealed& error) {
-        return Message::showMessage(FileIsSealed::inject(file));
+        return showMessage(new FileIsSealed(file));
     } catch(const OpenException::ReadOnlyFileSystem& error) {
-        return Message::showMessage(FileIsLocatedOnReadOnlyFileSystem::inject(file));
+        return showMessage(new FileIsLocatedOnReadOnlyFileSystem(file));
     } catch(const OpenException::CannotOpenFile& error) {
-        return Message::showMessage(CannotOpenFile::inject(file));
+        return showMessage(new CannotOpenFile(file));
     } catch(const WriteException::FileSystemDiskBlocksQuotaExhausted& error) {
-        return Message::showMessage(FileSystemDiskBlocksQuotaExhausted::inject(file));
+        return showMessage(new FileSystemDiskBlocksQuotaExhausted(file));
     } catch(const WriteException::FileIsTooBig& error) {
-        return Message::showMessage(FileIsTooBig::inject(file));
+        return showMessage(new FileIsTooBig(file));
     } catch(const WriteException::CannotWrite& error) {
-        return Message::showMessage(CannotWrite::inject(file));
+        return showMessage(new CannotWrite(file));
     } catch(const WriteException::LowLevelException& error) {
-        return Message::showMessage(LowLevelException::inject(file));
+        return showMessage(new LowLevelException(file));
     } catch(const WriteException::UnexpectedWriteError& error) {
-        return Message::showMessage(UnexpectedWriteError::inject(file));
+        return showMessage(new UnexpectedWriteError(file));
     }
-    return Message::showMessage(TableSaved::inject(currentTable->getName(), file));
+    return showMessage(new TableSaved(currentTable->getName(), file));
 }
 
 Action* Save::action() {

@@ -5,15 +5,7 @@
 
 class NewColumnAdded: public MessageContainingTableName<ImmutableString> {
 public:
-    static NewColumnAdded* inject(const FixedSizeString& tableName, ColumnMetaData::ColumnType columnType) noexcept;
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-    void releaseResources() noexcept final;
-
-private:
-    NewColumnAdded() noexcept = default;
+    NewColumnAdded(const FixedSizeString& tableName, ColumnMetaData::ColumnType columnType) noexcept;
 
     NewColumnAdded(const NewColumnAdded& other) = delete;
 
@@ -23,12 +15,13 @@ private:
 
     NewColumnAdded& operator=(NewColumnAdded&& other) = delete;
 
-private:
-    void setColumnType(ColumnMetaData::ColumnType columnType) noexcept;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
 private:
-    static NewColumnAdded instance;
+    static size_t calculateTextLength(ColumnMetaData::ColumnType columnType) noexcept;
 
+private:
     static ConstString textBeginning;
 
     static ConstString textBetweenNames;
@@ -38,5 +31,5 @@ private:
     static const size_t ownTextLength;
 
 private:
-    ImmutableString columnTypeText;
+    ConstString columnTypeText;
 };

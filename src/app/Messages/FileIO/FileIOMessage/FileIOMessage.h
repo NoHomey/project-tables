@@ -5,11 +5,10 @@
 #include "../../../../String/FixedSizeString/FixedSizeString.h"
 
 class FileIOMessage: public InfoModel {
-public:
-    void releaseResources() noexcept final;
-
 protected:
-    FileIOMessage() noexcept = default;
+    FileIOMessage(const String& fileName, size_t textLength);
+
+    virtual ~FileIOMessage() noexcept = default;
 
     FileIOMessage(const FileIOMessage& other) = delete;
 
@@ -20,8 +19,6 @@ protected:
     FileIOMessage& operator=(FileIOMessage&& other) = delete;
 
 protected:
-    void setFileName(const String& name);
-
     void outputFileName(CharOutputStream& outputStream) const;
 
 protected:

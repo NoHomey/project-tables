@@ -3,12 +3,5 @@
 
 ConstString MissingTableName::tableNameIdentificator{"table name identificator"};
 
-MissingTableName MissingTableName::instance;
-
-MissingTableName::MissingTableName() noexcept
-: MissingArgument{tableNameIdentificator} { }
-
-MissingTableName* MissingTableName::inject(ConstString& command, ConstString& argument) noexcept {
-    instance.set(command, argument);
-    return &instance;
-}
+MissingTableName::MissingTableName(ConstString& command, unsigned int argument) noexcept
+: MissingArgument{tableNameIdentificator, command, argument} { }

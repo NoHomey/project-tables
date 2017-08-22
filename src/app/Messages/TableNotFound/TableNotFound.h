@@ -4,13 +4,7 @@
 
 class TableNotFound: public MessageContainingTableName<FixedSizeString> {
 public:
-    static TableNotFound* inject(const String& tableName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    TableNotFound() noexcept = default;
+    TableNotFound(const String& tableName);
 
     TableNotFound(const TableNotFound& other) = delete;
 
@@ -20,9 +14,10 @@ private:
 
     TableNotFound& operator=(TableNotFound&& other) = delete;
 
-private:
-    static TableNotFound instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
 
     static ConstString textEnsureExists;

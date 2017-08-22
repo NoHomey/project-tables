@@ -4,13 +4,7 @@
 
 class FileSystemDiskBlocksQuotaExhausted: public FileIOMessage {
 public:
-    static FileSystemDiskBlocksQuotaExhausted* inject(const String& fileName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    FileSystemDiskBlocksQuotaExhausted() noexcept = default;
+    FileSystemDiskBlocksQuotaExhausted(const String& fileName);
 
     FileSystemDiskBlocksQuotaExhausted(const FileSystemDiskBlocksQuotaExhausted& other) = delete;
 
@@ -20,8 +14,9 @@ private:
 
     FileSystemDiskBlocksQuotaExhausted& operator=(FileSystemDiskBlocksQuotaExhausted&& other) = delete;
 
-private:
-    static FileSystemDiskBlocksQuotaExhausted instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString text;
 };

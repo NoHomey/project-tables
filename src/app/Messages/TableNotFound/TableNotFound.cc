@@ -1,8 +1,6 @@
 #include "TableNotFound.h"
 #include "../../../TypesOutputer/TypesOutputer.h"
 
-TableNotFound TableNotFound::instance;
-
 ConstString TableNotFound::textBeginning{"Query Error: Cannot find table with name : '"};
 
 ConstString TableNotFound::textEnsureExists{"'. Ensure table with name: '"};
@@ -11,11 +9,8 @@ ConstString TableNotFound::textEnding{"' is loaded or created. For list of all e
 
 const size_t TableNotFound::ownTextLength = textBeginning.length() + textEnsureExists.length() + textEnding.length();
 
-TableNotFound* TableNotFound::inject(const String& tableName) {
-    instance.setTableName(tableName);
-    instance.setTextLength(ownTextLength + 2 * tableName.length());
-    return &instance;
-}
+TableNotFound::TableNotFound(const String& tableName)
+: MessageContainingTableName<FixedSizeString>{tableName, ownTextLength + tableName.length()} { }
 
 void TableNotFound::output(CharOutputStream& outputStream) const {
     TypesOutputer::output(outputStream, textBeginning);

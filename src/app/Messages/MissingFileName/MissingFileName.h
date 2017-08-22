@@ -4,10 +4,7 @@
 
 class MissingFileName: public MissingArgument {
 public:
-    static MissingFileName* inject(ConstString& command, ConstString& argument) noexcept;
-
-private:
-    MissingFileName() noexcept;
+    MissingFileName(ConstString& command, unsigned int argument) noexcept;
 
     MissingFileName(const MissingFileName& other) = delete;
 
@@ -18,7 +15,5 @@ private:
     MissingFileName& operator=(MissingFileName&& other) = delete;
 
 private:
-    static ConstString fileName;
-
-    static MissingFileName instance;
+    static ConstString fileNameArgument;
 };

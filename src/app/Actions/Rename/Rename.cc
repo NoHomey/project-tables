@@ -3,7 +3,6 @@
 #include "../../Messages/TableRenamed/TableRenamed.h"
 #include "../../Messages/NoRename/NoRename.h"
 #include "../../Messages/NewNameIsNotUnique/NewNameIsNotUnique.h"
-#include "../Message/Message.h"
 
 Rename Rename:: instance;
 
@@ -39,17 +38,17 @@ Action* Rename::parseNewTableName() {
 Action* Rename::renameTable() {
     ConstString& newName = arguments[1].asTemporaryString();
     FixedSizeString oldName = currentTable->rename(FixedSizeString::fromString(newName));
-    return Message::showMessage(TableRenamed::inject(std::move(oldName), currentTable->getName()));
+    return showMessage(new TableRenamed(std::move(oldName), currentTable->getName()));
 }
 
 Action* Rename::newNameIsNotUnique() {
-    return Message::showMessage(NewNameIsNotUnique::inject(currentTable->getName(),
+    return showMessage(new NewNameIsNotUnique(currentTable->getName(),
         allTables.getTableByName(arguments[1].asTemporaryString())->getName()
     ));
 }
 
 Action* Rename::warnForNoRename() {
-    return Message::showMessage(NoRename::inject(currentTable->getName()));
+    return showMessage(new NoRename(currentTable->getName()));
 }
 
 Action* Rename::action() {

@@ -4,13 +4,7 @@
 
 class FileIsLocatedOnReadOnlyFileSystem: public FileIOMessage {
 public:
-    static FileIsLocatedOnReadOnlyFileSystem* inject(const String& fileName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    FileIsLocatedOnReadOnlyFileSystem() noexcept = default;
+    FileIsLocatedOnReadOnlyFileSystem(const String& fileName);
 
     FileIsLocatedOnReadOnlyFileSystem(const FileIsLocatedOnReadOnlyFileSystem& other) = delete;
 
@@ -20,12 +14,13 @@ private:
 
     FileIsLocatedOnReadOnlyFileSystem& operator=(FileIsLocatedOnReadOnlyFileSystem&& other) = delete;
 
-private:
-    static FileIsLocatedOnReadOnlyFileSystem instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
     
     static ConstString textEnding;
-    
+
     static const size_t ownTextLength;
 };

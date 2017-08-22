@@ -1,13 +1,8 @@
 #include "FileIOMessage.h"
 #include "../../../../TypesOutputer/TypesOutputer.h"
 
-void FileIOMessage::releaseResources() noexcept {
-    fileName = {};
-}
-
-void FileIOMessage::setFileName(const String& name) {
-    fileName = FixedSizeString::fromString(name);
-}
+FileIOMessage::FileIOMessage(const String& fileName, size_t textLength)
+: InfoModel{textLength + fileName.length(), true}, fileName{FixedSizeString::fromString(fileName)} { }
 
 void FileIOMessage::outputFileName(CharOutputStream& outputStream) const {
     TypesOutputer::output(outputStream, fileName);

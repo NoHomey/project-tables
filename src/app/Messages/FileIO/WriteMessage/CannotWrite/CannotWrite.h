@@ -4,13 +4,7 @@
 
 class CannotWrite: public FileIOMessage {
 public:
-    static CannotWrite* inject(const String& fileName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    CannotWrite() noexcept = default;
+    CannotWrite(const String& fileName);
 
     CannotWrite(const CannotWrite& other) = delete;
 
@@ -20,8 +14,9 @@ private:
 
     CannotWrite& operator=(CannotWrite&& other) = delete;
 
-private:
-    static CannotWrite instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString text;
 };

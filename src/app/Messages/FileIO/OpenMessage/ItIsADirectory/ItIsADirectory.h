@@ -4,13 +4,7 @@
 
 class ItIsADirectory: public FileIOMessage {
 public:
-    static ItIsADirectory* inject(const String& fileName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    ItIsADirectory() noexcept = default;
+    ItIsADirectory(const String& fileName);
 
     ItIsADirectory(const ItIsADirectory& other) = delete;
 
@@ -20,12 +14,13 @@ private:
 
     ItIsADirectory& operator=(ItIsADirectory&& other) = delete;
 
-private:
-    static ItIsADirectory instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
     
     static ConstString textEnding;
-    
+
     static const size_t ownTextLength;
 };

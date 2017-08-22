@@ -3,7 +3,6 @@
 #include "ActionRequiringTable.htd"
 #include "../ParseTableName/ParseTableName.h"
 #include "../../Messages/TableNotFound/TableNotFound.h"
-#include "../Message/Message.h"
 
 template<typename State>
 ActionRequiringTable<State>::ActionRequiringTable(State state) noexcept
@@ -38,5 +37,5 @@ Action* ActionRequiringTable<State>::parseTableName(State tableFound, State tabl
 
 template<typename State>
 Action* ActionRequiringTable<State>::tableNotFound() {
-    return Message::showMessage(TableNotFound::inject(arguments[0].asTemporaryString()));
+    return showMessage(new TableNotFound(arguments[0].asTemporaryString()));
 }

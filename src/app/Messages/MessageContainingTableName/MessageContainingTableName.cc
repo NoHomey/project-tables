@@ -2,14 +2,8 @@
 #include "../../../TypesOutputer/TypesOutputer.h"
 
 template<typename TableNameType>
-void MessageContainingTableName<TableNameType>::releaseResources() noexcept {
-    tableName = {};
-}
-
-template<typename TableNameType>
-void MessageContainingTableName<TableNameType>::setTableName(const String& name) {
-    tableName = TableNameType::fromString(name);
-}
+MessageContainingTableName<TableNameType>::MessageContainingTableName(const String& tableName, size_t textLength)
+: InfoModel{textLength + tableName.length(), true}, tableName{TableNameType::fromString(tableName)} { }
 
 template<typename TableNameType>
 void MessageContainingTableName<TableNameType>::outputTableName(CharOutputStream& outputStream) const {

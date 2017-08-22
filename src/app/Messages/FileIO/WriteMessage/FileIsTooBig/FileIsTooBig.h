@@ -4,13 +4,7 @@
 
 class FileIsTooBig: public FileIOMessage {
 public:
-    static FileIsTooBig* inject(const String& fileName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    FileIsTooBig() noexcept = default;
+    FileIsTooBig(const String& fileName);
 
     FileIsTooBig(const FileIsTooBig& other) = delete;
 
@@ -20,12 +14,13 @@ private:
 
     FileIsTooBig& operator=(FileIsTooBig&& other) = delete;
 
-private:
-    static FileIsTooBig instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
     
     static ConstString textEnding;
-    
+
     static const size_t ownTextLength;
 };

@@ -4,7 +4,6 @@
 #include "../ParseTableName/ParseTableName.h"
 #include "../../Messages/TableExists/TableExists.h"
 #include "../../Messages/TableCreated/TableCreated.h"
-#include "../Message/Message.h"
 
 CreateTable CreateTable:: instance;
 
@@ -34,13 +33,13 @@ Action* CreateTable::parseTableName() {
 
 Action* CreateTable::tableNameIsNotUnique() {
     Table* table = allTables.getTableByName(arguments[0].asTemporaryString());
-    return Message::showMessage(TableExists::inject(table->getName()));
+    return showMessage(new TableExists(table->getName()));
 }
 
 Action* CreateTable::createNewTable() {
     ConstString tableName = arguments[0].asTemporaryString();
     allTables.addTable({FixedSizeString::fromString(tableName)});
-    return Message::showMessage(TableCreated::inject(allTables.getTableByName(tableName)->getName()));
+    return showMessage(new TableCreated(allTables.getTableByName(tableName)->getName()));
 }
 
 Action* CreateTable::action() {

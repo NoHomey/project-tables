@@ -4,13 +4,7 @@
 
 class FileNameIsTooLong: public FileIOMessage {
 public:
-    static FileNameIsTooLong* inject(const String& fileName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    FileNameIsTooLong() noexcept = default;
+    FileNameIsTooLong(const String& fileName);
 
     FileNameIsTooLong(const FileNameIsTooLong& other) = delete;
 
@@ -20,12 +14,13 @@ private:
 
     FileNameIsTooLong& operator=(FileNameIsTooLong&& other) = delete;
 
-private:
-    static FileNameIsTooLong instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
     
     static ConstString textEnding;
-    
+
     static const size_t ownTextLength;
 };

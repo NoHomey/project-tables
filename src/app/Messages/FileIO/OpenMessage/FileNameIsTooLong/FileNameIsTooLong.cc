@@ -1,19 +1,14 @@
 #include "FileNameIsTooLong.h"
 #include "../../../../../TypesOutputer/TypesOutputer.h"
 
-FileNameIsTooLong FileNameIsTooLong::instance;
-
 ConstString FileNameIsTooLong::textBeginning{"Open Error: file name: "};
 
 ConstString FileNameIsTooLong::textEnding{" is too long."};
 
 const size_t FileNameIsTooLong::ownTextLength = textBeginning.length() + textEnding.length();
 
-FileNameIsTooLong* FileNameIsTooLong::inject(const String& fileName) {
-    instance.setFileName(fileName);
-    instance.setTextLength(ownTextLength + fileName.length());
-    return &instance;
-}
+FileNameIsTooLong::FileNameIsTooLong(const String& fileName)
+: FileIOMessage{fileName, ownTextLength} { }
 
 void FileNameIsTooLong::output(CharOutputStream& outputStream) const {
     TypesOutputer::output(outputStream, textBeginning);

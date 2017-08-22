@@ -2,24 +2,10 @@
 #include "../../../Renderer/CenteredRenderer/CenteredRenderer.h"
 #include "../../../TypesOutputer/TypesOutputer.h"
 
-InfoComponent InfoComponent::component;
-
 const InfoComponent::Ratio InfoComponent::ratios[ratiosCount] = {{2, 5}, {2, 3}, {4, 5}, {7, 8}, {10, 11}};
 
-InfoComponent* InfoComponent::inject(InfoModel* model) noexcept {
-    component.setModel(model);
-    return &component;
-}
-
-InfoComponent::InfoComponent() noexcept
-: model{nullptr}, width{0}, height{0}, lastLineLength{0}, linesCount{0} { } 
-
-void InfoComponent::setModel(InfoModel* infoModel) noexcept {
-    if((model != nullptr) && (infoModel != model)) {
-        model->releaseResources();
-    }
-    model = infoModel;
-}
+InfoComponent::InfoComponent(const InfoModel* model) noexcept
+: ComponentWithModel<InfoModel>{model}, width{0}, height{0}, lastLineLength{0}, linesCount{0} { } 
 
 Window::size InfoComponent::calculateRatio(Window::size size, unsigned short index) noexcept {
     const Ratio& ratio = ratios[index];

@@ -2,14 +2,10 @@
 #include "../../../Renderer/CenteredRenderer/CenteredRenderer.h"
 #include "../../../TypesOutputer/TypesOutputer.h"
 
-ListComponent ListComponent::component;
-
-ListComponent::ListComponent() noexcept
-: model{nullptr}, minWidth{0}, minHeight{0}, width{0}, leftPadding{0} { }
-
-ListComponent* ListComponent::inject(const ListModel* model) noexcept {
-    component.setModel(model);
-    return &component;
+ListComponent::ListComponent(const ListModel* model) noexcept
+: ComponentWithModel<ListModel>{model}, minWidth{0}, minHeight{0}, width{0}, leftPadding{0} {
+    minHeight = model->itemsCount() + 2;
+    calculateMinWidth();
 }
 
 void ListComponent::calculateMinWidth() noexcept {
@@ -22,12 +18,6 @@ void ListComponent::calculateMinWidth() noexcept {
             minWidth = itemLength;
         }
     }
-}
-
-void ListComponent::setModel(const ListModel* listModel) noexcept {
-    model = listModel;
-    minHeight = model->itemsCount() + 2;
-    calculateMinWidth();
 }
 
 void ListComponent::loopSymbol(Window::size count, char symbol) {

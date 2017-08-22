@@ -4,13 +4,7 @@
 
 class UnexpectedWriteError: public FileIOMessage {
 public:
-    static UnexpectedWriteError* inject(const String& fileName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    UnexpectedWriteError() noexcept = default;
+    UnexpectedWriteError(const String& fileName);
 
     UnexpectedWriteError(const UnexpectedWriteError& other) = delete;
 
@@ -20,8 +14,9 @@ private:
 
     UnexpectedWriteError& operator=(UnexpectedWriteError&& other) = delete;
 
-private:
-    static UnexpectedWriteError instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString text;
 };

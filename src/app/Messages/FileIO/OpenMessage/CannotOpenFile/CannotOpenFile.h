@@ -4,13 +4,7 @@
 
 class CannotOpenFile: public FileIOMessage {
 public:
-    static CannotOpenFile* inject(const String& fileName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    CannotOpenFile() noexcept = default;
+    CannotOpenFile(const String& fileName);
 
     CannotOpenFile(const CannotOpenFile& other) = delete;
 
@@ -20,12 +14,13 @@ private:
 
     CannotOpenFile& operator=(CannotOpenFile&& other) = delete;
 
-private:
-    static CannotOpenFile instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
     
     static ConstString textEnding;
-    
+
     static const size_t ownTextLength;
 };

@@ -4,13 +4,7 @@
 
 class NoRename: public MessageContainingTableName<ImmutableString> {
 public:
-    static NoRename* inject(const FixedSizeString& tableName) noexcept;
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    NoRename() noexcept = default;
+    NoRename(const FixedSizeString& tableName) noexcept;
 
     NoRename(const NoRename& other) = delete;
 
@@ -20,8 +14,10 @@ private:
 
     NoRename& operator=(NoRename&& other) = delete;
 
+public:
+    void output(CharOutputStream& outputStream) const final;
+    
 private:
-    static NoRename instance;
 
     static ConstString textBeginning;
 

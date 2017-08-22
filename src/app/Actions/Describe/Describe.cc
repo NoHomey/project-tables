@@ -19,7 +19,7 @@ Action* Describe::parseTableName() {
 }
 
 Action* Describe::describeTable() {
-    setComponent(ListComponent::inject(ListTableModelAdaptor::adapt(currentTable)));
+    setComponent(new ListComponent(new ListTableModelAdaptor(currentTable)));
     return nullptr;
 }
 

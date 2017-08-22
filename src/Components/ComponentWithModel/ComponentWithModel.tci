@@ -1,0 +1,12 @@
+#pragma once
+
+#include "ComponentWithModel.htd"
+
+template<typename ModelType>
+ComponentWithModel<ModelType>::ComponentWithModel(const ModelType* model) noexcept
+: model{model} { }
+
+template<typename ModelType>
+ComponentWithModel<ModelType>::~ComponentWithModel() noexcept {
+    Model::deleteIfDeletable(model);
+}

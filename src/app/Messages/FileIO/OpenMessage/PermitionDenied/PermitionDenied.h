@@ -4,13 +4,7 @@
 
 class PermitionDenied: public FileIOMessage {
 public:
-    static PermitionDenied* inject(const String& fileName);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-private:
-    PermitionDenied() noexcept = default;
+    PermitionDenied(const String& fileName);
 
     PermitionDenied(const PermitionDenied& other) = delete;
 
@@ -20,8 +14,9 @@ private:
 
     PermitionDenied& operator=(PermitionDenied&& other) = delete;
 
-private:
-    static PermitionDenied instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString text;
 };

@@ -4,10 +4,7 @@
 
 class MissingTableName: public MissingArgument {
 public:
-    static MissingTableName* inject(ConstString& command, ConstString& argument) noexcept;
-
-private:
-    MissingTableName() noexcept;
+    MissingTableName(ConstString& command, unsigned int argument) noexcept;
 
     MissingTableName(const MissingTableName& other) = delete;
 
@@ -19,6 +16,4 @@ private:
 
 private:
     static ConstString tableNameIdentificator;
-
-    static MissingTableName instance;
 };

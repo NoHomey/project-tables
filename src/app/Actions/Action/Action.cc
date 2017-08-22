@@ -1,14 +1,7 @@
 #include "Action.h"
-#include "../ShowTables/ShowTables.h"
-#include "../Describe/Describe.h"
-#include "../Rename/Rename.h"
-#include "../CreateTable/CreateTable.h"
-#include "../AddColumn/AddColumn.h"
-#include "../Save/Save.h"
-#include "../Help/Help.h"
 #include "../../../Parsers/CharSequenceParser/CharSequenceParser.h"
 #include "../../Messages/UnknownQueryCommand/UnknownQueryCommand.h"
-#include "../Message/Message.h"
+#include "../../../Components/Info/InfoComponent/InfoComponent.h"
 
 Tables Action::allTables;
 
@@ -19,6 +12,22 @@ Component* Action::component = nullptr;
 ImmutableString Action::command;
 
 MoveDynamicArray<Argument> Action::arguments;
+
+DynamicArray<Action::ActionCommand> Action::commands;
+
+Action::ActionCommand::ActionCommand() noexcept
+: command{}, action{nullptr} { }
+
+Action::ActionCommand::ActionCommand(ConstString& command, Action* action) noexcept
+: command{command}, action{action} { }
+
+ConstString& Action::ActionCommand::getCommand() const noexcept {
+    return command;
+}
+
+Action* Action::ActionCommand::getAction() noexcept {
+    return action;
+}
 
 void Action::reRender() {
     if(component != nullptr) {
@@ -31,35 +40,41 @@ void Action::setCurrentTable(Table* currentTable) noexcept {
 }
 
 void Action::setComponent(Component* component) noexcept {
+    if(Action::component != nullptr) {
+        delete Action::component;
+    }
     Action::component = component;
     if(component != nullptr) {
         component->render();
     }
 }
 
+void Action::registerCommands(DynamicArray<ActionCommand>&& commands) noexcept {
+    Action::commands = std::move(commands);
+}
+
+const DynamicArray<Action::ActionCommand>& Action::getCommands() noexcept {
+    return commands;
+}
+
+Action* Action::showMessage(const InfoModel* model) noexcept {
+    if(model == nullptr) {
+        setComponent(nullptr);
+    } else {
+        setComponent(new InfoComponent(model));
+    }
+    return nullptr;
+}
+
 Action* Action::selectAction(ConstString& action) {
-    if(action == Help::actionString) {
-        return Help::help();
+    const size_t commandsCount = commands.size();
+    for(size_t index = 0; index < commandsCount; ++index) {
+        ActionCommand& command = commands[index];
+        if(command.getCommand() == action) {
+            return command.getAction();
+        }
     }
-    if(action == ShowTables::actionString) {
-        return ShowTables::showTables();
-    }
-    if(action == Describe::actionString) {
-        return Describe::describe();
-    }
-    if(action == Rename::actionString) {
-        return Rename::rename();
-    }
-    if(action == CreateTable::actionString) {
-        return CreateTable::createTable();
-    }
-    if(action == AddColumn::actionString) {
-        return AddColumn::addColumn();
-    }
-    if(action == Save::actionString) {
-        return Save::save();
-    }
-    return Message::showMessage(UnknownQueryCommand::inject(action));
+    return showMessage(new UnknownQueryCommand(action));
 }
 
 void Action::nullArguments() noexcept {
@@ -86,4 +101,6 @@ void Action::takeAction(ConstString& command) {
         action = action->action();
     }
     nullArguments();
+    currentTable = nullptr;
+    Action::command = {};
 }

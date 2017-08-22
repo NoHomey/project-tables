@@ -6,15 +6,7 @@
 
 class UnknownQueryCommand: public InfoModel {
 public:
-    static UnknownQueryCommand* inject(const String& command);
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-    void releaseResources() noexcept final;
-
-private:
-    UnknownQueryCommand() noexcept = default;
+    UnknownQueryCommand(const String& command);
 
     UnknownQueryCommand(const UnknownQueryCommand& other) = delete;
 
@@ -24,9 +16,10 @@ private:
 
     UnknownQueryCommand& operator=(UnknownQueryCommand&& other) = delete;
 
-private:
-    static UnknownQueryCommand instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
 
     static ConstString textEnding;

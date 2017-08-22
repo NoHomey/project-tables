@@ -4,15 +4,7 @@
 
 class NewNameIsNotUnique: public MessageContainingTableName<ImmutableString> {
 public:
-    static NewNameIsNotUnique* inject(const FixedSizeString& tableName, const FixedSizeString& newTableName) noexcept;
-
-public:
-    void output(CharOutputStream& outputStream) const final;
-
-    void releaseResources() noexcept final;
-
-private:
-    NewNameIsNotUnique() noexcept = default;
+    NewNameIsNotUnique(const FixedSizeString& tableName, const FixedSizeString& newTableName) noexcept;
 
     NewNameIsNotUnique(const NewNameIsNotUnique& other) = delete;
 
@@ -22,9 +14,10 @@ private:
 
     NewNameIsNotUnique& operator=(NewNameIsNotUnique&& other) = delete;
 
-private:
-    static NewNameIsNotUnique instance;
+public:
+    void output(CharOutputStream& outputStream) const final;
 
+private:
     static ConstString textBeginning;
 
     static ConstString textBetweenNames;
@@ -36,5 +29,5 @@ private:
     static const size_t ownTextLength;
 
 private:
-    ImmutableString newName;
+    ConstString newTableName;
 };
