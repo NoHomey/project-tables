@@ -10,7 +10,8 @@ Action* ParseFileName::action() {
     try {
         result = CharSequenceParser::parseSeparatedByWhiteSpaces(command);
     } catch(const Exception& error) {
-        return showMessage(new MissingFileName(commandName, arguments.size()));
+        showMessage(new MissingFileName(commandName, arguments.size()));
+        return this;
     }
     Action::command = result.getRest();
     arguments.push(result.getExtracted());

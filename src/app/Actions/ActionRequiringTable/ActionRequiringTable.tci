@@ -23,7 +23,7 @@ template<typename Derived>
 Action* ActionRequiringTable<State>::parseTableName(State tableFound, State tableNotFound) {
     Action* parseAction = ParseTableName{Derived::actionString}.action();
     if(parseAction != nullptr) {
-        return parseAction;
+        return nullptr;
     }
     Table* table = allTables.getTableByName(arguments[0].asTemporaryString());
     if(table == nullptr) {

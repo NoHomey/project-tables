@@ -22,7 +22,7 @@ Action* Rename::parseTableName() {
 Action* Rename::parseNewTableName() {
     Action* parseAction = ParseTableName{actionString}.action();
     if(parseAction != nullptr) {
-        return parseAction;
+        return nullptr;
     }
     ConstString& newName = arguments[1].asTemporaryString();
     Table* table = allTables.getTableByName(newName);

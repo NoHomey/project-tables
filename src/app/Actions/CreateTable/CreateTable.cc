@@ -2,7 +2,6 @@
 #include "../../ModelAdaptors/ListTableModelAdaptor/ListTableModelAdaptor.h"
 #include "../../../Components/List/ListComponent/ListComponent.h"
 #include "../ParseTableName/ParseTableName.h"
-#include "../ParseFileName/ParseFileName.h"
 #include "../../Messages/TableExists/TableExists.h"
 #include "../../Messages/TableCreated/TableCreated.h"
 
@@ -18,9 +17,9 @@ Action* CreateTable::createTable() noexcept {
 }
 
 Action* CreateTable::parseTableName() {
-    Action* parseAction = ParseFileName{actionString}.action();
+    Action* parseAction = ParseTableName{actionString}.action();
     if(parseAction != nullptr) {
-        return parseAction;
+        return nullptr;
     }
     Table* table = allTables.getTableByName(arguments[0].asTemporaryString());
     if(table != nullptr) {

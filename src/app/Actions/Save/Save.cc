@@ -24,7 +24,7 @@ Action* Save::parseTableName() {
 Action* Save::parseFileName() {
     Action* parseAction = ParseFileName{actionString}.action();
     if(parseAction != nullptr) {
-        return parseAction;
+        return nullptr;
     }
     setState(SaveState::SaveTable);
     return this;
