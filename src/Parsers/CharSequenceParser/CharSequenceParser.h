@@ -2,24 +2,18 @@
 
 #include "../../String/ConstString/ConstString.h"
 #include "../Exceptions/Exception.h"
+#include "../ParseResult/ParseResult.htd"
 
 class CharSequenceParser {
 public:
-    class ParseResult {
+    class ParseResult: public ::ParseResult<ImmutableString, ConstString&> {
+    private:
+        using Base = ::ParseResult<ImmutableString, ConstString&>;
+
     public:
         ParseResult() noexcept = default;
 
         ParseResult(ConstString& extracted, ConstString& rest) noexcept;
-
-    public: 
-        ConstString& getExtracted() const noexcept;
-
-        ConstString& getRest() const noexcept;
-
-    private:
-        ImmutableString extracted;
-
-        ImmutableString rest;
     };
 
     class EmptyString: public Exception { };

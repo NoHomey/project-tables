@@ -30,7 +30,7 @@ Action* AddColumn::parseColumnType() {
         return showMessage(MissingColumnType::missingColumnType());
     }
     Action::command = result.getRest();
-    arguments.push(static_cast<TableTypes::Integer>(result.getColumnType()));
+    arguments.push(static_cast<TableTypes::Integer>(result.getParsed()));
     setState(AddColumnState::AddNewColumn);
     return this;
 }

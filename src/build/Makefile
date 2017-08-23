@@ -65,7 +65,8 @@ WriteMessageObjects = $(addsuffix .o,$(WriteMessages))
 Templates = ../Container/DynamicArrayBase/DynamicArrayBase.htd ../Container/DynamicArray/DynamicArray.htd\
 ../Container/MoveDynamicArray/MoveDynamicArray.htd ../SharedPtr/SharedPtr.htd\
 $(Actions)/ActionRequiringTable/ActionRequiringTable.htd $(Actions)/ActionRequiringTable/ActionRequiringTable.tci\
-$(Components)/ComponentWithModel/ComponentWithModel.htd $(Components)ComponentWithModel/ComponentWithModel.tci
+$(Components)/ComponentWithModel/ComponentWithModel.htd $(Components)ComponentWithModel/ComponentWithModel.tci\
+$(Parsers)/ParseResult/ParseResult.htd $(Parsers)/ParseResult/ParseResult.tci 
 
 Objects = Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o Model.o ListModel.o ListComponent.o\
 ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o\
@@ -74,7 +75,8 @@ UnknownQueryCommand.o MissingArgument.o MissingTableName.o MessageContainingTabl
 TokenException.o InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o TableRenamed.o NoRename.o Rename.o\
 NewNameIsNotUnique.o TableCreated.o TableExists.o CreateTable.o InvalidColumnType.o ListCommandsModelAdaptor.o MissingColumnType.o\
 InvalidColumnType.o NewColumnAdded.o ColumnTypeParser.o AddColumn.o TableOutputerToFile.o MissingFileName.o ParseFileName.o\
-TableSaved.o FileIOMessage.o $(OpenMessageObjects) $(WriteMessageObjects) Save.o Help.o Quit.o Application.o
+TableSaved.o FileIOMessage.o $(OpenMessageObjects) $(WriteMessageObjects) Save.o IntegerParser.o ColumnNumberParser.o FractionalNumberParser.o\
+#Help.o Quit.o Application.o 
 
 compileAll: $(Templates) app
 
@@ -271,6 +273,15 @@ $(foreach message,$(WriteMessages),$(eval $(call FileIOMessage,$(message),WriteM
 
 Save.o: $(call OwnDeps,$(Actions),Save) TableOutputerToFile.o MissingFileName.o ParseFileName.o\
 TableSaved.o FileIOMessage.o $(OpenMessageObjects) $(WriteMessageObjects)
+	$(COMPILER) -c $<
+
+IntegerParser.o: $(call OwnDeps,$(Parsers),IntegerParser) CharSequenceParser.o InvalidSymbolAtPosition.o TokenException.o
+	$(COMPILER) -c $<
+
+ColumnNumberParser.o: $(call OwnDeps,$(Parsers),ColumnNumberParser) IntegerParser.o
+	$(COMPILER) -c $<
+
+FractionalNumberParser.o: $(call OwnDeps,$(Parsers),FractionalNumberParser) IntegerParser.o
 	$(COMPILER) -c $<
 
 Application.o: $(call OwnDeps,$(app),Application)

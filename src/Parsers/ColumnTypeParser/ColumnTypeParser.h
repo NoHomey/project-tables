@@ -6,21 +6,14 @@
 
 class ColumnTypeParser {
 public:
-    class ParseResult {
+    class ParseResult: public ::ParseResult<ColumnMetaData::ColumnType, ColumnMetaData::ColumnType> {
+    private:
+        using Base = ::ParseResult<ColumnMetaData::ColumnType, ColumnMetaData::ColumnType>;
+
     public:
         ParseResult() noexcept;
 
         ParseResult(ColumnMetaData::ColumnType columnType, ConstString& rest) noexcept;
-
-    public:
-        ColumnMetaData::ColumnType getColumnType() const noexcept;
-
-        ConstString& getRest() const noexcept;
-
-    private:
-        ColumnMetaData::ColumnType type;
-
-        ImmutableString rest;
     };
 
     class InvalidColumnType: public TokenException {

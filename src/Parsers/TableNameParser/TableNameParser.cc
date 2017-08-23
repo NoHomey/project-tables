@@ -46,7 +46,7 @@ bool TableNameParser::isSubsequentValid(char symbol) noexcept {
 
 CharSequenceParser::ParseResult TableNameParser::parse(ConstString& string) {
     CharSequenceParser::ParseResult result = CharSequenceParser::parseSeparatedByWhiteSpaces(string);
-    ConstString& extracted = result.getExtracted();
+    ConstString& extracted = result.getParsed();
     char symbol = extracted[0];
     if(!isFirstValid(symbol)) {
         throw InvalidTableName{0, symbol, extracted};

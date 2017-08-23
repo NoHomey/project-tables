@@ -1,0 +1,25 @@
+#pragma once
+
+#include "../../String/ConstString/ConstString.h"
+
+template<typename Type, typename Parsed>
+class ParseResult {
+public:
+    ParseResult() noexcept = default;
+
+    ParseResult(Parsed parsed) noexcept;
+
+    ParseResult(Parsed parsed, ConstString& rest) noexcept;
+
+public: 
+    Parsed getParsed() const noexcept;
+
+    ConstString& getRest() const noexcept;
+
+private:
+    Type parsed;
+
+    ImmutableString rest;
+};
+
+#include "ParseResult.tci"

@@ -1,25 +1,17 @@
 #include "ColumnTypeParser.h"
 
-ColumnTypeParser::ParseResult::ParseResult(ColumnMetaData::ColumnType columnType, ConstString& rest) noexcept
-: type{columnType}, rest{rest} { }
-
 ColumnTypeParser::ParseResult::ParseResult() noexcept
-: type{ColumnMetaData::ColumnType::Unknown}, rest{} { }
+: Base{ColumnMetaData::ColumnType::Unknown} { }
 
-ColumnMetaData::ColumnType ColumnTypeParser::ParseResult::getColumnType() const noexcept {
-    return type;
-}
-
-ConstString& ColumnTypeParser::ParseResult::getRest() const noexcept {
-    return rest;
-}
+ColumnTypeParser::ParseResult::ParseResult(ColumnMetaData::ColumnType columnType, ConstString& rest) noexcept
+: Base{columnType, rest} { }
 
 ColumnTypeParser::InvalidColumnType::InvalidColumnType(ConstString& token) noexcept
 : TokenException{token} { }
 
 ColumnTypeParser::ParseResult ColumnTypeParser::parse(ConstString& string) {
     CharSequenceParser::ParseResult result = CharSequenceParser::parseSeparatedByWhiteSpaces(string);
-    ConstString& extracted = result.getExtracted();
+    ConstString& extracted = result.getParsed();
     ConstString& rest = result.getRest();
     if(extracted == ColumnMetaDataStrings::Integer) {
         return {ColumnMetaData::ColumnType::Integer, rest};

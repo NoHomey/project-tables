@@ -1,0 +1,21 @@
+#pragma once
+
+#include "ParseResult.htd"
+
+template<typename Type, typename Parsed>
+ParseResult<Type, Parsed>::ParseResult(Parsed parsed) noexcept
+: parsed{parsed}, rest{} { }
+
+template<typename Type, typename Parsed>
+ParseResult<Type, Parsed>::ParseResult(Parsed parsed, ConstString& rest) noexcept
+: parsed{parsed}, rest{rest} { }
+
+template<typename Type, typename Parsed>
+Parsed ParseResult<Type, Parsed>::getParsed() const noexcept {
+    return parsed;
+}
+
+template<typename Type, typename Parsed>
+ConstString& ParseResult<Type, Parsed>::getRest() const noexcept {
+    return rest;
+}

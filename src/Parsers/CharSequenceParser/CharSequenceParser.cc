@@ -5,15 +5,7 @@ bool CharSequenceParser::isWhiteSpace(char symbol) noexcept {
 }
 
 CharSequenceParser::ParseResult::ParseResult(ConstString& extracted, ConstString& rest) noexcept
-: extracted{extracted}, rest{rest} { }
-
-ConstString& CharSequenceParser::ParseResult::getExtracted() const noexcept {
-    return extracted;
-}
-
-ConstString& CharSequenceParser::ParseResult::getRest() const noexcept {
-    return rest;
-}
+: Base{extracted, rest} { }
 
 CharSequenceParser::ParseResult CharSequenceParser::parseSeparatedByWhiteSpaces(ConstString& string) {
     const size_t stringLength = string.length();

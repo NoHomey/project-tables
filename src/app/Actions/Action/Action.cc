@@ -96,7 +96,7 @@ void Action::takeAction(ConstString& command) {
     if(arguments.capacity() == 0) {
         arguments.extend(Action::ArgumentsIntialCapacity);
     }
-    Action* action = selectAction(result.getExtracted());
+    Action* action = selectAction(result.getParsed());
     while(action != nullptr) {
         action = action->action();
     }

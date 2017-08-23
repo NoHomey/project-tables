@@ -18,6 +18,6 @@ Action* ParseTableName::action() {
         return this;
     }
     Action::command = result.getRest();
-    arguments.push(result.getExtracted());
+    arguments.push(result.getParsed());
     return nullptr;
 }
