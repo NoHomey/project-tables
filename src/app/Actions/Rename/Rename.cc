@@ -12,7 +12,6 @@ Rename::Rename() noexcept
 : Base{RenameState::ParseTableName} { }
 
 Action* Rename::rename() noexcept {
-    instance.setState(RenameState::ParseTableName);
     return &instance;
 }
 
@@ -21,7 +20,7 @@ Action* Rename::parseTableName() {
 }
 
 Action* Rename::parseNewTableName() {
-    Action* parseAction = ParseTableName::parseTableName(actionString)->action();
+    Action* parseAction = ParseTableName{actionString}.action();
     if(parseAction != nullptr) {
         return parseAction;
     }
@@ -61,4 +60,9 @@ Action* Rename::action() {
         case RenameState::RenameTable: return renameTable();
         default: return nullptr;
     }
+}
+
+Action* Rename::controlAction() noexcept {
+    setState(RenameState::ParseTableName);
+    return this;
 }

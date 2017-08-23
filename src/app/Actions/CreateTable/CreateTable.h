@@ -4,7 +4,7 @@
 
 class CreateTable: public Action {
 private:
-    enum State {
+    enum class State {
         ParseTableName,
         TableNameIsNotUnique,
         CreateNewTable
@@ -14,6 +14,8 @@ public:
     static Action* createTable() noexcept;
 
     Action* action() final;
+    
+    Action* controlAction() noexcept final;
 
 private:
     CreateTable() noexcept;

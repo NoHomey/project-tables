@@ -14,3 +14,7 @@ Action* Help::action() {
     setComponent(new ListComponent(new ListCommandsModelAdaptor(commands)));
     return nullptr;
 }
+
+Action* Help::controlAction() noexcept {
+    return this;
+}

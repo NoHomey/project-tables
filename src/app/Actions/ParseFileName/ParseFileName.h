@@ -5,12 +5,7 @@
 
 class ParseFileName: public Action {
 public:
-    static Action* parseFileName(ConstString& commandName) noexcept;
-
-    Action* action() final;
-
-private:
-    ParseFileName() noexcept = default;
+    ParseFileName(ConstString& commandName) noexcept;
 
     ParseFileName(const ParseFileName& other) = delete;
 
@@ -20,9 +15,9 @@ private:
 
     ParseFileName& operator=(ParseFileName&& other) = delete;
 
-private:
-    static ParseFileName instance;
+public:
+    Action* action() final;
 
 private:
-    ImmutableString commandName;
+    ConstString& commandName;
 };

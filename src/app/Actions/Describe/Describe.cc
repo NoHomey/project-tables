@@ -10,7 +10,6 @@ Describe::Describe() noexcept
 : Base{DescribeState::ParseTableName} { }
 
 Action* Describe::describe() noexcept {
-    instance.setState(DescribeState::ParseTableName);
     return &instance;
 }
 
@@ -30,4 +29,9 @@ Action* Describe::action() {
         case DescribeState::DescribeTable: return describeTable();
         default: return nullptr;
     };
+}
+
+Action* Describe::controlAction() noexcept {
+    setState(DescribeState::ParseTableName);
+    return this;
 }

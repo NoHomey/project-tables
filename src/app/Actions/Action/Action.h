@@ -36,6 +36,8 @@ public:
 public:
     virtual Action* action() = 0;
 
+    virtual Action* controlAction() noexcept;
+
 public:
     virtual ~Action() noexcept = default;
 

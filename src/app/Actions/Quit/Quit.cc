@@ -15,3 +15,7 @@ Action* Quit::action() {
     Application::quit();
     return nullptr;
 }
+
+Action* Quit::controlAction() noexcept {
+    return this;
+}

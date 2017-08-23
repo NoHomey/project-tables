@@ -2,12 +2,8 @@
 #include "../../../Parsers/CharSequenceParser/CharSequenceParser.h"
 #include "../../Messages/MissingFileName/MissingFileName.h"
 
-ParseFileName ParseFileName::instance;
-
-Action* ParseFileName::parseFileName(ConstString& commandName) noexcept {
-    instance.commandName = commandName;
-    return &instance;
-}
+ParseFileName::ParseFileName(ConstString& commandName) noexcept
+: commandName{commandName} { }
 
 Action* ParseFileName::action() {
     CharSequenceParser::ParseResult result;

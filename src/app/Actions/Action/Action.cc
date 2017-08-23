@@ -71,7 +71,7 @@ Action* Action::selectAction(ConstString& action) {
     for(size_t index = 0; index < commandsCount; ++index) {
         ActionCommand& command = commands[index];
         if(command.getCommand() == action) {
-            return command.getAction();
+            return command.getAction()->controlAction();
         }
     }
     return showMessage(new UnknownQueryCommand(action));
@@ -103,4 +103,8 @@ void Action::takeAction(ConstString& command) {
     nullArguments();
     currentTable = nullptr;
     Action::command = {};
+}
+
+Action* Action::controlAction() noexcept {
+    return nullptr;
 }

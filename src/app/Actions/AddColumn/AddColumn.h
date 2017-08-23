@@ -19,6 +19,8 @@ public:
 
     Action* action() final;
 
+    Action* controlAction() noexcept final;
+
 private:
     AddColumn() noexcept;
 

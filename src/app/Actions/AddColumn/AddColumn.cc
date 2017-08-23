@@ -13,7 +13,6 @@ AddColumn::AddColumn() noexcept
 : Base{AddColumnState::ParseTableName} { }
 
 Action* AddColumn::addColumn() noexcept {
-    instance.setState(AddColumnState::ParseTableName);
     return &instance;
 }
 
@@ -51,4 +50,9 @@ Action* AddColumn::action() {
         case AddColumnState::AddNewColumn: return addNewColumn();
         default: return nullptr;
     }
+}
+
+Action* AddColumn::controlAction() noexcept {
+    setState(AddColumnState::ParseTableName);
+    return this;
 }

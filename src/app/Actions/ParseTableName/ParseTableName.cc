@@ -3,12 +3,8 @@
 #include "../../Messages/MissingTableName/MissingTableName.h"
 #include "../../Messages/InvalidTableName/InvalidTableName.h"
 
-ParseTableName ParseTableName::instance;
-
-Action* ParseTableName::parseTableName(ConstString& commandName) noexcept {
-    instance.commandName = commandName;
-    return &instance;
-}
+ParseTableName::ParseTableName(ConstString& commandName) noexcept
+: commandName{commandName} { }
 
 Action* ParseTableName::action() {
     CharSequenceParser::ParseResult result;

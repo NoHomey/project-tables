@@ -14,3 +14,7 @@ Action* ShowTables::action() {
     setComponent(new ListComponent(new ListTablesModelAdaptor(allTables)));
     return nullptr;
 }
+
+Action* ShowTables::controlAction() noexcept {
+    return this;
+}

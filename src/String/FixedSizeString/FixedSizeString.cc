@@ -6,11 +6,13 @@ FixedSizeString FixedSizeString::fromString(const String& string) {
 }
 
 void FixedSizeString::fill(const char* content) noexcept {
-    for(size_t index = 0; index < stringLength; ++index) {
-        string[index] = content[index];
+    if(stringLength > 0) {
+        for(size_t index = 0; index < stringLength; ++index) {
+            string[index] = content[index];
+        }
+        string[stringLength] = '\0';
+        filled = stringLength;
     }
-    string[stringLength] = '\0';
-    filled = stringLength;
 }
 
 FixedSizeString::FixedSizeString() noexcept

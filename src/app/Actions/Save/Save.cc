@@ -14,7 +14,6 @@ Save::Save() noexcept
 : Base{SaveState::ParseTableName} { }
 
 Action* Save::save() noexcept {
-    instance.setState(SaveState::ParseTableName);
     return &instance;
 }
 
@@ -23,7 +22,7 @@ Action* Save::parseTableName() {
 }
 
 Action* Save::parseFileName() {
-    Action* parseAction = ParseFileName::parseFileName(actionString)->action();
+    Action* parseAction = ParseFileName{actionString}.action();
     if(parseAction != nullptr) {
         return parseAction;
     }
@@ -74,4 +73,9 @@ Action* Save::action() {
         case SaveState::SaveTable: return saveTable();
         default: return nullptr;
     }
+}
+
+Action* Save::controlAction() noexcept {
+    setState(SaveState::ParseTableName);
+    return this;
 }

@@ -20,6 +20,8 @@ public:
 
     Action* action() final;
 
+    Action* controlAction() noexcept final;
+
 private:
     Rename() noexcept;
 

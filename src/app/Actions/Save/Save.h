@@ -18,6 +18,8 @@ public:
 
     Action* action() final;
 
+    Action* controlAction() noexcept final;
+
 private:
     Save() noexcept;
 

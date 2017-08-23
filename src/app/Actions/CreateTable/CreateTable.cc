@@ -2,6 +2,7 @@
 #include "../../ModelAdaptors/ListTableModelAdaptor/ListTableModelAdaptor.h"
 #include "../../../Components/List/ListComponent/ListComponent.h"
 #include "../ParseTableName/ParseTableName.h"
+#include "../ParseFileName/ParseFileName.h"
 #include "../../Messages/TableExists/TableExists.h"
 #include "../../Messages/TableCreated/TableCreated.h"
 
@@ -10,23 +11,22 @@ CreateTable CreateTable:: instance;
 ConstString CreateTable::actionString{"Create"};
 
 CreateTable::CreateTable() noexcept
-: state{ParseTableName} { }
+: state{State::ParseTableName} { }
 
 Action* CreateTable::createTable() noexcept {
-    instance.state = ParseTableName;
     return &instance;
 }
 
 Action* CreateTable::parseTableName() {
-    Action* parseAction = ParseTableName::parseTableName(actionString)->action();
+    Action* parseAction = ParseFileName{actionString}.action();
     if(parseAction != nullptr) {
         return parseAction;
     }
     Table* table = allTables.getTableByName(arguments[0].asTemporaryString());
     if(table != nullptr) {
-        state = TableNameIsNotUnique;
+        state = State::TableNameIsNotUnique;
     } else {
-        state = CreateNewTable;
+        state = State::CreateNewTable;
     }
     return this;
 }
@@ -44,9 +44,14 @@ Action* CreateTable::createNewTable() {
 
 Action* CreateTable::action() {
     switch(state) {
-        case ParseTableName: return parseTableName();
-        case TableNameIsNotUnique: return tableNameIsNotUnique();
-        case CreateNewTable: return createNewTable();
+        case State::ParseTableName: return parseTableName();
+        case State::TableNameIsNotUnique: return tableNameIsNotUnique();
+        case State::CreateNewTable: return createNewTable();
     }
     return nullptr;
+}
+
+Action* CreateTable::controlAction() noexcept {
+    state = State::ParseTableName;
+    return this;
 }
