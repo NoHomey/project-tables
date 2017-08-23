@@ -23,9 +23,9 @@ public:
         IncompleteFractionaNumber(ConstString& token) noexcept;
     };
 
-    class ParseResult: public ::ParseResult<TableTypes::FractionalNumber, TableTypes::FractionalNumber> {
+    class ParseResult: public ::ParseResult<TableTypes::FractionalNumber> {
     private:
-        using Base = ::ParseResult<TableTypes::FractionalNumber, TableTypes::FractionalNumber>;
+        using Base = ::ParseResult<TableTypes::FractionalNumber>;
 
     public:
         ParseResult() noexcept;

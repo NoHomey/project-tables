@@ -2,7 +2,7 @@
 
 #include "../../String/ConstString/ConstString.h"
 
-template<typename Type, typename Parsed>
+template<typename Type, typename Parsed = Type>
 class ParseResult {
 public:
     ParseResult() noexcept = default;

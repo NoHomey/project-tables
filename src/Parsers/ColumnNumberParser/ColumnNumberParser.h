@@ -20,9 +20,9 @@ public:
         MinLimit(ConstString& token) noexcept;
     };
 
-    class ParseResult: public ::ParseResult<TableTypes::Column, TableTypes::Column> {
+    class ParseResult: public ::ParseResult<TableTypes::Column> {
     private:
-        using Base = ::ParseResult<TableTypes::Column, TableTypes::Column>;
+        using Base = ::ParseResult<TableTypes::Column>;
 
     public:
         ParseResult() noexcept;

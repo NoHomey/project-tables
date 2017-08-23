@@ -6,9 +6,9 @@
 
 class ColumnTypeParser {
 public:
-    class ParseResult: public ::ParseResult<ColumnMetaData::ColumnType, ColumnMetaData::ColumnType> {
+    class ParseResult: public ::ParseResult<ColumnMetaData::ColumnType> {
     private:
-        using Base = ::ParseResult<ColumnMetaData::ColumnType, ColumnMetaData::ColumnType>;
+        using Base = ::ParseResult<ColumnMetaData::ColumnType>;
 
     public:
         ParseResult() noexcept;

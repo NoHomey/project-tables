@@ -4,10 +4,14 @@ bool CharSequenceParser::isWhiteSpace(char symbol) noexcept {
     return (symbol == ' ') ||(symbol == '\t');
 }
 
+bool CharSequenceParser::isEndOfLine(char symbol) noexcept {
+    return symbol == '\n';
+}
+
 CharSequenceParser::ParseResult::ParseResult(ConstString& extracted, ConstString& rest) noexcept
 : Base{extracted, rest} { }
 
-CharSequenceParser::ParseResult CharSequenceParser::parseSeparatedByWhiteSpaces(ConstString& string) {
+size_t CharSequenceParser::skipWhiteSpaces(ConstString& string) {
     const size_t stringLength = string.length();
     if(stringLength == 0) {
         throw EmptyString{};
@@ -19,11 +23,16 @@ CharSequenceParser::ParseResult CharSequenceParser::parseSeparatedByWhiteSpaces(
     if(stringLength == offset) {
         throw  NoCharSequenceFound{};
     }
+    return offset;
+}
+
+CharSequenceParser::ParseResult CharSequenceParser::parseSeparatedByWhiteSpaces(ConstString& string) {
+    const size_t offset = skipWhiteSpaces(string);
     size_t length = offset;
     char symbol;
     do {
         ++length;
         symbol = string[length];
-    } while(!isWhiteSpace(symbol) && (symbol != '\0'));
+    } while(!isWhiteSpace(symbol) && !isEndOfLine(symbol) && (symbol != '\0'));
     return {{string, offset, length - offset}, {string, length}};
 }

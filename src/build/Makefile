@@ -75,7 +75,8 @@ UnknownQueryCommand.o MissingArgument.o MissingTableName.o MessageContainingTabl
 TokenException.o InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o TableRenamed.o NoRename.o Rename.o\
 NewNameIsNotUnique.o TableCreated.o TableExists.o CreateTable.o InvalidColumnType.o ListCommandsModelAdaptor.o MissingColumnType.o\
 InvalidColumnType.o NewColumnAdded.o ColumnTypeParser.o AddColumn.o TableOutputerToFile.o MissingFileName.o ParseFileName.o\
-TableSaved.o FileIOMessage.o $(OpenMessageObjects) $(WriteMessageObjects) Save.o IntegerParser.o ColumnNumberParser.o FractionalNumberParser.o\
+TableSaved.o FileIOMessage.o $(OpenMessageObjects) $(WriteMessageObjects) Save.o IntegerParser.o ColumnNumberParser.o\
+FractionalNumberParser.o StringParser.o
 #Help.o Quit.o Application.o 
 
 compileAll: $(Templates) app
@@ -282,6 +283,9 @@ ColumnNumberParser.o: $(call OwnDeps,$(Parsers),ColumnNumberParser) IntegerParse
 	$(COMPILER) -c $<
 
 FractionalNumberParser.o: $(call OwnDeps,$(Parsers),FractionalNumberParser) IntegerParser.o
+	$(COMPILER) -c $<
+
+StringParser.o: $(call OwnDeps,$(Parsers),StringParser) CharSequenceParser.o InvalidSymbolAtPosition.o TokenException.o
 	$(COMPILER) -c $<
 
 Application.o: $(call OwnDeps,$(app),Application)

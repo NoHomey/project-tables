@@ -21,10 +21,15 @@ public:
     class NoCharSequenceFound: public Exception { };
 
 public:
-    static bool isWhiteSpace(char symbol) noexcept;
-
     static ParseResult parseSeparatedByWhiteSpaces(ConstString& string);
 
 public:
     CharSequenceParser() = delete;
+
+protected:
+    static bool isWhiteSpace(char symbol) noexcept;
+    
+    static bool isEndOfLine(char symbol) noexcept;
+
+    static size_t skipWhiteSpaces(ConstString& string);
 };

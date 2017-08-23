@@ -31,9 +31,9 @@ public:
         MinLimit(ConstString& token) noexcept;
     };
 
-    class ParseResult: public ::ParseResult<TableTypes::Integer, TableTypes::Integer> {
+    class ParseResult: public ::ParseResult<TableTypes::Integer> {
     private:
-        using Base = ::ParseResult<TableTypes::Integer, TableTypes::Integer>;
+        using Base = ::ParseResult<TableTypes::Integer>;
 
     public:
         ParseResult() noexcept;
