@@ -4,11 +4,17 @@
 FractionalNumberParser::DigitsCountLimit::DigitsCountLimit(ConstString& token) noexcept
 : TokenException{token} { }
 
-FractionalNumberParser::FractionaNumberHasNoIntegerPart::FractionaNumberHasNoIntegerPart(ConstString& token) noexcept
+FractionalNumberParser::FractionalNumberHasNoIntegerPart::FractionalNumberHasNoIntegerPart(ConstString& token) noexcept
 : TokenException{token} { }
 
-FractionalNumberParser::IncompleteFractionaNumber::IncompleteFractionaNumber(ConstString& token) noexcept
+FractionalNumberParser::FractionalNumberHasNoFractionalPart::FractionalNumberHasNoFractionalPart(ConstString& token) noexcept
 : TokenException{token} { }
+
+FractionalNumberParser::InvalidFractionalNumber::InvalidFractionalNumber(size_t position, char symbol, ConstString& token) noexcept
+: InvalidSymbolAtPosition{position, symbol, token} { }
+
+FractionalNumberParser::InvalidFractionalNumber::InvalidFractionalNumber(const InvalidSymbolAtPosition& other) noexcept
+: InvalidSymbolAtPosition{other} { }
 
 FractionalNumberParser::ParseResult::ParseResult() noexcept
 : Base{0} { }
@@ -67,15 +73,19 @@ FractionalNumberParser::ParseResult FractionalNumberParser::parse(ConstString& s
         if(processed.extracted.length() == 1) {
             throw SingleFloatingPoint{};
         }
-        throw FractionaNumberHasNoIntegerPart{processed.extracted};
+        throw FractionalNumberHasNoIntegerPart{processed.extracted};
     }
     if(number.length() == (firstFloatingPointIndex + 1)) {
-        throw IncompleteFractionaNumber{processed.extracted};
+        throw FractionalNumberHasNoFractionalPart{processed.extracted};
     }
     ConstString integerPart{number, 0, firstFloatingPointIndex};
     ConstString fractionalPart{number, firstFloatingPointIndex + 1};
-    ensureOnlyDigits(integerPart, processed.extracted, processed.offset);
-    ensureOnlyDigits(fractionalPart, processed.extracted, processed.offset + firstFloatingPointIndex);
+    try {
+        ensureOnlyDigits(integerPart, processed.extracted, processed.offset);
+        ensureOnlyDigits(fractionalPart, processed.extracted, processed.offset + firstFloatingPointIndex);
+    } catch(const IntegerParser::InvalidInteger& error) {
+        throw InvalidFractionalNumber{error};
+    }
     if((integerPart.length() + fractionalPart.length()) > FractionalNumber::MaxOfDigitsCount) {
         throw DigitsCountLimit{processed.extracted};
     }

@@ -13,14 +13,21 @@ public:
 
     class SingleFloatingPoint: public Exception { };
 
-    class FractionaNumberHasNoIntegerPart: public TokenException {
+    class FractionalNumberHasNoIntegerPart: public TokenException {
     public:
-        FractionaNumberHasNoIntegerPart(ConstString& token) noexcept;
+        FractionalNumberHasNoIntegerPart(ConstString& token) noexcept;
     };
 
-    class IncompleteFractionaNumber: public TokenException {
+    class FractionalNumberHasNoFractionalPart: public TokenException {
     public:
-        IncompleteFractionaNumber(ConstString& token) noexcept;
+        FractionalNumberHasNoFractionalPart(ConstString& token) noexcept;
+    };
+
+    class InvalidFractionalNumber: public InvalidSymbolAtPosition {
+    public:
+        InvalidFractionalNumber(size_t position, char symbol, ConstString& token) noexcept;
+
+        InvalidFractionalNumber(const InvalidSymbolAtPosition& other) noexcept;
     };
 
     class ParseResult: public ::ParseResult<TableTypes::FractionalNumber> {

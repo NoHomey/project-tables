@@ -76,8 +76,10 @@ TokenException.o InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o De
 NewNameIsNotUnique.o TableCreated.o TableExists.o CreateTable.o InvalidColumnType.o ListCommandsModelAdaptor.o MissingColumnType.o\
 InvalidColumnType.o NewColumnAdded.o ColumnTypeParser.o AddColumn.o TableOutputerToFile.o MissingFileName.o ParseFileName.o\
 TableSaved.o FileIOMessage.o $(OpenMessageObjects) $(WriteMessageObjects) Save.o IntegerParser.o ColumnNumberParser.o\
-FractionalNumberParser.o StringParser.o ParserMessage.o SingleSign.o InvalidInteger.o IntegerOutOfRange.o WrongNumberOfColumns.o\
-InsertIntoTableWithNoColumns.o InsertedIntoTable.o Insert.o Help.o Quit.o Application.o 
+FractionalNumberParser.o StringParser.o ParserMessage.o SingleSign.o InvalidNumber.o InvalidInteger.o IntegerOutOfRange.o\
+SingleFloatingPoint.o FractionalNumberIsMissingPart.o FractionalNumberHasNoIntegerPart.o FractionalNumberHasNoFractionalPart.o\
+InvalidFractionalNumber.o FractionalNumberDigitsLimit.o WrongNumberOfColumns.o InsertIntoTableWithNoColumns.o InsertedIntoTable.o\
+Insert.o Help.o Quit.o Application.o 
 
 compileAll: $(Templates) app
 
@@ -294,10 +296,31 @@ ParserMessage.o: $(call OwnDeps,$(Messages)/Parsers,ParserMessage) InfoModel.o C
 SingleSign.o: $(call OwnDeps,$(Messages)/Parsers,SingleSign) ParserMessage.o
 	$(COMPILER) -c $<
 
-InvalidInteger.o: $(call OwnDeps,$(Messages)/Parsers,InvalidInteger) ParserMessage.o
+InvalidNumber.o: $(call OwnDeps,$(Messages)/Parsers,InvalidNumber) ParserMessage.o
+	$(COMPILER) -c $<
+
+InvalidInteger.o: $(call OwnDeps,$(Messages)/Parsers,InvalidInteger) InvalidNumber.o
 	$(COMPILER) -c $<
 
 IntegerOutOfRange.o: $(call OwnDeps,$(Messages)/Parsers,IntegerOutOfRange) ParserMessage.o
+	$(COMPILER) -c $<
+
+SingleFloatingPoint.o: $(call OwnDeps,$(Messages)/Parsers,SingleFloatingPoint) ParserMessage.o
+	$(COMPILER) -c $<
+
+FractionalNumberIsMissingPart.o: $(call OwnDeps,$(Messages)/Parsers,FractionalNumberIsMissingPart) MessageContainingTableName.o
+	$(COMPILER) -c $<
+
+FractionalNumberHasNoIntegerPart.o: $(call OwnDeps,$(Messages)/Parsers,FractionalNumberHasNoIntegerPart) FractionalNumberIsMissingPart.o
+	$(COMPILER) -c $<
+
+FractionalNumberHasNoFractionalPart.o: $(call OwnDeps,$(Messages)/Parsers,FractionalNumberHasNoFractionalPart) FractionalNumberIsMissingPart.o
+	$(COMPILER) -c $<
+
+InvalidFractionalNumber.o: $(call OwnDeps,$(Messages)/Parsers,InvalidFractionalNumber) InvalidNumber.o
+	$(COMPILER) -c $<
+
+FractionalNumberDigitsLimit.o: $(call OwnDeps,$(Messages)/Parsers,FractionalNumberDigitsLimit) ParserMessage.o
 	$(COMPILER) -c $<
 
 WrongNumberOfColumns.o: $(call OwnDeps,$(Messages),WrongNumberOfColumns) MessageContainingTableName.o
@@ -309,8 +332,9 @@ InsertIntoTableWithNoColumns.o: $(call OwnDeps,$(Messages),InsertIntoTableWithNo
 InsertedIntoTable.o: $(call OwnDeps,$(Messages),InsertedIntoTable) MessageContainingTableName.o
 	$(COMPILER) -c $<
 
-Insert.o: $(call OwnDeps,$(Actions),Insert) SingleSign.o InvalidInteger.o IntegerOutOfRange.o WrongNumberOfColumns.o\
-InsertIntoTableWithNoColumns.o InsertedIntoTable.o
+Insert.o: $(call OwnDeps,$(Actions),Insert) SingleSign.o InvalidInteger.o IntegerOutOfRange.o SingleFloatingPoint.o\
+FractionalNumberIsMissingPart.o FractionalNumberHasNoIntegerPart.o FractionalNumberHasNoFractionalPart.o\
+FractionalNumberDigitsLimit.o WrongNumberOfColumns.o InsertIntoTableWithNoColumns.o InsertedIntoTable.o
 	$(COMPILER) -c $<
 
 Application.o: $(call OwnDeps,$(app),Application)

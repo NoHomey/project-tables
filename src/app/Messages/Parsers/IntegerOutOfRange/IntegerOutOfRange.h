@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../ParserMessage/ParserMessage.h"
-#include "../../../../Parsers/IntegerParser/IntegerParser.h"
 
 class IntegerOutOfRange: public ParserMessage {
 public:

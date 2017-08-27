@@ -5,6 +5,11 @@
 #include "../../Messages/Parsers/SingleSign/SingleSign.h"
 #include "../../Messages/Parsers/InvalidInteger/InvalidInteger.h"
 #include "../../Messages/Parsers/IntegerOutOfRange/IntegerOutOfRange.h"
+#include "../../Messages/Parsers/SingleFloatingPoint/SingleFloatingPoint.h"
+#include "../../Messages/Parsers/FractionalNumberHasNoIntegerPart/FractionalNumberHasNoIntegerPart.h"
+#include "../../Messages/Parsers/FractionalNumberHasNoFractionalPart/FractionalNumberHasNoFractionalPart.h"
+#include "../../Messages/Parsers/InvalidFractionalNumber/InvalidFractionalNumber.h"
+#include "../../Messages/Parsers/FractionalNumberDigitsLimit/FractionalNumberDigitsLimit.h"
 #include "../../Messages/WrongNumberOfColumns/WrongNumberOfColumns.h"
 #include "../../Messages/InsertIntoTableWithNoColumns/InsertIntoTableWithNoColumns.h"
 #include "../../Messages/InsertedIntoTable/InsertedIntoTable.h"
@@ -36,13 +41,13 @@ Action* Insert::parseInteger() {
     try {
         result = IntegerParser::parse(command);
     } catch(const IntegerParser::SingleSign& error) {
-        return showMessage(new SingleSign(column, error.getSign()));
+        return showMessage(new SingleSign{column, error.getSign()});
     } catch(const IntegerParser::InvalidInteger& error) {
-        return showMessage(new InvalidInteger(column, error));
+        return showMessage(new InvalidInteger{column, error});
     } catch(const IntegerParser::MinLimit& error) {
-        return showMessage(new IntegerOutOfRange(column, error.getToken()));
+        return showMessage(new IntegerOutOfRange{column, error.getToken()});
     } catch(const IntegerParser::MaxLimit& error) {
-        return showMessage(new IntegerOutOfRange(column, error.getToken()));
+        return showMessage(new IntegerOutOfRange{column, error.getToken()});
     } catch(const Exception&) {
         setState(InsertState::MissingValue);
         return this;
@@ -53,9 +58,20 @@ Action* Insert::parseInteger() {
 }
 
 Action* Insert::parseFractionalNumber() {
+    const TableTypes::Column column = arguments.size();
     FractionalNumberParser::ParseResult result;
     try {
         result = FractionalNumberParser::parse(command);
+    } catch(const FractionalNumberParser::SingleFloatingPoint& error) {
+        return showMessage(new SingleFloatingPoint{column});
+    } catch(const FractionalNumberParser::FractionalNumberHasNoIntegerPart& error) {
+        return showMessage(new FractionalNumberHasNoIntegerPart{column, error.getToken()});
+    } catch(const FractionalNumberParser::FractionalNumberHasNoFractionalPart& error) {
+        return showMessage(new FractionalNumberHasNoFractionalPart{column, error.getToken()});
+    } catch(const FractionalNumberParser::InvalidFractionalNumber& error) {
+        return showMessage(new InvalidFractionalNumber{column, error});
+    } catch(const FractionalNumberParser::DigitsCountLimit& error) {
+        return showMessage(new FractionalNumberDigitsLimit(column, error.getToken()));
     } catch(const Exception&) {
         setState(InsertState::MissingValue);
         return this;
