@@ -13,7 +13,7 @@ ImmutableString Action::command;
 
 MoveDynamicArray<Argument> Action::arguments;
 
-DynamicArray<Action::ActionCommand> Action::commands;
+Action::Commands Action::commands;
 
 Action::ActionCommand::ActionCommand() noexcept
 : command{}, action{nullptr} { }
@@ -35,6 +35,13 @@ void Action::reRender() {
     }
 }
 
+Action::Commands::Commands(size_t count)
+: commands{count} { }
+
+DynamicArray<Action::ActionCommand>& Action::Commands::getCommands() noexcept {
+    return commands;
+}
+
 void Action::setCurrentTable(Table* currentTable) noexcept {
     Action::currentTable = currentTable;
 }
@@ -49,12 +56,8 @@ void Action::setComponent(Component* component) noexcept {
     }
 }
 
-void Action::registerCommands(DynamicArray<ActionCommand>&& commands) noexcept {
+void Action::registerCommands(Commands&& commands) noexcept {
     Action::commands = std::move(commands);
-}
-
-const DynamicArray<Action::ActionCommand>& Action::getCommands() noexcept {
-    return commands;
 }
 
 Action* Action::showMessage(const InfoModel* model) noexcept {
@@ -67,9 +70,10 @@ Action* Action::showMessage(const InfoModel* model) noexcept {
 }
 
 Action* Action::selectAction(ConstString& action) {
-    const size_t commandsCount = commands.size();
+    DynamicArray<ActionCommand>& registerdCommands = commands.getCommands();
+    const size_t commandsCount = registerdCommands.size();
     for(size_t index = 0; index < commandsCount; ++index) {
-        ActionCommand& command = commands[index];
+        ActionCommand& command = registerdCommands[index];
         if(command.getCommand() == action) {
             return command.getAction()->controlAction();
         }

@@ -6,12 +6,12 @@ Help Help::instance;
 
 ConstString Help::actionString{"help"};
 
-Action* Help::help() noexcept {
+Action* Help::controller() noexcept {
     return &instance; 
 }
 
 Action* Help::action() {
-    setComponent(new ListComponent(new ListCommandsModelAdaptor(commands)));
+    setComponent(new ListComponent(new ListCommandsModelAdaptor(commands.getCommands())));
     return nullptr;
 }
 

@@ -2,7 +2,7 @@
 
 #include "../Action/Action.h"
 
-class Quit: public Action {
+class Insert: public Action {
 public:
     static Action* controller() noexcept;
 
@@ -11,11 +11,11 @@ public:
     Action* controlAction() noexcept final;
 
 private:
-    Quit() noexcept = default;
+    Insert() noexcept = default;
 
 public:
     static ConstString actionString;
 
 private:
-    static Quit instance;
+    static Insert instance;
 };

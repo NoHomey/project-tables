@@ -17,6 +17,34 @@ void TypesOutputer::output(CharOutputStream& outputStream, const String& string)
     }
 }
 
+TypesOutputer::NumberLength TypesOutputer::outputCount(TableTypes::Integer integer) noexcept {
+    switch(integer) {
+        case 0: return 1;
+        case Integer::Max: return StringifiedIntegerLimits::Max.length();
+        case Integer::Min: return StringifiedIntegerLimits::Min.length();
+        default: return outputCountOfInteger(integer);
+    }
+}
+
+TypesOutputer::NumberLength TypesOutputer::outputCount(TableTypes::Column column) noexcept {
+    return outputCount(static_cast<TableTypes::Integer>(column));
+}
+
+TypesOutputer::NumberLength TypesOutputer::outputCountOfInteger(TableTypes::Integer integer) noexcept {
+    const bool isNegative = integer < 0;
+    TableTypes::Integer unsignedInteger = isNegative ? -integer : integer;
+    unsigned int counter = 0;
+    while(unsignedInteger != 0) {
+        unsignedInteger /= 10;
+        ++counter;
+    }
+    return counter + isNegative;
+}
+
+TypesOutputer::NumberLength TypesOutputer::outputCount(TableTypes::FractionalNumber fractionalNumber) noexcept {
+    return fpconv_dtoa(fractionalNumber, fpconvBuffer);
+}
+
 void TypesOutputer::output(CharOutputStream& outputStream, TableTypes::Integer integer) {
     switch(integer) {
         case 0:
@@ -28,12 +56,16 @@ void TypesOutputer::output(CharOutputStream& outputStream, TableTypes::Integer i
     }
 }
 
+void TypesOutputer::output(CharOutputStream& outputStream, TableTypes::Column column) {
+    output(outputStream, static_cast<TableTypes::Integer>(column));
+}
+
 void TypesOutputer::outputInteger(CharOutputStream& outputStream, TableTypes::Integer integer) {
-    TableTypes::Integer copy = integer > 0 ? integer : -integer;
+    TableTypes::Integer unsignedInteger = integer > 0 ? integer : -integer;
     unsigned int index = 0;
-    while(copy != 0) {
-        integerBuffer[index] = (copy % 10) + '0';
-        copy /= 10;
+    while(unsignedInteger != 0) {
+        integerBuffer[index] = (unsignedInteger % 10) + '0';
+        unsignedInteger /= 10;
         ++index;
     }
     if(integer < 0) {

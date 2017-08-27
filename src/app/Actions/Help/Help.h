@@ -4,7 +4,7 @@
 
 class Help: public Action {
 public:
-    static Action* help() noexcept;
+    static Action* controller() noexcept;
 
     Action* action() final;
 

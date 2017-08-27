@@ -24,14 +24,32 @@ public:
         Action* action;
     };
 
+    class Commands {
+    public:
+        Commands() noexcept = default;
+    
+        Commands(size_t count);
+    
+        Commands(Commands&& other) noexcept = default;
+    
+        Commands& operator=(Commands&& other) noexcept = default;
+    
+    public:
+        template<typename Type>
+        void registerCommand();
+    
+        DynamicArray<ActionCommand>& getCommands() noexcept;
+    
+    private:
+        DynamicArray<ActionCommand> commands;
+    };
+
 public:
     static void reRender();
 
     static void takeAction(ConstString& command);
 
-    static void registerCommands(DynamicArray<ActionCommand>&& commands) noexcept;
-
-    static const DynamicArray<ActionCommand>& getCommands() noexcept;
+    static void registerCommands(Commands&& commands) noexcept;
 
 public:
     virtual Action* action() = 0;
@@ -60,7 +78,7 @@ protected:
 
     static MoveDynamicArray<Argument> arguments;
 
-    static DynamicArray<ActionCommand> commands;
+    static Commands commands;
 
 private:
     static Action* selectAction(ConstString& action);
@@ -70,3 +88,8 @@ private:
 private:
     static const size_t ArgumentsIntialCapacity = 6; 
 };
+
+template<typename Type>
+void Action::Commands::registerCommand() {
+    commands.push({Type::actionString, Type::controller()});
+}

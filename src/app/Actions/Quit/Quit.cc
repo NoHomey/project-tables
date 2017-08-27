@@ -5,7 +5,7 @@ Quit Quit:: instance;
 
 ConstString Quit::actionString{"quit"};
 
-Action* Quit::quit() noexcept {
+Action* Quit::controller() noexcept {
     return &instance;
 }
 

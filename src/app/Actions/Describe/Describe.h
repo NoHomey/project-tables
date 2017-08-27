@@ -13,7 +13,7 @@ private:
     using Base = ActionRequiringTable<DescribeState>;
 
 public:
-    static Action* describe() noexcept;
+    static Action* controller() noexcept;
 
     Action* action() final;
 

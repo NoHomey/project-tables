@@ -24,6 +24,8 @@ public:
 
     const DynamicArray<ColumnMetaData>& getColumnsMetaData() const noexcept;
 
+    TableTypes::Column columnsCount() const noexcept;
+
     void addColumn(const ColumnMetaData& metaData);
 
     FixedSizeString rename(FixedSizeString&& newName) noexcept;

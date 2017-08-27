@@ -16,7 +16,7 @@ private:
     using Base = ActionRequiringTable<RenameState>;
 
 public:
-    static Action* rename() noexcept;
+    static Action* controller() noexcept;
 
     Action* action() final;
 

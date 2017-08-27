@@ -11,7 +11,7 @@ private:
     };
 
 public:
-    static Action* createTable() noexcept;
+    static Action* controller() noexcept;
 
     Action* action() final;
     

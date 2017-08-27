@@ -3,7 +3,7 @@
 #include <new>
 
 Argument::Argument() noexcept
-: type{Column} {
+: type{ArgumentType::Column} {
     new (&column) TableTypes::Column{0};
 }
 
@@ -11,7 +11,7 @@ void Argument::destruct() noexcept {
     typedef TableTypes::Column Column;
     typedef TableTypes::Integer Integer;
     typedef TableTypes::FractionalNumber FractionalNumber;
-    typedef TableTypes::String TableString;
+    typedef TableTypes::String String;
 
     switch(type) {
         case ArgumentType::Column:
@@ -24,7 +24,7 @@ void Argument::destruct() noexcept {
             fractionalNumber.~FractionalNumber();
             break;
         case ArgumentType::String:
-            string.~TableString();
+            string.~String();
             break;
         case ArgumentType::TemporaryString:
             temporaryString.~ImmutableString();
@@ -37,27 +37,27 @@ Argument::~Argument() noexcept {
 }
 
 Argument::Argument(TableTypes::Column value) noexcept
-: type{Column} {
+: type{ArgumentType::Column} {
     new (&column) TableTypes::Column{value};
 }
 
 Argument::Argument(TableTypes::Integer value) noexcept
-: type{Integer} {
+: type{ArgumentType::Integer} {
     new (&integer) TableTypes::Integer{value};
 }
 
 Argument::Argument(TableTypes::FractionalNumber value) noexcept
-: type{FractionalNumber} {
+: type{ArgumentType::FractionalNumber} {
     new (&fractionalNumber) TableTypes::FractionalNumber{value};
 }
 
 Argument::Argument(TableTypes::String&& value) noexcept
-: type{String} {
+: type{ArgumentType::String} {
     new (&string) TableTypes::String{std::move(value)};
 }
 
 Argument::Argument(ConstString& value) noexcept
-: type{TemporaryString} {
+: type{ArgumentType::TemporaryString} {
     new (&temporaryString) ImmutableString{value};
 }
 
@@ -100,23 +100,23 @@ Argument::ArgumentType Argument::getType() const noexcept {
 }
 
 bool Argument::isColumn() const noexcept {
-    return type == Column;
+    return type == ArgumentType::Column;
 }
     
 bool Argument::isInteger() const noexcept {
-    return type == Integer;
+    return type == ArgumentType::Integer;
 }
     
 bool Argument::isFractionalNumber() const noexcept {
-    return type == FractionalNumber;
+    return type == ArgumentType::FractionalNumber;
 }
     
 bool Argument::isString() const noexcept {
-    return type == String;
+    return type == ArgumentType::String;
 }
     
 bool Argument::isTemporaryString() const noexcept {
-    return type == TemporaryString;
+    return type == ArgumentType::TemporaryString;
 }
 
 TableTypes::Column Argument::asColumn() const noexcept {

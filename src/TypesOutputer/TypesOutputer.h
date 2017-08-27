@@ -10,6 +10,9 @@
 
 class TypesOutputer {
 public:
+    using NumberLength = unsigned char;
+
+public:
     TypesOutputer() = delete;
 
 public:
@@ -23,9 +26,17 @@ public:
 
     static void output(CharOutputStream& outputStream, TableTypes::Integer integer);
 
+    static void output(CharOutputStream& outputStream, TableTypes::Column column);
+
     static void output(CharOutputStream& outputStream, TableTypes::FractionalNumber fractionalNumber);
 
     static void output(Writer& writer, const TableTypes::String& string);
+
+    static NumberLength outputCount(TableTypes::Integer integer) noexcept;
+
+    static NumberLength outputCount(TableTypes::Column column) noexcept;
+
+    static NumberLength outputCount(TableTypes::FractionalNumber fractionalNumber) noexcept;
 
 private:
     template<typename Output>
@@ -33,6 +44,8 @@ private:
 
 private:
     static void outputInteger(CharOutputStream& outputStream, TableTypes::Integer integer);
+
+    static NumberLength outputCountOfInteger(TableTypes::Integer integer) noexcept;
 
 private:
     static ConstString NullText;

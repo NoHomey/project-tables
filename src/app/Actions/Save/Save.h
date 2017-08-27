@@ -14,7 +14,7 @@ private:
     using Base = ActionRequiringTable<SaveState>;
 
 public:
-    static Action* save() noexcept;
+    static Action* controller() noexcept;
 
     Action* action() final;
 

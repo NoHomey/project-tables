@@ -6,7 +6,7 @@ ShowTables ShowTables::instance;
 
 ConstString ShowTables::actionString{"Showtables"};
 
-Action* ShowTables::showTables() noexcept {
+Action* ShowTables::controller() noexcept {
     return &instance; 
 }
 

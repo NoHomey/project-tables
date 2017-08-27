@@ -5,7 +5,7 @@
 
 class Argument {
 public:
-    enum ArgumentType {Column, Integer, FractionalNumber, String, TemporaryString};
+    enum class ArgumentType {Column, Integer, FractionalNumber, String, TemporaryString};
 
 private:
     union {

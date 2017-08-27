@@ -12,7 +12,7 @@ ConstString CreateTable::actionString{"Create"};
 CreateTable::CreateTable() noexcept
 : state{State::ParseTableName} { }
 
-Action* CreateTable::createTable() noexcept {
+Action* CreateTable::controller() noexcept {
     return &instance;
 }
 

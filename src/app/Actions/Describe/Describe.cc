@@ -9,7 +9,7 @@ ConstString Describe::actionString{"Describe"};
 Describe::Describe() noexcept
 : Base{DescribeState::ParseTableName} { }
 
-Action* Describe::describe() noexcept {
+Action* Describe::controller() noexcept {
     return &instance;
 }
 

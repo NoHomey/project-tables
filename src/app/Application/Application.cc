@@ -10,6 +10,7 @@
 #include "../Actions/CreateTable/CreateTable.h"
 #include "../Actions/AddColumn/AddColumn.h"
 #include "../Actions/Save/Save.h"
+#include "../Actions/Insert/Insert.h"
 #include "../Actions/Help/Help.h"
 #include "../Actions/Quit/Quit.h"
 
@@ -29,15 +30,16 @@ void Application::run() {
     BasicRenderer::setup();
     BasicRenderer::getRenderer().clearWindow();
 
-    DynamicArray<Action::ActionCommand> commands{8};
-    commands.push({ShowTables::actionString, ShowTables::showTables()});
-    commands.push({Describe::actionString, Describe::describe()});
-    commands.push({Rename::actionString, Rename::rename()});
-    commands.push({CreateTable::actionString, CreateTable::createTable()});
-    commands.push({AddColumn::actionString, AddColumn::addColumn()});
-    commands.push({Save::actionString, Save::save()});
-    commands.push({Help::actionString, Help::help()});
-    commands.push({Quit::actionString, Quit::quit()});
+    Action::Commands commands{9};
+    commands.registerCommand<ShowTables>();
+    commands.registerCommand<Describe>();
+    commands.registerCommand<Rename>();
+    commands.registerCommand<CreateTable>();
+    commands.registerCommand<AddColumn>();
+    commands.registerCommand<Save>();
+    commands.registerCommand<Insert>();
+    commands.registerCommand<Help>();
+    commands.registerCommand<Quit>();
     Action::registerCommands(std::move(commands));
 
     std::thread reader{readFromStdin};

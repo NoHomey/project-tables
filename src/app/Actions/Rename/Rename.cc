@@ -11,7 +11,7 @@ ConstString Rename::actionString{"Rename"};
 Rename::Rename() noexcept
 : Base{RenameState::ParseTableName} { }
 
-Action* Rename::rename() noexcept {
+Action* Rename::controller() noexcept {
     return &instance;
 }
 

@@ -13,7 +13,7 @@ ConstString Save::actionString{"Save"};
 Save::Save() noexcept
 : Base{SaveState::ParseTableName} { }
 
-Action* Save::save() noexcept {
+Action* Save::controller() noexcept {
     return &instance;
 }
 

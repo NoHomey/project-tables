@@ -12,6 +12,10 @@ const DynamicArray<ColumnMetaData>& Table::getColumnsMetaData() const noexcept {
     return columnsMetaData;
 }
 
+TableTypes::Column Table::columnsCount() const noexcept {
+    return columnsMetaData.size();
+}
+
 void Table::addColumn(const ColumnMetaData& metaData) {
     columnsMetaData.push(metaData);
     tableData.addColumn();

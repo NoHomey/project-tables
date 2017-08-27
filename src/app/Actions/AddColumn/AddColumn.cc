@@ -12,7 +12,7 @@ ConstString AddColumn::actionString{"AddColumn"};
 AddColumn::AddColumn() noexcept
 : Base{AddColumnState::ParseTableName} { }
 
-Action* AddColumn::addColumn() noexcept {
+Action* AddColumn::controller() noexcept {
     return &instance;
 }
 

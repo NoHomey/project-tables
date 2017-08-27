@@ -4,7 +4,7 @@
 
 class ShowTables: public Action {
 public:
-    static Action* showTables() noexcept;
+    static Action* controller() noexcept;
 
     Action* action() final;
 

@@ -15,7 +15,7 @@ private:
     using Base = ActionRequiringTable<AddColumnState>;
 
 public:
-    static Action* addColumn() noexcept;
+    static Action* controller() noexcept;
 
     Action* action() final;
 
