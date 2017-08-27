@@ -1,12 +1,11 @@
 #pragma once
 
-#include "../../../Components/Info/InfoModel/InfoModel.h"
-#include "../../../String/ConstString/ConstString.h"
+#include "../MessageContainingTableName/MessageContainingTableName.h"
 #include "../../../Table/Table.h"
 
-class WrongNumberOfColumns: public InfoModel {
+class WrongNumberOfColumns: public MessageContainingTableName<ImmutableString> {
 public:
-    WrongNumberOfColumns(const Table* table, TableTypes::Column valuesCount);
+    WrongNumberOfColumns(const Table& table, TableTypes::Column valuesCount);
 
     WrongNumberOfColumns(const WrongNumberOfColumns& other) = delete;
 
@@ -20,7 +19,7 @@ public:
     void output(CharOutputStream& outputStream) const final;
 
 private:
-    static size_t calculateTextLength(const Table* table, TableTypes::Column valuesCount) noexcept;
+    static size_t calculateTextLength(const Table& table, TableTypes::Column valuesCount) noexcept;
 
 private:
     static ConstString textBeginning;
@@ -34,8 +33,6 @@ private:
     static const size_t ownTextLength;
 
 private:
-    ConstString tableName;
-
     TableTypes::Column valuesCount;
 
     TableTypes::Column columnsCount;

@@ -11,7 +11,7 @@ void Argument::destruct() noexcept {
     typedef TableTypes::Column Column;
     typedef TableTypes::Integer Integer;
     typedef TableTypes::FractionalNumber FractionalNumber;
-    typedef TableTypes::String String;
+    typedef TableTypes::String TableString;
 
     switch(type) {
         case ArgumentType::Column:
@@ -24,7 +24,7 @@ void Argument::destruct() noexcept {
             fractionalNumber.~FractionalNumber();
             break;
         case ArgumentType::String:
-            string.~String();
+            string.~TableString();
             break;
         case ArgumentType::TemporaryString:
             temporaryString.~ImmutableString();

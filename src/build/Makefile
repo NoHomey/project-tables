@@ -76,7 +76,8 @@ TokenException.o InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o De
 NewNameIsNotUnique.o TableCreated.o TableExists.o CreateTable.o InvalidColumnType.o ListCommandsModelAdaptor.o MissingColumnType.o\
 InvalidColumnType.o NewColumnAdded.o ColumnTypeParser.o AddColumn.o TableOutputerToFile.o MissingFileName.o ParseFileName.o\
 TableSaved.o FileIOMessage.o $(OpenMessageObjects) $(WriteMessageObjects) Save.o IntegerParser.o ColumnNumberParser.o\
-FractionalNumberParser.o StringParser.o Insert.o Help.o Quit.o Application.o 
+FractionalNumberParser.o StringParser.o WrongNumberOfColumns.o InsertIntoTableWithNoColumns.o InsertedIntoTable.o Insert.o\
+Help.o Quit.o Application.o 
 
 compileAll: $(Templates) app
 
@@ -287,7 +288,16 @@ FractionalNumberParser.o: $(call OwnDeps,$(Parsers),FractionalNumberParser) Inte
 StringParser.o: $(call OwnDeps,$(Parsers),StringParser) CharSequenceParser.o InvalidSymbolAtPosition.o TokenException.o
 	$(COMPILER) -c $<
 
-Insert.o: $(call OwnDeps,$(Actions),Insert)
+WrongNumberOfColumns.o: $(call OwnDeps,$(Messages),WrongNumberOfColumns) MessageContainingTableName.o
+	$(COMPILER) -c $<
+
+InsertIntoTableWithNoColumns.o: $(call OwnDeps,$(Messages),InsertIntoTableWithNoColumns) MessageContainingTableName.o
+	$(COMPILER) -c $<
+
+InsertedIntoTable.o: $(call OwnDeps,$(Messages),InsertedIntoTable) MessageContainingTableName.o
+	$(COMPILER) -c $<
+
+Insert.o: $(call OwnDeps,$(Actions),Insert) WrongNumberOfColumns.o InsertIntoTableWithNoColumns.o InsertedIntoTable.o
 	$(COMPILER) -c $<
 
 Application.o: $(call OwnDeps,$(app),Application)

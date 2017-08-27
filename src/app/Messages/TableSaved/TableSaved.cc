@@ -5,7 +5,7 @@ ConstString TableSaved::textBeginning{"Query result: successfully saved Table '"
 
 ConstString TableSaved::textAfterTableName{"' to file: "};
 
-const size_t TableSaved::ownTextLength = textAfterTableName.length();
+const size_t TableSaved::ownTextLength = textBeginning.length() + textAfterTableName.length();
 
 TableSaved::TableSaved(const FixedSizeString& tableName, ConstString& fileName)
 : MessageContainingTableName<ImmutableString>{tableName, ownTextLength + fileName.length()},
