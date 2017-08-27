@@ -11,7 +11,7 @@ Action* ParseTableName::action() {
     try {
         result = TableNameParser::parse(command);
     } catch(const TableNameParser::InvalidTableName& error) {
-        showMessage(new InvalidTableName(error.getToken()));
+        showMessage(new InvalidTableName(error));
         return this;
     } catch(const Exception& error) {
         showMessage(new MissingTableName(commandName, arguments.size()));

@@ -2,6 +2,9 @@
 #include "../../../Parsers/IntegerParser/IntegerParser.h"
 #include "../../../Parsers/FractionalNumberParser/FractionalNumberParser.h"
 #include "../../../Parsers/StringParser/StringParser.h"
+#include "../../Messages/Parsers/SingleSign/SingleSign.h"
+#include "../../Messages/Parsers/InvalidInteger/InvalidInteger.h"
+#include "../../Messages/Parsers/IntegerOutOfRange/IntegerOutOfRange.h"
 #include "../../Messages/WrongNumberOfColumns/WrongNumberOfColumns.h"
 #include "../../Messages/InsertIntoTableWithNoColumns/InsertIntoTableWithNoColumns.h"
 #include "../../Messages/InsertedIntoTable/InsertedIntoTable.h"
@@ -28,9 +31,18 @@ Action* Insert::removeTableNameFromArguments() {
 }
 
 Action* Insert::parseInteger() {
+    const TableTypes::Column column = arguments.size();
     IntegerParser::ParseResult result;
     try {
         result = IntegerParser::parse(command);
+    } catch(const IntegerParser::SingleSign& error) {
+        return showMessage(new SingleSign(column, error.getSign()));
+    } catch(const IntegerParser::InvalidInteger& error) {
+        return showMessage(new InvalidInteger(column, error));
+    } catch(const IntegerParser::MinLimit& error) {
+        return showMessage(new IntegerOutOfRange(column, error.getToken()));
+    } catch(const IntegerParser::MaxLimit& error) {
+        return showMessage(new IntegerOutOfRange(column, error.getToken()));
     } catch(const Exception&) {
         setState(InsertState::MissingValue);
         return this;

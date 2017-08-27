@@ -28,6 +28,8 @@ public:
 
     static void output(CharOutputStream& outputStream, TableTypes::Column column);
 
+    static void output(CharOutputStream& outputStream, size_t size);
+
     static void output(CharOutputStream& outputStream, TableTypes::FractionalNumber fractionalNumber);
 
     static void output(Writer& writer, const TableTypes::String& string);
@@ -35,6 +37,8 @@ public:
     static NumberLength outputCount(TableTypes::Integer integer) noexcept;
 
     static NumberLength outputCount(TableTypes::Column column) noexcept;
+
+    static NumberLength outputCount(size_t size) noexcept;
 
     static NumberLength outputCount(TableTypes::FractionalNumber fractionalNumber) noexcept;
 

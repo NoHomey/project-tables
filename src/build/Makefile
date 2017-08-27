@@ -76,8 +76,8 @@ TokenException.o InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o De
 NewNameIsNotUnique.o TableCreated.o TableExists.o CreateTable.o InvalidColumnType.o ListCommandsModelAdaptor.o MissingColumnType.o\
 InvalidColumnType.o NewColumnAdded.o ColumnTypeParser.o AddColumn.o TableOutputerToFile.o MissingFileName.o ParseFileName.o\
 TableSaved.o FileIOMessage.o $(OpenMessageObjects) $(WriteMessageObjects) Save.o IntegerParser.o ColumnNumberParser.o\
-FractionalNumberParser.o StringParser.o WrongNumberOfColumns.o InsertIntoTableWithNoColumns.o InsertedIntoTable.o Insert.o\
-Help.o Quit.o Application.o 
+FractionalNumberParser.o StringParser.o ParserMessage.o SingleSign.o InvalidInteger.o IntegerOutOfRange.o WrongNumberOfColumns.o\
+InsertIntoTableWithNoColumns.o InsertedIntoTable.o Insert.o Help.o Quit.o Application.o 
 
 compileAll: $(Templates) app
 
@@ -288,6 +288,18 @@ FractionalNumberParser.o: $(call OwnDeps,$(Parsers),FractionalNumberParser) Inte
 StringParser.o: $(call OwnDeps,$(Parsers),StringParser) CharSequenceParser.o InvalidSymbolAtPosition.o TokenException.o
 	$(COMPILER) -c $<
 
+ParserMessage.o: $(call OwnDeps,$(Messages)/Parsers,ParserMessage) InfoModel.o ConstString.o FixedSizeString.o TypesOutputer.o
+	$(COMPILER) -c $<
+
+SingleSign.o: $(call OwnDeps,$(Messages)/Parsers,SingleSign) ParserMessage.o
+	$(COMPILER) -c $<
+
+InvalidInteger.o: $(call OwnDeps,$(Messages)/Parsers,InvalidInteger) ParserMessage.o
+	$(COMPILER) -c $<
+
+IntegerOutOfRange.o: $(call OwnDeps,$(Messages)/Parsers,IntegerOutOfRange) ParserMessage.o
+	$(COMPILER) -c $<
+
 WrongNumberOfColumns.o: $(call OwnDeps,$(Messages),WrongNumberOfColumns) MessageContainingTableName.o
 	$(COMPILER) -c $<
 
@@ -297,7 +309,8 @@ InsertIntoTableWithNoColumns.o: $(call OwnDeps,$(Messages),InsertIntoTableWithNo
 InsertedIntoTable.o: $(call OwnDeps,$(Messages),InsertedIntoTable) MessageContainingTableName.o
 	$(COMPILER) -c $<
 
-Insert.o: $(call OwnDeps,$(Actions),Insert) WrongNumberOfColumns.o InsertIntoTableWithNoColumns.o InsertedIntoTable.o
+Insert.o: $(call OwnDeps,$(Actions),Insert) SingleSign.o InvalidInteger.o IntegerOutOfRange.o WrongNumberOfColumns.o\
+InsertIntoTableWithNoColumns.o InsertedIntoTable.o
 	$(COMPILER) -c $<
 
 Application.o: $(call OwnDeps,$(app),Application)

@@ -30,6 +30,10 @@ TypesOutputer::NumberLength TypesOutputer::outputCount(TableTypes::Column column
     return outputCount(static_cast<TableTypes::Integer>(column));
 }
 
+TypesOutputer::NumberLength TypesOutputer::outputCount(size_t size) noexcept {
+    return outputCount(static_cast<TableTypes::Integer>(size));
+}
+
 TypesOutputer::NumberLength TypesOutputer::outputCountOfInteger(TableTypes::Integer integer) noexcept {
     const bool isNegative = integer < 0;
     TableTypes::Integer unsignedInteger = isNegative ? -integer : integer;
@@ -58,6 +62,10 @@ void TypesOutputer::output(CharOutputStream& outputStream, TableTypes::Integer i
 
 void TypesOutputer::output(CharOutputStream& outputStream, TableTypes::Column column) {
     output(outputStream, static_cast<TableTypes::Integer>(column));
+}
+
+void TypesOutputer::output(CharOutputStream& outputStream, size_t size) {
+    output(outputStream, static_cast<TableTypes::Integer>(size));
 }
 
 void TypesOutputer::outputInteger(CharOutputStream& outputStream, TableTypes::Integer integer) {
