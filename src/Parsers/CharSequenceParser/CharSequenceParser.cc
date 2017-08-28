@@ -1,4 +1,8 @@
 #include "CharSequenceParser.h"
+#include "../../NullText.h"
+
+CharSequenceParser::Null::Null(ConstString& rest) noexcept
+: TokenException{rest} { }
 
 bool CharSequenceParser::isWhiteSpace(char symbol) noexcept {
     return (symbol == ' ') ||(symbol == '\t');
@@ -6,6 +10,10 @@ bool CharSequenceParser::isWhiteSpace(char symbol) noexcept {
 
 bool CharSequenceParser::isEndOfLine(char symbol) noexcept {
     return symbol == '\n';
+}
+
+bool CharSequenceParser::isDelimiter(char symbol) noexcept {
+    return isWhiteSpace(symbol) || isEndOfLine(symbol) || (symbol == '\0');
 }
 
 CharSequenceParser::ParseResult::ParseResult(ConstString& extracted, ConstString& rest) noexcept
@@ -26,13 +34,18 @@ size_t CharSequenceParser::skipWhiteSpaces(ConstString& string) {
     return offset;
 }
 
-CharSequenceParser::ParseResult CharSequenceParser::parseSeparatedByWhiteSpaces(ConstString& string) {
+CharSequenceParser::ParseResult CharSequenceParser::parseSeparatedByWhiteSpaces(ConstString& string, bool throwNull) {
     const size_t offset = skipWhiteSpaces(string);
     size_t length = offset;
     char symbol;
     do {
         ++length;
         symbol = string[length];
-    } while(!isWhiteSpace(symbol) && !isEndOfLine(symbol) && (symbol != '\0'));
-    return {{string, offset, length - offset}, {string, length}};
+    } while(!isDelimiter(symbol));
+    ConstString extracted = {string, offset, length - offset};
+    ConstString rest = {string, length};
+    if(throwNull && (extracted == NullText)) {
+        throw Null{rest};
+    }
+    return {extracted, rest};
 }

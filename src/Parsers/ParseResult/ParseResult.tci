@@ -4,11 +4,15 @@
 
 template<typename Type, typename Parsed>
 ParseResult<Type, Parsed>::ParseResult(Parsed parsed) noexcept
-: parsed{parsed}, rest{} { }
+: parsed{parsed}, rest{}, isNullValue{false} { }
 
 template<typename Type, typename Parsed>
 ParseResult<Type, Parsed>::ParseResult(Parsed parsed, ConstString& rest) noexcept
-: parsed{parsed}, rest{rest} { }
+: parsed{parsed}, rest{rest}, isNullValue{false} { }
+
+template<typename Type, typename Parsed>
+ParseResult<Type, Parsed>::ParseResult(std::nullptr_t, ConstString& rest) noexcept
+: parsed{}, rest{rest}, isNullValue{true} { }
 
 template<typename Type, typename Parsed>
 Parsed ParseResult<Type, Parsed>::getParsed() const noexcept {
@@ -18,4 +22,9 @@ Parsed ParseResult<Type, Parsed>::getParsed() const noexcept {
 template<typename Type, typename Parsed>
 ConstString& ParseResult<Type, Parsed>::getRest() const noexcept {
     return rest;
+}
+
+template<typename Type, typename Parsed>
+bool ParseResult<Type, Parsed>::isNull() const noexcept {
+    return isNullValue;
 }

@@ -5,10 +5,12 @@
 
 class Argument {
 public:
-    enum class ArgumentType {Column, Integer, FractionalNumber, String, TemporaryString};
+    enum class ArgumentType {Null, Column, Integer, FractionalNumber, String, TemporaryString};
 
 private:
     union {
+        void* nullPtr;
+
         TableTypes::Column column;
 
         TableTypes::Integer integer;
@@ -24,6 +26,8 @@ public:
     Argument() noexcept;
 
     ~Argument() noexcept;
+
+    Argument(std::nullptr_t) noexcept;
 
     Argument(TableTypes::Column value) noexcept;
 
@@ -45,6 +49,8 @@ public:
    
 public:
     ArgumentType getType() const noexcept;
+
+    bool isNull() const noexcept;
 
     bool isColumn() const noexcept;
     

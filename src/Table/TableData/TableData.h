@@ -26,6 +26,8 @@ public:
 
     void addColumn();
 
+    void insert(std::nullptr_t);
+
     void insert(TableTypes::Integer&& value);
 
     void insert(TableTypes::FractionalNumber&& value);

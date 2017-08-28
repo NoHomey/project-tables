@@ -1,8 +1,14 @@
 #include "StringParser.h"
 #include <utility>
 
+StringParser::ParseResult::ParseResult() noexcept
+: parsed{}, rest{}, isNullValue{false} { }
+
 StringParser::ParseResult::ParseResult(FixedSizeString&& parsed, ConstString& rest) noexcept
-: parsed{std::move(parsed)}, rest{rest} { }
+: parsed{std::move(parsed)}, rest{rest}, isNullValue{false} { }
+
+StringParser::ParseResult::ParseResult(std::nullptr_t, ConstString& rest) noexcept
+: parsed{}, rest{rest}, isNullValue{true} { }
 
 FixedSizeString StringParser::ParseResult::moveParsed() noexcept {
     return std::move(parsed);
@@ -10,6 +16,10 @@ FixedSizeString StringParser::ParseResult::moveParsed() noexcept {
 
 ConstString& StringParser::ParseResult::getRest() const noexcept {
     return rest;
+}
+
+bool StringParser::ParseResult::isNull() const noexcept {
+    return isNullValue;
 }
 
 StringParser::MissingQuotesInTheBeginning::MissingQuotesInTheBeginning(ConstString& token) noexcept
@@ -33,7 +43,8 @@ CharSequenceParser::ParseResult StringParser::extractString(ConstString& string)
     const size_t offset = skipWhiteSpaces(string);
     ConstString text = {string, offset};
     if(!isQuotes(string[offset])) {
-        throw MissingQuotesInTheBeginning{parseSeparatedByWhiteSpaces(text).getParsed()};
+        CharSequenceParser::ParseResult result = parseSeparatedByWhiteSpaces(text, true);
+        throw MissingQuotesInTheBeginning{result.getParsed()};
     }
     const size_t textLength = text.length();
     size_t index = 1;
@@ -70,7 +81,12 @@ size_t StringParser::countEscapingBackslashes(ConstString& string) noexcept {
 }
 
 StringParser::ParseResult StringParser::parse(ConstString& token) {
-    CharSequenceParser::ParseResult extracted = extractString(token);
+    CharSequenceParser::ParseResult extracted;
+    try {
+        extracted = extractString(token);
+    } catch(const Null& error) {
+        return {nullptr, extracted.getRest()};
+    }
     ConstString string = extracted.getParsed();
     const size_t stringLength = string.length();
     FixedSizeString result{stringLength - countEscapingBackslashes(string)};

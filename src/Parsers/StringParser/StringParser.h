@@ -11,7 +11,9 @@ class StringParser: public CharSequenceParser {
 public:
     class ParseResult {
     public:
-        ParseResult() noexcept = default;
+        ParseResult() noexcept;
+
+        ParseResult(std::nullptr_t, ConstString& rest) noexcept;
 
         ParseResult(ParseResult&& other) noexcept = default;
 
@@ -23,11 +25,15 @@ public:
         FixedSizeString moveParsed() noexcept;
     
         ConstString& getRest() const noexcept;
+
+        bool isNull() const noexcept;
     
     private:
         FixedSizeString parsed;
     
         ImmutableString rest;
+
+        bool isNullValue;
     };
 
     class MissingQuotesInTheBeginning: public TokenException {

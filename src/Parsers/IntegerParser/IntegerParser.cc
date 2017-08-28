@@ -23,6 +23,9 @@ IntegerParser::ParseResult::ParseResult() noexcept
 IntegerParser::ParseResult::ParseResult(TableTypes::Integer integer, ConstString& rest) noexcept
 : Base{integer, rest} { }
 
+IntegerParser::ParseResult::ParseResult(std::nullptr_t, ConstString& rest) noexcept
+: Base{nullptr, rest} { }
+
 bool IntegerParser::isMinus(char symbol) noexcept {
     return symbol == '-';
 }
@@ -100,7 +103,7 @@ TableTypes::Integer IntegerParser::parseInteger(bool isNegative, ConstString& di
 }
 
 IntegerParser::Processed IntegerParser::commonProcess(ConstString& string) {
-    CharSequenceParser::ParseResult result = CharSequenceParser::parseSeparatedByWhiteSpaces(string);
+    CharSequenceParser::ParseResult result = CharSequenceParser::parseSeparatedByWhiteSpaces(string, true);
     ConstString& extracted = result.getParsed();
     const bool hasSign = isSign(extracted[0]);
     const bool isNegative = isMinus(extracted[0]);
@@ -119,9 +122,14 @@ IntegerParser::Processed IntegerParser::commonProcess(ConstString& string) {
 }
 
 IntegerParser::ParseResult IntegerParser::parse(ConstString& string) {
-    Processed processed = commonProcess(string);
+    Processed processed;
+    try {
+        processed = commonProcess(string);
+    } catch(const CharSequenceParser::Null& error) {
+        return {nullptr, error.getToken()};
+    }
     if(processed.digitSequence.length() == 0) {
-        return {0, processed.rest};
+        return {static_cast<TableTypes::Integer>(0), processed.rest};
     }
     ensureOnlyDigits(processed.digitSequence, processed.extracted, processed.offset);
     ensureInLimits(processed.isNegative, processed.digitSequence, processed.extracted);

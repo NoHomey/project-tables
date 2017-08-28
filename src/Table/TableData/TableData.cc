@@ -108,6 +108,15 @@ void TableData::insertValue(Type&& value) {
     }
 }
 
+void TableData::insert(std::nullptr_t) {
+    if(columns > 0) {
+        if(data.capacity() == 0) {
+            data.extend(initialCapacity);
+        }
+        data.push(NullValue);
+    }
+}
+
 void TableData::insert(TableTypes::Integer&& value) {
     insertValue<TableTypes::Integer>(std::move(value));
 }

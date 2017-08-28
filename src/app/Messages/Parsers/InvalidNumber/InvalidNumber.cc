@@ -3,7 +3,7 @@
 
 ConstString InvalidNumber::textBeginning{"Column type is '"};
 
-ConstString InvalidNumber::textInputValue{"': and input value '"};
+ConstString InvalidNumber::textInputValue{"' and input value: '"};
 
 ConstString InvalidNumber::textInvalidNumber{"' is invalid "};
 

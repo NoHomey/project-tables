@@ -52,8 +52,6 @@ private:
     static NumberLength outputCountOfInteger(TableTypes::Integer integer) noexcept;
 
 private:
-    static ConstString NullText;
-
     static char integerBuffer[StringifiedIntegerLimits::DigitsCountOfMin];
 
     static char fpconvBuffer[24];

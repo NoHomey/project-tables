@@ -3,17 +3,21 @@
 #include <new>
 
 Argument::Argument() noexcept
-: type{ArgumentType::Column} {
-    new (&column) TableTypes::Column{0};
+: type{ArgumentType::Null} {
+    new (&nullPtr) void*{nullptr};
 }
 
 void Argument::destruct() noexcept {
+    typedef void* Null;
     typedef TableTypes::Column Column;
     typedef TableTypes::Integer Integer;
     typedef TableTypes::FractionalNumber FractionalNumber;
     typedef TableTypes::String TableString;
 
     switch(type) {
+        case ArgumentType::Null:
+            nullPtr.~Null();
+            break;
         case ArgumentType::Column:
             column.~Column();
             break;
@@ -35,6 +39,9 @@ void Argument::destruct() noexcept {
 Argument::~Argument() noexcept {
     destruct();
 }
+
+Argument::Argument(std::nullptr_t) noexcept
+: Argument{} { }
 
 Argument::Argument(TableTypes::Column value) noexcept
 : type{ArgumentType::Column} {
@@ -63,6 +70,9 @@ Argument::Argument(ConstString& value) noexcept
 
 void Argument::create(Argument&& other) noexcept {
     switch(other.type) {
+        case ArgumentType::Null:
+            new (&nullPtr) void*{nullptr};
+            break;
         case ArgumentType::Column:
             new (&column) TableTypes::Column{other.column};
             break;
@@ -97,6 +107,10 @@ Argument& Argument::operator=(Argument&& other) noexcept {
 
 Argument::ArgumentType Argument::getType() const noexcept {
     return type;
+}
+
+bool Argument::isNull() const noexcept {
+    return type == ArgumentType::Null;
 }
 
 bool Argument::isColumn() const noexcept {

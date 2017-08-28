@@ -22,6 +22,9 @@ FractionalNumberParser::ParseResult::ParseResult() noexcept
 FractionalNumberParser::ParseResult::ParseResult(TableTypes::FractionalNumber fractionalNumber, ConstString& rest) noexcept
 : Base{fractionalNumber, rest} { }
 
+FractionalNumberParser::ParseResult::ParseResult(std::nullptr_t, ConstString& rest) noexcept
+: Base{nullptr, rest} { }
+
 bool FractionalNumberParser::isFloatingPoint(char symbol) noexcept {
     return symbol == '.';
 }
@@ -62,9 +65,14 @@ TableTypes::FractionalNumber FractionalNumberParser::parseFractionalNumber(
 }
 
 FractionalNumberParser::ParseResult FractionalNumberParser::parse(ConstString& string) {
-    Processed processed = commonProcess(string);
+    Processed processed;
+    try {
+        processed = commonProcess(string);
+    } catch(const CharSequenceParser::Null& error) {
+        return {nullptr, error.getToken()};
+    }
     if(processed.digitSequence.length() == 0) {
-        return {0, processed.rest};
+        return {0.0, processed.rest};
     }
     ConstString number = isZero(processed.extracted[processed.hasSign]) && isFloatingPoint(processed.digitSequence[0])
         ? ConstString{processed.extracted, processed.offset - 1} : processed.digitSequence;

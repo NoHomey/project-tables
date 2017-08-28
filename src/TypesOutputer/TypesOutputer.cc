@@ -3,8 +3,7 @@
 #include "../Table/TableTypes/StringifiedIntegerLimits.h"
 #include "../String/ConstString/ConstString.h"
 #include "../dependencies/fpconv/fpconv.h"
-
-ConstString TypesOutputer::NullText{"NULL"};
+#include "../NullText.h"
 
 char TypesOutputer::integerBuffer[StringifiedIntegerLimits::DigitsCountOfMin];
 

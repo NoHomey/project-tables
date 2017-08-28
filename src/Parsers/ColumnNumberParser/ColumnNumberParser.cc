@@ -1,4 +1,5 @@
 #include "ColumnNumberParser.h"
+#include "../../NullText.h"
 
 ColumnNumberParser::MaxLimit::MaxLimit(ConstString& token) noexcept
 : TokenException{token} { }
@@ -25,6 +26,9 @@ ColumnNumberParser::ParseResult ColumnNumberParser::parse(ConstString& string) {
         throw MinLimit{error.getToken()};
     } catch(const IntegerParser::MaxLimit& error) {
         throw MaxLimit{error.getToken()};
+    }
+    if(result.isNull()) {
+        throw IntegerParser::InvalidInteger{0, NullText[0], NullText};
     }
     TableTypes::Integer integer = result.getParsed();
     if(integer < Min) {

@@ -37,6 +37,8 @@ public:
     public:
         ParseResult() noexcept;
 
+        ParseResult(std::nullptr_t, ConstString& rest) noexcept;
+
         ParseResult(TableTypes::FractionalNumber fractionalNumber, ConstString& rest) noexcept;
     };
 

@@ -38,6 +38,8 @@ public:
     public:
         ParseResult() noexcept;
 
+        ParseResult(std::nullptr_t, ConstString& rest) noexcept;
+
         ParseResult(TableTypes::Integer integer, ConstString& rest) noexcept;
     };
 
@@ -49,12 +51,12 @@ public:
 
 protected:
     struct Processed {
-        const size_t offset;
-        ConstString extracted;
-        ConstString digitSequence;
-        ConstString rest;
-        const bool hasSign;
-        const bool isNegative;
+        size_t offset;
+        ImmutableString extracted;
+        ImmutableString digitSequence;
+        ImmutableString rest;
+        bool hasSign;
+        bool isNegative;
     };
 
 protected:

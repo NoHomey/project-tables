@@ -11,15 +11,21 @@ public:
 
     ParseResult(Parsed parsed, ConstString& rest) noexcept;
 
+    ParseResult(std::nullptr_t, ConstString& rest) noexcept;
+
 public: 
     Parsed getParsed() const noexcept;
 
     ConstString& getRest() const noexcept;
 
+    bool isNull() const noexcept;
+
 private:
     Type parsed;
 
     ImmutableString rest;
+
+    bool isNullValue;
 };
 
 #include "ParseResult.tci"

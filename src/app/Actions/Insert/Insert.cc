@@ -56,7 +56,11 @@ Action* Insert::parseInteger() {
         return this;
     }
     Action::command = result.getRest();
-    arguments.push(result.getParsed());
+    if(result.isNull()) {
+        arguments.push(nullptr);
+    } else {
+        arguments.push(result.getParsed());
+    }
     return this;
 }
 
@@ -80,7 +84,11 @@ Action* Insert::parseFractionalNumber() {
         return this;
     }
     Action::command = result.getRest();
-    arguments.push(result.getParsed());
+    if(result.isNull()) {
+        arguments.push(nullptr);
+    } else {
+        arguments.push(result.getParsed());
+    }
     return this;
 }
 
@@ -100,7 +108,11 @@ Action* Insert::parseString() {
         return this;
     }
     Action::command = result.getRest();
-    arguments.push(std::move(result.moveParsed()));
+    if(result.isNull()) {
+        arguments.push(nullptr);
+    } else {
+        arguments.push(std::move(result.moveParsed()));
+    }
     return this;
 }
 
@@ -140,6 +152,8 @@ Action* Insert::insert() {
             case Argument::ArgumentType::String:
                 data.insert(std::move(argument.moveString()));
                 break;
+            case Argument::ArgumentType::Null:
+                data.insert(nullptr);
             default: break; // message
         }
     }
