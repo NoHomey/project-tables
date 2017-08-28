@@ -12,7 +12,7 @@ ConstString& StringParser::ParseResult::getRest() const noexcept {
     return rest;
 }
 
-StringParser::MissingQuotesInTheBeginng::MissingQuotesInTheBeginng(ConstString& token) noexcept
+StringParser::MissingQuotesInTheBeginning::MissingQuotesInTheBeginning(ConstString& token) noexcept
 : TokenException{token} { }
 
 StringParser::MissingQuotesInTheEnd::MissingQuotesInTheEnd(ConstString& token) noexcept
@@ -33,7 +33,7 @@ CharSequenceParser::ParseResult StringParser::extractString(ConstString& string)
     const size_t offset = skipWhiteSpaces(string);
     ConstString text = {string, offset};
     if(!isQuotes(string[offset])) {
-        throw MissingQuotesInTheBeginng{parseSeparatedByWhiteSpaces(text).getParsed()};
+        throw MissingQuotesInTheBeginning{parseSeparatedByWhiteSpaces(text).getParsed()};
     }
     const size_t textLength = text.length();
     size_t index = 1;

@@ -10,6 +10,9 @@
 #include "../../Messages/Parsers/FractionalNumberHasNoFractionalPart/FractionalNumberHasNoFractionalPart.h"
 #include "../../Messages/Parsers/InvalidFractionalNumber/InvalidFractionalNumber.h"
 #include "../../Messages/Parsers/FractionalNumberDigitsLimit/FractionalNumberDigitsLimit.h"
+#include "../../Messages/Parsers/MissingDoubleQuotesInTheBeginning/MissingDoubleQuotesInTheBeginning.h"
+#include "../../Messages/Parsers/MissingDoubleQuotesInTheEnd/MissingDoubleQuotesInTheEnd.h"
+#include "../../Messages/Parsers/UnEscapedBackslashInString/UnEscapedBackslashInString.h"
 #include "../../Messages/WrongNumberOfColumns/WrongNumberOfColumns.h"
 #include "../../Messages/InsertIntoTableWithNoColumns/InsertIntoTableWithNoColumns.h"
 #include "../../Messages/InsertedIntoTable/InsertedIntoTable.h"
@@ -82,9 +85,16 @@ Action* Insert::parseFractionalNumber() {
 }
 
 Action* Insert::parseString() {
+    const TableTypes::Column column = arguments.size();
     StringParser::ParseResult result;
     try {
         result = StringParser::parse(command);
+    } catch(const StringParser::MissingQuotesInTheBeginning& error) {
+        return showMessage(new MissingDoubleQuotesInTheBeginning(column, error.getToken()));
+    } catch(const StringParser::MissingQuotesInTheEnd& error) {
+        return showMessage(new MissingDoubleQuotesInTheEnd(column, error.getToken()));
+    } catch(const StringParser::UnEscapedBackslash& error) {
+        return showMessage(new UnEscapedBackslashInString(column, error));
     } catch(const Exception&) {
         setState(InsertState::MissingValue);
         return this;

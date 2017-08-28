@@ -78,7 +78,8 @@ InvalidColumnType.o NewColumnAdded.o ColumnTypeParser.o AddColumn.o TableOutpute
 TableSaved.o FileIOMessage.o $(OpenMessageObjects) $(WriteMessageObjects) Save.o IntegerParser.o ColumnNumberParser.o\
 FractionalNumberParser.o StringParser.o ParserMessage.o SingleSign.o InvalidNumber.o InvalidInteger.o IntegerOutOfRange.o\
 SingleFloatingPoint.o FractionalNumberIsMissingPart.o FractionalNumberHasNoIntegerPart.o FractionalNumberHasNoFractionalPart.o\
-InvalidFractionalNumber.o FractionalNumberDigitsLimit.o WrongNumberOfColumns.o InsertIntoTableWithNoColumns.o InsertedIntoTable.o\
+InvalidFractionalNumber.o FractionalNumberDigitsLimit.o MissingDoubleQuotesInString.o MissingDoubleQuotesInTheBeginning.o\
+UnEscapedBackslashInString.o MissingDoubleQuotesInTheEnd.o WrongNumberOfColumns.o InsertIntoTableWithNoColumns.o InsertedIntoTable.o\
 Insert.o Help.o Quit.o Application.o 
 
 compileAll: $(Templates) app
@@ -323,6 +324,18 @@ InvalidFractionalNumber.o: $(call OwnDeps,$(Messages)/Parsers,InvalidFractionalN
 FractionalNumberDigitsLimit.o: $(call OwnDeps,$(Messages)/Parsers,FractionalNumberDigitsLimit) ParserMessage.o
 	$(COMPILER) -c $<
 
+MissingDoubleQuotesInString.o: $(call OwnDeps,$(Messages)/Parsers,MissingDoubleQuotesInString) ParserMessage.o
+	$(COMPILER) -c $<
+
+MissingDoubleQuotesInTheBeginning.o: $(call OwnDeps,$(Messages)/Parsers,MissingDoubleQuotesInTheBeginning) MissingDoubleQuotesInString.o
+	$(COMPILER) -c $<
+
+MissingDoubleQuotesInTheEnd.o: $(call OwnDeps,$(Messages)/Parsers,MissingDoubleQuotesInTheEnd) MissingDoubleQuotesInString.o
+	$(COMPILER) -c $<
+
+UnEscapedBackslashInString.o: $(call OwnDeps,$(Messages)/Parsers,UnEscapedBackslashInString) ParserMessage.o
+	$(COMPILER) -c $<
+
 WrongNumberOfColumns.o: $(call OwnDeps,$(Messages),WrongNumberOfColumns) MessageContainingTableName.o
 	$(COMPILER) -c $<
 
@@ -334,7 +347,8 @@ InsertedIntoTable.o: $(call OwnDeps,$(Messages),InsertedIntoTable) MessageContai
 
 Insert.o: $(call OwnDeps,$(Actions),Insert) SingleSign.o InvalidInteger.o IntegerOutOfRange.o SingleFloatingPoint.o\
 FractionalNumberIsMissingPart.o FractionalNumberHasNoIntegerPart.o FractionalNumberHasNoFractionalPart.o\
-FractionalNumberDigitsLimit.o WrongNumberOfColumns.o InsertIntoTableWithNoColumns.o InsertedIntoTable.o
+FractionalNumberDigitsLimit.o MissingDoubleQuotesInString.o MissingDoubleQuotesInTheBeginning.o UnEscapedBackslashInString.o\
+MissingDoubleQuotesInTheEnd.o WrongNumberOfColumns.o InsertIntoTableWithNoColumns.o InsertedIntoTable.o
 	$(COMPILER) -c $<
 
 Application.o: $(call OwnDeps,$(app),Application)

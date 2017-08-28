@@ -1,4 +1,4 @@
-#pragma once
+    #pragma once
 
 #include "../../String/ConstString/ConstString.h"
 #include "../../String/FixedSizeString/FixedSizeString.h"
@@ -30,9 +30,9 @@ public:
         ImmutableString rest;
     };
 
-    class MissingQuotesInTheBeginng: public TokenException {
+    class MissingQuotesInTheBeginning: public TokenException {
     public:
-        MissingQuotesInTheBeginng(ConstString& token) noexcept;
+        MissingQuotesInTheBeginning(ConstString& token) noexcept;
     };
 
     class MissingQuotesInTheEnd: public TokenException {
