@@ -1,0 +1,120 @@
+#pragma once
+
+#include "ActionRequiringTableValue.htd"
+#include "../../../Parsers/IntegerParser/IntegerParser.h"
+#include "../../../Parsers/FractionalNumberParser/FractionalNumberParser.h"
+#include "../../../Parsers/StringParser/StringParser.h"
+#include "../../Messages/Parsers/SingleSign/SingleSign.h"
+#include "../../Messages/Parsers/InvalidInteger/InvalidInteger.h"
+#include "../../Messages/Parsers/IntegerOutOfRange/IntegerOutOfRange.h"
+#include "../../Messages/Parsers/SingleFloatingPoint/SingleFloatingPoint.h"
+#include "../../Messages/Parsers/FractionalNumberHasNoIntegerPart/FractionalNumberHasNoIntegerPart.h"
+#include "../../Messages/Parsers/FractionalNumberHasNoFractionalPart/FractionalNumberHasNoFractionalPart.h"
+#include "../../Messages/Parsers/InvalidFractionalNumber/InvalidFractionalNumber.h"
+#include "../../Messages/Parsers/FractionalNumberDigitsLimit/FractionalNumberDigitsLimit.h"
+#include "../../Messages/Parsers/MissingDoubleQuotesInTheBeginning/MissingDoubleQuotesInTheBeginning.h"
+#include "../../Messages/Parsers/MissingDoubleQuotesInTheEnd/MissingDoubleQuotesInTheEnd.h"
+#include "../../Messages/Parsers/UnEscapedBackslashInString/UnEscapedBackslashInString.h"
+#include "../../Messages/WrongNumberOfColumns/WrongNumberOfColumns.h"
+#include <cassert>
+
+template<typename State>
+ActionRequiringTableValue<State>::ActionRequiringTableValue(State state) noexcept
+: Base{state} { }
+
+template<typename State>
+Action* ActionRequiringTableValue<State>::missingValue(TableTypes::Column column) {
+    return Action::showMessage(new WrongNumberOfColumns(*Action::currentTable, column - 1));
+}
+
+template<typename State>
+Action* ActionRequiringTableValue<State>::parseInteger(TableTypes::Column column, State newState) {
+    IntegerParser::ParseResult result;
+    try {
+        result = IntegerParser::parse(Action::command);
+    } catch(const IntegerParser::SingleSign& error) {
+        return Action::showMessage(new SingleSign{column, ColumnMetaData::ColumnType::Integer, error.getSign()});
+    } catch(const IntegerParser::InvalidInteger& error) {
+        return Action::showMessage(new InvalidInteger{column, error});
+    } catch(const IntegerParser::MinLimit& error) {
+        return Action::showMessage(new IntegerOutOfRange{column, error.getToken()});
+    } catch(const IntegerParser::MaxLimit& error) {
+        return Action::showMessage(new IntegerOutOfRange{column, error.getToken()});
+    } catch(const Exception&) {
+        return missingValue(column);
+    }
+    Action::command = result.getRest();
+    if(result.isNull()) {
+        Action::arguments.push(nullptr);
+    } else {
+        Action::arguments.push(result.getParsed());
+    }
+    Base::setState(newState);
+    return this;
+}
+
+template<typename State>
+Action* ActionRequiringTableValue<State>::parseFractionalNumber(TableTypes::Column column, State newState) {
+    FractionalNumberParser::ParseResult result;
+    try {
+        result = FractionalNumberParser::parse(Action::command);
+    } catch(const FractionalNumberParser::SingleSign& error) {
+        return Action::showMessage(new SingleSign{
+            column, ColumnMetaData::ColumnType::FractionalNumber, error.getSign()
+        });
+    } catch(const FractionalNumberParser::SingleFloatingPoint& error) {
+        return Action::showMessage(new SingleFloatingPoint{column});
+    } catch(const FractionalNumberParser::FractionalNumberHasNoIntegerPart& error) {
+        return Action::showMessage(new FractionalNumberHasNoIntegerPart{column, error.getToken()});
+    } catch(const FractionalNumberParser::FractionalNumberHasNoFractionalPart& error) {
+        return Action::showMessage(new FractionalNumberHasNoFractionalPart{column, error.getToken()});
+    } catch(const FractionalNumberParser::InvalidFractionalNumber& error) {
+        return Action::showMessage(new InvalidFractionalNumber{column, error});
+    } catch(const FractionalNumberParser::DigitsCountLimit& error) {
+        return Action::showMessage(new FractionalNumberDigitsLimit(column, error.getToken()));
+    } catch(const Exception&) {
+        return missingValue(column);
+    }
+    Action::command = result.getRest();
+    if(result.isNull()) {
+        Action::arguments.push(nullptr);
+    } else {
+        Action::arguments.push(result.getParsed());
+    }
+    Base::setState(newState);
+    return this;
+}
+
+template<typename State>
+Action* ActionRequiringTableValue<State>::parseString(TableTypes::Column column, State newState) {
+    StringParser::ParseResult result;
+    try {
+        result = StringParser::parse(Action::command);
+    } catch(const StringParser::MissingQuotesInTheBeginning& error) {
+        return Action::showMessage(new MissingDoubleQuotesInTheBeginning(column, error.getToken()));
+    } catch(const StringParser::MissingQuotesInTheEnd& error) {
+        return Action::showMessage(new MissingDoubleQuotesInTheEnd(column, error.getToken()));
+    } catch(const StringParser::UnEscapedBackslash& error) {
+        return Action::showMessage(new UnEscapedBackslashInString(column, error));
+    } catch(const Exception&) {
+        return missingValue(column);
+    }
+    Action::command = result.getRest();
+    if(result.isNull()) {
+        Action::arguments.push(nullptr);
+    } else {
+        Action::arguments.push(std::move(result.moveParsed()));
+    }
+    Base::setState(newState);
+    return this;
+}
+
+template<typename State>
+Action* ActionRequiringTableValue<State>::parseValueForColumn(TableTypes::Column column, State newState) {
+    switch(Action::currentTable->getColumnsMetaData()[column - 1].getType()) {
+        case ColumnMetaData::ColumnType::Integer: return parseInteger(column, newState);
+        case ColumnMetaData::ColumnType::FractionalNumber: return parseFractionalNumber(column, newState);
+        case ColumnMetaData::ColumnType::String: return parseString(column, newState);
+        default: assert(false);
+    }
+}

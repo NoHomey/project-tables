@@ -65,6 +65,7 @@ WriteMessageObjects = $(addsuffix .o,$(WriteMessages))
 Templates = ../Container/DynamicArrayBase/DynamicArrayBase.htd ../Container/DynamicArray/DynamicArray.htd\
 ../Container/MoveDynamicArray/MoveDynamicArray.htd ../SharedPtr/SharedPtr.htd\
 $(Actions)/ActionRequiringTable/ActionRequiringTable.htd $(Actions)/ActionRequiringTable/ActionRequiringTable.tci\
+$(Actions)/ActionRequiringTableValue/ActionRequiringTableValue.htd $(Actions)/ActionRequiringTableValue/ActionRequiringTableValue.tci\
 $(Components)/ComponentWithModel/ComponentWithModel.htd $(Components)ComponentWithModel/ComponentWithModel.tci\
 $(Parsers)/ParseResult/ParseResult.htd $(Parsers)/ParseResult/ParseResult.tci 
 

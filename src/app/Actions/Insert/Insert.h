@@ -1,19 +1,17 @@
 #pragma once
 
-#include "../ActionRequiringTable/ActionRequiringTable.htd"
+#include "../ActionRequiringTableValue/ActionRequiringTableValue.htd"
 
 enum class InsertState {
     ParseTableName,
     TableNotFound,
-    RemoveTableNameFromArguments,
     ParseValue,
-    MissingValue,
     Insert
 };
 
-class Insert: public ActionRequiringTable<InsertState> {
+class Insert: public ActionRequiringTableValue<InsertState> {
 private:
-    using Base = ActionRequiringTable<InsertState>;
+    using Base = ActionRequiringTableValue<InsertState>;
 
 public:
     static Action* controller() noexcept;
@@ -28,17 +26,7 @@ private:
 private:
     Action* parseTableName();
 
-    Action* removeTableNameFromArguments();
-
-    Action* parseInteger();
-
-    Action* parseFractionalNumber();
-
-    Action* parseString();
-
     Action* parseValue();
-
-    Action* missingValue();
     
     Action* insert();
 

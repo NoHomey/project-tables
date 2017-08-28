@@ -8,7 +8,7 @@ ConstString ParserMessage::textBetween{": "};
 const size_t ParserMessage::parserTextLength = textBeginning.length() + textBetween.length();
 
 ParserMessage::ParserMessage(TableTypes::Column column, size_t textLength)
-: InfoModel{parserTextLength + textLength + TypesOutputer::outputCount(column + 1), true}, column{column + 1} { }
+: InfoModel{parserTextLength + textLength + TypesOutputer::outputCount(column), true}, column{column} { }
 
 void ParserMessage::output(CharOutputStream& outputStream) const {
     TypesOutputer::output(outputStream, textBeginning);

@@ -1,0 +1,28 @@
+#pragma once
+
+#include "../ActionRequiringTable/ActionRequiringTable.htd"
+
+template<typename State>
+class ActionRequiringTableValue: public ActionRequiringTable<State> {
+private:
+    using Base = ActionRequiringTable<State>;
+
+protected:
+    ActionRequiringTableValue(State state) noexcept;
+
+    virtual ~ActionRequiringTableValue() noexcept = default;
+
+protected:    
+    Action* parseValueForColumn(TableTypes::Column column, State newState);
+
+private:
+    Action* missingValue(TableTypes::Column column);
+    
+    Action* parseInteger(TableTypes::Column column, State newState);
+    
+    Action* parseFractionalNumber(TableTypes::Column column, State newState);
+    
+    Action* parseString(TableTypes::Column column, State newState);
+};
+
+#include "ActionRequiringTableValue.tci"

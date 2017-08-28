@@ -6,6 +6,8 @@
 
 class FractionalNumberParser: public IntegerParser {
 public:
+    using SingleSign = IntegerParser::SingleSign;
+
     class DigitsCountLimit: public TokenException {
     public:
         DigitsCountLimit(ConstString& token) noexcept;
