@@ -15,20 +15,19 @@
 #include "../../Messages/Parsers/MissingDoubleQuotesInTheBeginning/MissingDoubleQuotesInTheBeginning.h"
 #include "../../Messages/Parsers/MissingDoubleQuotesInTheEnd/MissingDoubleQuotesInTheEnd.h"
 #include "../../Messages/Parsers/UnEscapedBackslashInString/UnEscapedBackslashInString.h"
-#include "../../Messages/WrongNumberOfColumns/WrongNumberOfColumns.h"
 #include <cassert>
 
-template<typename State>
-ActionRequiringTableValue<State>::ActionRequiringTableValue(State state) noexcept
+template<typename Derived, typename State>
+ActionRequiringTableValue<Derived, State>::ActionRequiringTableValue(State state) noexcept
 : Base{state} { }
 
-template<typename State>
-Action* ActionRequiringTableValue<State>::missingValue(TableTypes::Column column) {
-    return Action::showMessage(new WrongNumberOfColumns(*Action::currentTable, column - 1));
+template<typename Derived, typename State>
+Action* ActionRequiringTableValue<Derived, State>::missingValue(TableTypes::Column column) {
+    return Action::showMessage(Derived::missingColumnValue(column));
 }
 
-template<typename State>
-Action* ActionRequiringTableValue<State>::parseInteger(TableTypes::Column column, State newState) {
+template<typename Derived, typename State>
+Action* ActionRequiringTableValue<Derived, State>::parseInteger(TableTypes::Column column, State newState) {
     IntegerParser::ParseResult result;
     try {
         result = IntegerParser::parse(Action::command);
@@ -53,8 +52,8 @@ Action* ActionRequiringTableValue<State>::parseInteger(TableTypes::Column column
     return this;
 }
 
-template<typename State>
-Action* ActionRequiringTableValue<State>::parseFractionalNumber(TableTypes::Column column, State newState) {
+template<typename Derived, typename State>
+Action* ActionRequiringTableValue<Derived, State>::parseFractionalNumber(TableTypes::Column column, State newState) {
     FractionalNumberParser::ParseResult result;
     try {
         result = FractionalNumberParser::parse(Action::command);
@@ -85,8 +84,8 @@ Action* ActionRequiringTableValue<State>::parseFractionalNumber(TableTypes::Colu
     return this;
 }
 
-template<typename State>
-Action* ActionRequiringTableValue<State>::parseString(TableTypes::Column column, State newState) {
+template<typename Derived, typename State>
+Action* ActionRequiringTableValue<Derived, State>::parseString(TableTypes::Column column, State newState) {
     StringParser::ParseResult result;
     try {
         result = StringParser::parse(Action::command);
@@ -109,8 +108,8 @@ Action* ActionRequiringTableValue<State>::parseString(TableTypes::Column column,
     return this;
 }
 
-template<typename State>
-Action* ActionRequiringTableValue<State>::parseValueForColumn(TableTypes::Column column, State newState) {
+template<typename Derived, typename State>
+Action* ActionRequiringTableValue<Derived, State>::parseValueForColumn(TableTypes::Column column, State newState) {
     switch(Action::currentTable->getColumnsMetaData()[column - 1].getType()) {
         case ColumnMetaData::ColumnType::Integer: return parseInteger(column, newState);
         case ColumnMetaData::ColumnType::FractionalNumber: return parseFractionalNumber(column, newState);

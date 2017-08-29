@@ -1,0 +1,56 @@
+#pragma once
+
+#include "ActionRequiringTableColumnAndValue.htd"
+#include "../../../Parsers/ColumnNumberParser/ColumnNumberParser.h"
+#include "../../Messages/MissingColumnNumber/MissingColumnNumber.h"
+#include "../../Messages/MissingColumnValue/MissingColumnValue.h"
+#include "../../Messages/Parsers/ColumnNumberParser/NullColumnNumber/NullColumnNumber.h"
+#include "../../Messages/Parsers/ColumnNumberParser/ZeroColumnNumber/ZeroColumnNumber.h"
+#include "../../Messages/Parsers/ColumnNumberParser/ColumnNumberCannotHaveSign/ColumnNumberCannotHaveSign.h"
+#include "../../Messages/Parsers/ColumnNumberParser/ColumnNumberOutOfRange/ColumnNumberOutOfRange.h"
+#include "../../Messages/Parsers/ColumnNumberParser/InvalidColumnNumber/InvalidColumnNumber.h"
+#include "../../Messages/TableHasLessColumns/TableHasLessColumns.h"
+
+template<typename Derived, typename State>
+ActionRequiringTableColumnAndValue<Derived, State>::ActionRequiringTableColumnAndValue(State state) noexcept
+: Base{state} { }
+
+template<typename Derived, typename State>
+bool ActionRequiringTableColumnAndValue<Derived, State>::parseColumnNumber() {
+    ColumnNumberParser::ParseResult result;
+    try {
+        result = ColumnNumberParser::parse(Action::command);
+    } catch(const ColumnNumberParser::IsNull& error) {
+        return Action::showMessage(NullColumnNumber::nullColumnNumber());
+    } catch(const ColumnNumberParser::IsZero& error) {
+        return Action::showMessage(ZeroColumnNumber::zeroColumnNumber());
+    } catch(const ColumnNumberParser::HasSign& error) {
+        return Action::showMessage(new ColumnNumberCannotHaveSign{error.getToken()});
+    } catch(const ColumnNumberParser::MaxLimit& error) {
+        return Action::showMessage(new ColumnNumberOutOfRange{error.getToken()});
+    } catch(const ColumnNumberParser::InvalidColumnNumber& error) {
+        return Action::showMessage(new InvalidColumnNumber{error});
+    } catch(const Exception& error) {
+        return Action::showMessage(new MissingColumnNumber{Derived::actionString, static_cast<unsigned int>(Action::arguments.size())});
+    }
+    const TableTypes::Column column = result.getParsed();
+    if(column > Action::currentTable->columnsCount()) {
+        return Action::showMessage(new TableHasLessColumns{*Action::currentTable, column});
+    }
+    Action::command = result.getRest();
+    Action::arguments.push(column);
+    return true;
+}
+
+template<typename Derived, typename State>
+Action* ActionRequiringTableColumnAndValue<Derived, State>::parseColumnAndValue(State newState) {
+    if(parseColumnNumber()) {
+        return Base::parseValueForColumn(Action::arguments.last().asColumn(), newState);
+    }
+    return nullptr;
+}
+
+template<typename Derived, typename State>
+const InfoModel* ActionRequiringTableColumnAndValue<Derived, State>::missingColumnValue(TableTypes::Column) {
+    return new MissingColumnValue{Derived::actionString, static_cast<unsigned int>(Action::arguments.size())};
+}

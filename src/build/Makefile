@@ -18,6 +18,8 @@ app = ../app
 
 ModelAdaptors = $(app)/ModelAdaptors
 
+Container = ../Container
+
 SharedPtr = ../SharedPtr
 
 Table = ../Table
@@ -36,9 +38,9 @@ Actions = $(app)/Actions
 
 Messages = $(app)/Messages
 
-Action = $(Actions)/Action
+ColumnNumberParserMessages = $(Messages)/Parsers/ColumnNumberParser
 
-Help = $(Actions)/Help
+Action = $(Actions)/Action
 
 dependencies = ../dependencies
 
@@ -46,11 +48,16 @@ fpconv = $(dependencies)/fpconv
 
 OwnDeps = $(1)/$(2)/$(2).cc $(1)/$(2)/$(2).h
 
-define FileIOMessage
+Template = $(1)/$(2)/$(2).htd
 
+define FileIOMessage
 $(1).o: $(call OwnDeps,$(Messages)/FileIO/$(2),$(1)) FileIOMessage.o
 	$(COMPILER) -c $$<
+endef
 
+define Object
+$(2).o: $(call OwnDeps,$(1),$(2)) $(addsuffix .o,$(3))
+	$(COMPILER) -c $$<
 endef
 
 OpenMessages = CannotCreateFile CannotOpenFile FileIsLocatedOnReadOnlyFileSystem FileIsSealed FileIsTooLarge\
@@ -62,12 +69,16 @@ OpenMessageObjects = $(addsuffix .o,$(OpenMessages))
 
 WriteMessageObjects = $(addsuffix .o,$(WriteMessages))
 
-Templates = ../Container/DynamicArrayBase/DynamicArrayBase.htd ../Container/DynamicArray/DynamicArray.htd\
-../Container/MoveDynamicArray/MoveDynamicArray.htd ../SharedPtr/SharedPtr.htd\
-$(Actions)/ActionRequiringTable/ActionRequiringTable.htd $(Actions)/ActionRequiringTable/ActionRequiringTable.tci\
-$(Actions)/ActionRequiringTableValue/ActionRequiringTableValue.htd $(Actions)/ActionRequiringTableValue/ActionRequiringTableValue.tci\
-$(Components)/ComponentWithModel/ComponentWithModel.htd $(Components)ComponentWithModel/ComponentWithModel.tci\
-$(Parsers)/ParseResult/ParseResult.htd $(Parsers)/ParseResult/ParseResult.tci 
+Templates =\
+$(call Template,$(Container),DynamicArrayBase)\
+$(call Template,$(Container),DynamicArray)\
+$(call Template,$(Container),MoveDynamicArray)\
+$(call Template,..,SharedPtr)\
+$(call Template,$(Actions),ActionRequiringTable)\
+$(call Template,$(Actions),ActionRequiringTableValue)\
+$(call Template,$(Actions),ActionRequiringTableColumnAndValue)\
+$(call Template,$(Components),ComponentWithModel)\
+$(call Template,$(Parsers),ParseResult)
 
 Objects = Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o Model.o ListModel.o ListComponent.o\
 ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o\
@@ -81,7 +92,8 @@ FractionalNumberParser.o StringParser.o ParserMessage.o SingleSign.o InvalidNumb
 SingleFloatingPoint.o FractionalNumberIsMissingPart.o FractionalNumberHasNoIntegerPart.o FractionalNumberHasNoFractionalPart.o\
 InvalidFractionalNumber.o FractionalNumberDigitsLimit.o MissingDoubleQuotesInString.o MissingDoubleQuotesInTheBeginning.o\
 UnEscapedBackslashInString.o MissingDoubleQuotesInTheEnd.o WrongNumberOfColumns.o InsertIntoTableWithNoColumns.o InsertedIntoTable.o\
-Insert.o Help.o Quit.o Application.o 
+Insert.o ColumnNumberCannotBe.o ColumnNumberCannotHaveSign.o ColumnNumberOutOfRange.o InvalidColumnNumber.o NullColumnNumber.o ZeroColumnNumber.o\
+MissingColumnNumber.o MissingColumnValue.o TableHasLessColumns.o CountedRows.o Count.o Help.o Quit.o Application.o 
 
 compileAll: $(Templates) app
 
@@ -90,267 +102,207 @@ app: ../app/main.cc $(Objects)
 
 all: stringifyIntegerLimits dependencies app
 
-Window.o: $(call OwnDeps,$(Renderer),Window)
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Renderer),Window))
 
-Centered.o: $(call OwnDeps,$(Renderer),Centered)
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Renderer),Centered))
 
-BasicRenderer.o: $(call OwnDeps,$(Renderer),BasicRenderer)
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Renderer),BasicRenderer))
 
-CenteredRenderer.o: $(call OwnDeps,$(Renderer),CenteredRenderer) BasicRenderer.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Renderer),CenteredRenderer,BasicRenderer))
 
-String.o: $(call OwnDeps,..,String)
-	$(COMPILER) -c $<
+$(eval $(call Object,..,String))
 
-ConstString.o: $(call OwnDeps,$(String),ConstString) String.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(String),ConstString,String))
 
-FixedSizeString.o: $(call OwnDeps,$(String),FixedSizeString) String.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(String),FixedSizeString,String))
 
-Model.o: $(call OwnDeps,$(Components),Model)
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Components),Model))
 
-ListModel.o: $(call OwnDeps,$(List),ListModel)
-	$(COMPILER) -c $<
+$(eval $(call Object,$(List),ListModel,Model))
 
-ListComponent.o: $(call OwnDeps,$(List),ListComponent) Window.o CenteredRenderer.o TypesOutputer.o ListModel.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(List),ListComponent,Window CenteredRenderer TypesOutputer ListModel))
 
-InfoModel.o: $(call OwnDeps,$(Info),InfoModel) Model.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Info),InfoModel,Model))
 
-InfoComponent.o: $(call OwnDeps,$(Info),InfoComponent) Window.o CenteredRenderer.o InfoModel.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Info),InfoComponent,Window CenteredRenderer TypesOutputer InfoModel))
 
-ColumnMetaData.o: $(call OwnDeps,$(Table),ColumnMetaData)
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Table),ColumnMetaData))
 
 SharedPtr.o: $(SharedPtr)/SharedPtr.cc $(SharedPtr)/SharedPtr.htd
 	$(COMPILER) -c $<
 
-RowsFilterResult.o: $(call OwnDeps,$(TableData),RowsFilterResult)
-	$(COMPILER) -c $<
+$(eval $(call Object,$(TableData),RowsFilterResult))
 
-TableData.o: $(call OwnDeps,$(Table),TableData) SharedPtr.o FixedSizeString.o RowsFilterResult.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Table),TableData,SharedPtr FixedSizeString RowsFilterResult))
 
-Table.o: $(call OwnDeps,..,Table) ColumnMetaData.o TableData.o
-	$(COMPILER) -c $<
+$(eval $(call Object,..,Table,ColumnMetaData TableData))
 
-Tables.o: $(call OwnDeps,..,Tables) Table.o
-	$(COMPILER) -c $<
+$(eval $(call Object,..,Tables,Table))
 
-ListTablesModelAdaptor.o: $(call OwnDeps,$(ModelAdaptors),ListTablesModelAdaptor) ListModel.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(ModelAdaptors),ListTablesModelAdaptor,ListModel))
 
-ListTableModelAdaptor.o: $(call OwnDeps,$(ModelAdaptors),ListTableModelAdaptor) ListModel.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(ModelAdaptors),ListTableModelAdaptor,ListModel))
 
-ListCommandsModelAdaptor.o: $(call OwnDeps,$(ModelAdaptors),ListCommandsModelAdaptor) ListModel.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(ModelAdaptors),ListCommandsModelAdaptor,ListModel))
 
-OutputFile.o: $(call OwnDeps,$(Writer),OutputFile)
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Writer),OutputFile))
 
-Writer.o: $(call OwnDeps,$(FileIO),Writer) OutputFile.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(FileIO),Writer,OutputFile))
 
 fpconv.o: $(fpconv)/fpconv.c $(fpconv)/fpconv.h $(fpconv)/powers.h
 	$(COMPILER) -c $<
 
-TypesOutputer.o: $(call OwnDeps,..,TypesOutputer) Writer.o SharedPtr.o String.o ConstString.o\
-ColumnMetaData.o fpconv.o
-	$(COMPILER) -c $<
+$(eval $(call Object,..,TypesOutputer,Writer SharedPtr String ConstString ColumnMetaData fpconv))
 
-CharSequenceParser.o: $(call OwnDeps,$(Parsers),CharSequenceParser) ConstString.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Parsers),CharSequenceParser,ConstString))
 
-TokenException.o: $(call OwnDeps,$(Exceptions),TokenException)
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Exceptions),TokenException))
 
-InvalidSymbolAtPosition.o: $(call OwnDeps,$(Exceptions),InvalidSymbolAtPosition) TokenException.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Exceptions),InvalidSymbolAtPosition,TokenException))
 
-TableNameParser.o: $(call OwnDeps,$(Parsers),TableNameParser) CharSequenceParser.o InvalidSymbolAtPosition.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Parsers),TableNameParser,CharSequenceParser InvalidSymbolAtPosition))
 
-ColumnTypeParser.o: $(call OwnDeps,$(Parsers),ColumnTypeParser) CharSequenceParser.o TokenException.o ColumnMetaData.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Parsers),ColumnTypeParser,CharSequenceParser TokenException ColumnMetaData))
 
-Argument.o: $(call OwnDeps,$(Action),Argument) ConstString.o FixedSizeString.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Action),Argument,ConstString FixedSizeString))
 
-UnknownQueryCommand.o: $(call OwnDeps,$(Messages),UnknownQueryCommand) ConstString.o FixedSizeString.o\
-TypesOutputer.o InfoModel.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),UnknownQueryCommand,ConstString FixedSizeString TypesOutputer InfoModel))
 
-Action.o: $(call OwnDeps,$(Actions),Action) Tables.o ConstString.o CharSequenceParser.o UnknownQueryCommand.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Actions),Action,Tables ConstString CharSequenceParser UnknownQueryCommand))
 
-ShowTables.o: $(call OwnDeps,$(Actions),ShowTables) Action.o ListComponent.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Actions),ShowTables,Action ListComponent))
 
-MissingArgument.o: $(call OwnDeps,$(Messages),MissingArgument) String.o ConstString.o TypesOutputer.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),MissingArgument,String ConstString TypesOutputer))
 
-MissingTableName.o: $(call OwnDeps,$(Messages),MissingTableName) MissingArgument.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),MissingTableName,MissingArgument))
 
-MessageContainingTableName.o: $(call OwnDeps,$(Messages),MessageContainingTableName) String.o ConstString.o FixedSizeString.o TypesOutputer.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),MessageContainingTableName,String ConstString FixedSizeString TypesOutputer))
 
-InvalidTableName.o: $(call OwnDeps,$(Messages),InvalidTableName) MessageContainingTableName.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),InvalidTableName,MessageContainingTableName))
 
-TableNotFound.o: $(call OwnDeps,$(Messages),TableNotFound) MessageContainingTableName.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),TableNotFound,MessageContainingTableName))
 
-ParseTableName.o: $(call OwnDeps,$(Actions),ParseTableName) Action.o TableNameParser.o MissingTableName.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Actions),ParseTableName,Action TableNameParser MissingTableName))
 
-Describe.o: $(call OwnDeps,$(Actions),Describe) Action.o TableNameParser.o ParseTableName.o\
-ListComponent.o ListTableModelAdaptor.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Actions),Describe,Action TableNameParser ParseTableName ListComponent ListTableModelAdaptor))
 
-TableRenamed.o: $(call OwnDeps,$(Messages),TableRenamed) String.o ConstString.o FixedSizeString.o TypesOutputer.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),TableRenamed,String ConstString FixedSizeString TypesOutputer))
 
-NoRename.o: $(call OwnDeps,$(Messages),NoRename) MessageContainingTableName.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),NoRename,MessageContainingTableName))
 
-NewNameIsNotUnique.o: $(call OwnDeps,$(Messages),NewNameIsNotUnique) MessageContainingTableName.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),NewNameIsNotUnique,MessageContainingTableName))
 
-Rename.o: $(call OwnDeps,$(Actions),Rename) Action.o TableNameParser.o ParseTableName.o TableRenamed.o\
-NoRename.o NewNameIsNotUnique.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Actions),Rename,Action TableNameParser ParseTableName TableRenamed NoRename NewNameIsNotUnique))
 
-TableCreated.o: $(call OwnDeps,$(Messages),TableCreated) MessageContainingTableName.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),TableCreated,MessageContainingTableName))
 
-TableExists.o: $(call OwnDeps,$(Messages),TableExists) MessageContainingTableName.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),TableExists,MessageContainingTableName))
 
-CreateTable.o: $(call OwnDeps,$(Actions),CreateTable) Action.o TableNameParser.o ParseTableName.o TableCreated.o TableExists.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Actions),CreateTable,Action TableNameParser ParseTableName TableCreated TableExists))
 
-InvalidColumnType.o: $(call OwnDeps,$(Messages),InvalidColumnType) String.o ConstString.o FixedSizeString.o InfoModel.o TypesOutputer.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),InvalidColumnType,String ConstString FixedSizeString InfoModel TypesOutputer))
 
-MissingColumnType.o: $(call OwnDeps,$(Messages),MissingColumnType) String.o ConstString.o FixedSizeString.o InfoModel.o TypesOutputer.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),MissingColumnType,String ConstString FixedSizeString InfoModel TypesOutputer))
 
-NewColumnAdded.o: $(call OwnDeps,$(Messages),NewColumnAdded) MessageContainingTableName.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),NewColumnAdded,MessageContainingTableName))
 
-AddColumn.o: $(call OwnDeps,$(Actions),AddColumn) Action.o TableNameParser.o ParseTableName.o\
-InvalidColumnType.o MissingColumnType.o NewColumnAdded.o ColumnMetaData.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Actions),AddColumn,Action TableNameParser ParseTableName InvalidColumnType MissingColumnType NewColumnAdded ColumnMetaData))
 
-Help.o: $(call OwnDeps,$(Actions),Help) ListComponent.o ListCommandsModelAdaptor.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Actions),Help,ListComponent ListCommandsModelAdaptor))
 
-Quit.o: $(call OwnDeps,$(Actions),Quit)
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Actions),Quit))
 
-TableOutputerToFile.o: $(call OwnDeps,$(Table),TableOutputerToFile) ConstString.o Writer.o TypesOutputer.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Table),TableOutputerToFile,ConstString Writer TypesOutputer))
 
-MissingFileName.o: $(call OwnDeps,$(Messages),MissingFileName) MissingArgument.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),MissingFileName,MissingArgument))
 
-ParseFileName.o: $(call OwnDeps,$(Actions),ParseFileName) Action.o MissingFileName.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),TableSaved,MessageContainingTableName))
 
-TableSaved.o: $(call OwnDeps,$(Messages),TableSaved) MessageContainingTableName.o
-	$(COMPILER) -c $<
-
-FileIOMessage.o: $(call OwnDeps,$(Messages)/FileIO,FileIOMessage) InfoModel.o ConstString.o FixedSizeString.o TypesOutputer.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/FileIO,FileIOMessage,InfoModel ConstString FixedSizeString TypesOutputer))
 
 $(foreach message,$(OpenMessages),$(eval $(call FileIOMessage,$(message),OpenMessage)))
 
 $(foreach message,$(WriteMessages),$(eval $(call FileIOMessage,$(message),WriteMessage)))
 
-Save.o: $(call OwnDeps,$(Actions),Save) TableOutputerToFile.o MissingFileName.o ParseFileName.o\
-TableSaved.o FileIOMessage.o $(OpenMessageObjects) $(WriteMessageObjects)
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Actions),ParseFileName,Action MissingFileName))
 
-IntegerParser.o: $(call OwnDeps,$(Parsers),IntegerParser) CharSequenceParser.o InvalidSymbolAtPosition.o TokenException.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Actions),Save,TableOutputerToFile MissingFileName ParseFileName\
+TableSaved FileIOMessage $(OpenMessages) $(WriteMessages)))
 
-ColumnNumberParser.o: $(call OwnDeps,$(Parsers),ColumnNumberParser) IntegerParser.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Parsers),IntegerParser,CharSequenceParser InvalidSymbolAtPosition TokenException))
 
-FractionalNumberParser.o: $(call OwnDeps,$(Parsers),FractionalNumberParser) IntegerParser.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Parsers),ColumnNumberParser,IntegerParser))
 
-StringParser.o: $(call OwnDeps,$(Parsers),StringParser) CharSequenceParser.o InvalidSymbolAtPosition.o TokenException.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Parsers),FractionalNumberParser,IntegerParser))
 
-ParserMessage.o: $(call OwnDeps,$(Messages)/Parsers,ParserMessage) InfoModel.o ConstString.o FixedSizeString.o TypesOutputer.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Parsers),StringParser,CharSequenceParser InvalidSymbolAtPosition TokenException))
 
-SingleSign.o: $(call OwnDeps,$(Messages)/Parsers,SingleSign) ParserMessage.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,ParserMessage,InfoModel ConstString FixedSizeString TypesOutputer))
 
-InvalidNumber.o: $(call OwnDeps,$(Messages)/Parsers,InvalidNumber) ParserMessage.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,SingleSign,ParserMessage))
 
-InvalidInteger.o: $(call OwnDeps,$(Messages)/Parsers,InvalidInteger) InvalidNumber.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,InvalidNumber,ParserMessage))
 
-IntegerOutOfRange.o: $(call OwnDeps,$(Messages)/Parsers,IntegerOutOfRange) ParserMessage.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,InvalidInteger,InvalidNumber))
 
-SingleFloatingPoint.o: $(call OwnDeps,$(Messages)/Parsers,SingleFloatingPoint) ParserMessage.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,IntegerOutOfRange,ParserMessage))
 
-FractionalNumberIsMissingPart.o: $(call OwnDeps,$(Messages)/Parsers,FractionalNumberIsMissingPart) MessageContainingTableName.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,SingleFloatingPoint,ParserMessage))
 
-FractionalNumberHasNoIntegerPart.o: $(call OwnDeps,$(Messages)/Parsers,FractionalNumberHasNoIntegerPart) FractionalNumberIsMissingPart.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,FractionalNumberIsMissingPart,MessageContainingTableName))
 
-FractionalNumberHasNoFractionalPart.o: $(call OwnDeps,$(Messages)/Parsers,FractionalNumberHasNoFractionalPart) FractionalNumberIsMissingPart.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,FractionalNumberHasNoIntegerPart,FractionalNumberIsMissingPart))
 
-InvalidFractionalNumber.o: $(call OwnDeps,$(Messages)/Parsers,InvalidFractionalNumber) InvalidNumber.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,FractionalNumberHasNoFractionalPart,FractionalNumberIsMissingPart))
 
-FractionalNumberDigitsLimit.o: $(call OwnDeps,$(Messages)/Parsers,FractionalNumberDigitsLimit) ParserMessage.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,InvalidFractionalNumber,InvalidNumber))
 
-MissingDoubleQuotesInString.o: $(call OwnDeps,$(Messages)/Parsers,MissingDoubleQuotesInString) ParserMessage.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,FractionalNumberDigitsLimit,ParserMessage))
 
-MissingDoubleQuotesInTheBeginning.o: $(call OwnDeps,$(Messages)/Parsers,MissingDoubleQuotesInTheBeginning) MissingDoubleQuotesInString.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,MissingDoubleQuotesInString,ParserMessage))
 
-MissingDoubleQuotesInTheEnd.o: $(call OwnDeps,$(Messages)/Parsers,MissingDoubleQuotesInTheEnd) MissingDoubleQuotesInString.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,MissingDoubleQuotesInTheBeginning,MissingDoubleQuotesInString))
 
-UnEscapedBackslashInString.o: $(call OwnDeps,$(Messages)/Parsers,UnEscapedBackslashInString) ParserMessage.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,MissingDoubleQuotesInTheEnd,MissingDoubleQuotesInString))
 
-WrongNumberOfColumns.o: $(call OwnDeps,$(Messages),WrongNumberOfColumns) MessageContainingTableName.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages)/Parsers,UnEscapedBackslashInString,ParserMessage))
 
-InsertIntoTableWithNoColumns.o: $(call OwnDeps,$(Messages),InsertIntoTableWithNoColumns) MessageContainingTableName.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),WrongNumberOfColumns,MessageContainingTableName Table))
 
-InsertedIntoTable.o: $(call OwnDeps,$(Messages),InsertedIntoTable) MessageContainingTableName.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),InsertIntoTableWithNoColumns,MessageContainingTableName))
 
-Insert.o: $(call OwnDeps,$(Actions),Insert) SingleSign.o InvalidInteger.o IntegerOutOfRange.o SingleFloatingPoint.o\
-FractionalNumberIsMissingPart.o FractionalNumberHasNoIntegerPart.o FractionalNumberHasNoFractionalPart.o\
-FractionalNumberDigitsLimit.o MissingDoubleQuotesInString.o MissingDoubleQuotesInTheBeginning.o UnEscapedBackslashInString.o\
-MissingDoubleQuotesInTheEnd.o WrongNumberOfColumns.o InsertIntoTableWithNoColumns.o InsertedIntoTable.o
-	$(COMPILER) -c $<
+$(eval $(call Object,$(Messages),InsertedIntoTable,MessageContainingTableName))
+
+$(eval $(call Object,$(Actions),Insert,SingleSign InvalidInteger IntegerOutOfRange SingleFloatingPoint\
+FractionalNumberIsMissingPart FractionalNumberHasNoIntegerPart FractionalNumberHasNoFractionalPart\
+FractionalNumberDigitsLimit MissingDoubleQuotesInString MissingDoubleQuotesInTheBeginning UnEscapedBackslashInString\
+MissingDoubleQuotesInTheEnd WrongNumberOfColumns InsertIntoTableWithNoColumns InsertedIntoTable))
+
+$(eval $(call Object,$(ColumnNumberParserMessages),ColumnNumberCannotBe,ConstString TypesOutputer InfoModel))
+
+$(eval $(call Object,$(ColumnNumberParserMessages),ColumnNumberCannotHaveSign,ConstString FixedSizeString TypesOutputer InfoModel))
+
+$(eval $(call Object,$(ColumnNumberParserMessages),ColumnNumberOutOfRange,ConstString FixedSizeString TypesOutputer InfoModel))
+
+$(eval $(call Object,$(ColumnNumberParserMessages),InvalidColumnNumber,ConstString FixedSizeString TypesOutputer InfoModel ColumnNumberParser))
+
+$(eval $(call Object,$(ColumnNumberParserMessages),NullColumnNumber,ColumnNumberCannotBe))
+
+$(eval $(call Object,$(ColumnNumberParserMessages),ZeroColumnNumber,ColumnNumberCannotBe))
+
+$(eval $(call Object,$(Messages),MissingColumnNumber,MissingArgument))
+
+$(eval $(call Object,$(Messages),MissingColumnValue,MissingArgument))
+
+$(eval $(call Object,$(Messages),TableHasLessColumns,MessageContainingTableName Table))
+
+$(eval $(call Object,$(Messages),CountedRows,ConstString TypesOutputer InfoModel))
+
+$(eval $(call Object,$(Actions),Count,ColumnNumberCannotHaveSign ColumnNumberOutOfRange InvalidColumnNumber NullColumnNumber\
+ZeroColumnNumber MissingColumnNumber MissingColumnValue TableHasLessColumns SingleSign InvalidInteger IntegerOutOfRange\
+SingleFloatingPoint FractionalNumberIsMissingPart FractionalNumberHasNoIntegerPart FractionalNumberHasNoFractionalPart\
+FractionalNumberDigitsLimit MissingDoubleQuotesInString MissingDoubleQuotesInTheBeginning UnEscapedBackslashInString\
+MissingDoubleQuotesInTheEnd ParseTableName))
 
 Application.o: $(call OwnDeps,$(app),Application)
 	$(COMPILER) -c -pthread $<

@@ -6,18 +6,22 @@
 
 class ColumnNumberParser: public IntegerParser {
 public:
-    class SingleMinus: public Exception { };
+    using IsNull = CharSequenceParser::Null;
 
-    class SinglePlus: public Exception { };
+    using MaxLimit = IntegerParser::MaxLimit;
 
-    class MaxLimit: public TokenException {
+    class IsZero: public Exception { };
+
+    class HasSign: public TokenException {
     public:
-        MaxLimit(ConstString& token) noexcept;
+        HasSign(ConstString& token) noexcept;
     };
 
-    class MinLimit: public TokenException {
+    class InvalidColumnNumber: public InvalidSymbolAtPosition {
     public:
-        MinLimit(ConstString& token) noexcept;
+        InvalidColumnNumber(size_t position, char symbol, ConstString& token) noexcept;
+
+        InvalidColumnNumber(const InvalidSymbolAtPosition& error) noexcept;
     };
 
     class ParseResult: public ::ParseResult<TableTypes::Column> {
@@ -31,13 +35,13 @@ public:
     };
 
 public:
+    static const TableTypes::Column Max = 10000;
+
+    static const TableTypes::Column Min = 1;
+
+public:
     static ParseResult parse(ConstString& string);
 
 public:
     ColumnNumberParser() = delete;
-
-private:
-    static const TableTypes::Column Max = 10000;
-
-    static const TableTypes::Column Min = 1;
 };

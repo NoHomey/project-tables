@@ -1,4 +1,5 @@
 #include "Insert.h"
+#include "../../Messages/WrongNumberOfColumns/WrongNumberOfColumns.h"
 #include "../../Messages/InsertIntoTableWithNoColumns/InsertIntoTableWithNoColumns.h"
 #include "../../Messages/InsertedIntoTable/InsertedIntoTable.h"
 #include <cassert>
@@ -12,6 +13,10 @@ Insert::Insert() noexcept
 
 Action* Insert::controller() noexcept {
     return &instance;
+}
+
+const InfoModel* Insert::missingColumnValue(TableTypes::Column column) {
+    return new WrongNumberOfColumns{*Action::currentTable, column - 1};
 }
 
 Action* Insert::parseTableName() {

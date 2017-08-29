@@ -22,7 +22,7 @@ private:
     MissingColumnType& operator=(MissingColumnType&& other) = delete;
 
 private:
-    static MissingColumnType instance;
-
     static ConstString text;
+
+    static MissingColumnType instance;
 };

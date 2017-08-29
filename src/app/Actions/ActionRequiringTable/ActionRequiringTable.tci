@@ -25,7 +25,7 @@ Action* ActionRequiringTable<State>::parseTableName(State tableFound, State tabl
     if(parseAction != nullptr) {
         return nullptr;
     }
-    Table* table = allTables.getTableByName(arguments[0].asTemporaryString());
+    Table* table = allTables.getTableByName(arguments.last().asTemporaryString());
     if(table == nullptr) {
         setState(tableNotFound);
     } else {
@@ -37,5 +37,5 @@ Action* ActionRequiringTable<State>::parseTableName(State tableFound, State tabl
 
 template<typename State>
 Action* ActionRequiringTable<State>::tableNotFound() {
-    return showMessage(new TableNotFound(arguments[0].asTemporaryString()));
+    return showMessage(new TableNotFound(arguments.last().asTemporaryString()));
 }

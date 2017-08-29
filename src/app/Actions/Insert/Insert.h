@@ -9,9 +9,11 @@ enum class InsertState {
     Insert
 };
 
-class Insert: public ActionRequiringTableValue<InsertState> {
+class Insert: public ActionRequiringTableValue<Insert, InsertState> {
 private:
-    using Base = ActionRequiringTableValue<InsertState>;
+    friend ActionRequiringTableValue<Insert, InsertState>;
+
+    using Base = ActionRequiringTableValue<Insert, InsertState>;
 
 public:
     static Action* controller() noexcept;
@@ -22,6 +24,9 @@ public:
 
 private:
     Insert() noexcept;
+
+private:
+    static const InfoModel* missingColumnValue(TableTypes::Column column);
 
 private:
     Action* parseTableName();

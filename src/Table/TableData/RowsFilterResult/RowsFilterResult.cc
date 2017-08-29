@@ -12,13 +12,13 @@ RowsFilterResult::RowsFilterResult() noexcept
 : allCount{0}, filteredRows{} { }
 
 RowsFilterResult RowsFilterResult::allRows(size_t all) noexcept {
-    return {all};
+    return {all, 0};
 }
 
 RowsFilterResult::RowsFilterResult(TableTypes::Row unFilteredRowsCount)
 : allCount{0}, filteredRows{calculateInitialCapacity(unFilteredRowsCount)} { }
 
-RowsFilterResult::RowsFilterResult(size_t allCount) noexcept
+RowsFilterResult::RowsFilterResult(size_t allCount, int) noexcept
 : allCount{allCount}, filteredRows{} { }
 
 void RowsFilterResult::addRow(TableTypes::Row row) noexcept {

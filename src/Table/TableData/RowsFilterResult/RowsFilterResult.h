@@ -32,7 +32,7 @@ public:
     bool isEmpty() const noexcept;
 
 private:
-    RowsFilterResult(size_t allCount) noexcept;
+    RowsFilterResult(size_t allCount, int) noexcept;
 
 private:
     static size_t calculateInitialCapacity(TableTypes::Row unFilteredRowsCount) noexcept;

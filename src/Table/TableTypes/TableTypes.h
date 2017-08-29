@@ -4,12 +4,10 @@
 #include "Integer.h"
 #include "FractionalNumber.h"
 
-namespace TableTypes {
-    using Dimention = unsigned int;
-    
-    using Column = Dimention;
+namespace TableTypes {    
+    using Column = unsigned int;
 
-    using Row = Dimention;
+    using Row = size_t;
 
     using Integer = Integer::Type;
 

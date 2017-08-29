@@ -1,10 +1,13 @@
 #include "ColumnNumberParser.h"
 #include "../../NullText.h"
 
-ColumnNumberParser::MaxLimit::MaxLimit(ConstString& token) noexcept
-: TokenException{token} { }
+ColumnNumberParser::InvalidColumnNumber::InvalidColumnNumber(size_t position, char symbol, ConstString& token) noexcept
+: InvalidSymbolAtPosition{position, symbol, token} { }
 
-ColumnNumberParser::MinLimit::MinLimit(ConstString& token) noexcept
+ColumnNumberParser::InvalidColumnNumber::InvalidColumnNumber(const InvalidSymbolAtPosition& error) noexcept
+: InvalidSymbolAtPosition{error} { }
+
+ColumnNumberParser::HasSign::HasSign(ConstString& token) noexcept
 : TokenException{token} { }
 
 ColumnNumberParser::ParseResult::ParseResult() noexcept
@@ -14,27 +17,22 @@ ColumnNumberParser::ParseResult::ParseResult(TableTypes::Column columnNumber, Co
 : Base{columnNumber, rest} { }
 
 ColumnNumberParser::ParseResult ColumnNumberParser::parse(ConstString& string) {
-    IntegerParser::ParseResult result;
+    Processed processed = commonProcess(string);
+    if(processed.hasSign) {
+        throw HasSign{processed.extracted};
+    }
+    if(processed.digitSequence.length() == 0) {
+        throw IsZero{};
+    }
     try {
-        result = IntegerParser::parse(string);
-    } catch(const IntegerParser::SingleSign& error) {
-        if(error.getSign() == '-') {
-            throw SingleMinus{};
-        } 
-        throw SinglePlus{};
-    } catch(const IntegerParser::MinLimit& error) {
-        throw MinLimit{error.getToken()};
-    } catch(const IntegerParser::MaxLimit& error) {
-        throw MaxLimit{error.getToken()};
+        ensureOnlyDigits(processed.digitSequence, processed.extracted, processed.offset);
+    } catch(const InvalidInteger& error) {
+        throw InvalidColumnNumber{error};
     }
-    if(result.isNull()) {
-        throw IntegerParser::InvalidInteger{0, NullText[0], NullText};
+    ensureInLimits(processed.isNegative, processed.digitSequence, processed.extracted);
+    TableTypes::Integer integer = parseInteger(processed.isNegative, processed.digitSequence);
+    if(integer > Max) {
+        throw MaxLimit{processed.extracted};
     }
-    TableTypes::Integer integer = result.getParsed();
-    if(integer < Min) {
-        throw MinLimit{string};
-    } else if(integer > Max) {
-        throw MaxLimit{string};
-    }
-    return {static_cast<TableTypes::Column>(integer), result.getRest()};
+    return {static_cast<TableTypes::Column>(integer), processed.rest};
 }

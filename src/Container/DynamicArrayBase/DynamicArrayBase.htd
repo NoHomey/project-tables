@@ -40,6 +40,10 @@ public:
 
     const Element* data() const noexcept;
 
+    const Element& last() const noexcept;
+
+    const Element& first() const noexcept;
+
     void fill(size_t count);
 
     void pop() noexcept;

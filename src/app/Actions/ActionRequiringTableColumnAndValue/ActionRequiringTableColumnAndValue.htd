@@ -1,0 +1,28 @@
+#pragma once
+
+#include "../ActionRequiringTableValue/ActionRequiringTableValue.htd"
+
+template<typename Derived, typename State>
+class ActionRequiringTableColumnAndValue: public
+ActionRequiringTableValue<ActionRequiringTableColumnAndValue<Derived, State>, State> {
+private:
+    friend ActionRequiringTableValue<ActionRequiringTableColumnAndValue<Derived, State>, State>;
+
+    using Base = ActionRequiringTableValue<ActionRequiringTableColumnAndValue<Derived, State>, State>;
+
+protected:
+    ActionRequiringTableColumnAndValue(State state) noexcept;
+
+    virtual ~ActionRequiringTableColumnAndValue() noexcept = default;
+
+protected:    
+    Action* parseColumnAndValue(State newState);
+
+private:
+    static const InfoModel* missingColumnValue(TableTypes::Column column);
+
+private:
+    static bool parseColumnNumber();
+};
+
+#include "ActionRequiringTableColumnAndValue.tci"

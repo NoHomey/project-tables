@@ -2,6 +2,7 @@
 
 #include "DynamicArrayBase.htd"
 #include <utility>
+#include <cassert>
 
 template<typename Derived, typename Element>
 DynamicArrayBase<Derived, Element>::DynamicArrayBase() noexcept
@@ -108,6 +109,18 @@ const Element* DynamicArrayBase<Derived, Element>::data() const noexcept {
 }
 
 template<typename Derived, typename Element>
+const Element& DynamicArrayBase<Derived, Element>::last() const noexcept {
+    assert(!this->isEmpty());
+    return array[arraySize - 1];
+}
+
+template<typename Derived, typename Element>
+const Element& DynamicArrayBase<Derived, Element>::first() const noexcept {
+    assert(!this->isEmpry());
+    return array[0];
+}
+
+template<typename Derived, typename Element>
 void DynamicArrayBase<Derived, Element>::ensureCapacity() {
     if(isFull()) {
         extend(arrayCapacity + 2);
@@ -124,9 +137,8 @@ void DynamicArrayBase<Derived, Element>::fill(size_t count) {
 
 template<typename Derived, typename Element>
 void DynamicArrayBase<Derived, Element>::pop() noexcept {
-    if(!isEmpty()) {
-        --arraySize;
-    }
+    assert(!this->isEmpty());
+    --arraySize;
 }
 
 template<typename Derived, typename Element>
@@ -153,9 +165,8 @@ void DynamicArrayBase<Derived, Element>::changeCapacity(size_t capacity) {
 
 template<typename Derived, typename Element>
 void DynamicArrayBase<Derived, Element>::extend(size_t size) {
-    if(size > 0) {
-        changeCapacity(arrayCapacity + size);
-    }
+    assert(size > 0);
+    changeCapacity(arrayCapacity + size);
 }
 
 template<typename Derived, typename Element>
