@@ -36,21 +36,20 @@ Action* Insert::insert() {
         return showMessage(new InsertIntoTableWithNoColumns(currentTable->getName()));
     }
     const TableTypes::Column columnsCount = currentTable->columnsCount();
-    TableData& data = currentTable->data();
     for(TableTypes::Column column = 1; column <= columnsCount; ++column) {
         Argument& argument = arguments[column];
         switch(argument.getType()) {
             case Argument::ArgumentType::Integer:
-                data.insert(argument.asInteger());
+                currentTable->insert(argument.asInteger());
                 break;
             case Argument::ArgumentType::FractionalNumber:
-                data.insert(argument.asFractionalNumber());
+                currentTable->insert(argument.asFractionalNumber());
                 break;
             case Argument::ArgumentType::String:
-                data.insert(std::move(argument.moveString()));
+                currentTable->insert(argument.moveString());
                 break;
             case Argument::ArgumentType::Null:
-                data.insert(nullptr);
+                currentTable->insert(nullptr);
                 break;
             default: assert(false);
         }

@@ -27,10 +27,58 @@ FixedSizeString Table::rename(FixedSizeString&& newName) noexcept {
     return oldName;
 }
 
-TableData& Table::data() noexcept {
+const TableData& Table::data() const noexcept {
     return tableData;
 }
 
-const TableData& Table::data() const noexcept {
-    return tableData;
+void Table::insert(std::nullptr_t) {
+    tableData.insert(nullptr);
+}
+
+void Table::insert(TableTypes::Integer&& value) {
+    tableData.insert(std::move(value));
+}
+
+void Table::insert(TableTypes::FractionalNumber&& value) {
+    tableData.insert(std::move(value));
+}
+
+void Table::insert(TableTypes::String&& value) {
+    tableData.insert(std::move(value));
+}
+
+RowsFilterResult Table::selectAllRows() const noexcept {
+    return tableData.selectAllRows();
+}
+
+RowsFilterResult Table::selectRowsMatching(TableTypes::Column column, std::nullptr_t) const {
+    return tableData.selectRowsMatching(column, nullptr);
+}
+
+RowsFilterResult Table::selectRowsMatching(TableTypes::Column column, const TableTypes::Integer& value) const {
+    return tableData.selectRowsMatching(column, value);
+}
+
+RowsFilterResult Table::selectRowsMatching(TableTypes::Column column, const TableTypes::FractionalNumber& value) const{
+    return tableData.selectRowsMatching(column, value);
+}    
+
+RowsFilterResult Table::selectRowsMatching(TableTypes::Column column, const TableTypes::String& value) const{
+    return tableData.selectRowsMatching(column, value);
+}
+
+TableTypes::Row Table::countRowsMatching(TableTypes::Column column, std::nullptr_t) const{
+    return selectRowsMatching(column, nullptr).count();
+}
+
+TableTypes::Row Table::countRowsMatching(TableTypes::Column column, const TableTypes::Integer& value) const {
+    return selectRowsMatching(column, value).count();
+}
+
+TableTypes::Row Table::countRowsMatching(TableTypes::Column column, const TableTypes::FractionalNumber& value) const {
+    return selectRowsMatching(column, value).count();
+}
+
+TableTypes::Row Table::countRowsMatching(TableTypes::Column column, const TableTypes::String& value) const {
+    return selectRowsMatching(column, value).count();
 }

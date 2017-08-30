@@ -26,19 +26,18 @@ Action* Count::count() {
     const TableTypes::Column column = arguments[1].asColumn() - 1;
     TableTypes::Row countedRows = 0;
     Argument& argument = arguments[2];
-    TableData& data = currentTable->data();
     switch(argument.getType()) {
         case Argument::ArgumentType::Integer:
-            countedRows = data.selectRowsMatching(column, argument.asInteger()).count();
+            countedRows = currentTable->countRowsMatching(column, argument.asInteger());
             break;
         case Argument::ArgumentType::FractionalNumber:
-            countedRows = data.selectRowsMatching(column, argument.asFractionalNumber()).count();
+            countedRows = currentTable->countRowsMatching(column, argument.asFractionalNumber());
             break;
         case Argument::ArgumentType::String:
-            countedRows = data.selectRowsMatching(column, argument.moveString()).count();
+            countedRows = currentTable->countRowsMatching(column, argument.moveString());
             break;
         case Argument::ArgumentType::Null:
-            countedRows = data.selectRowsMatching(column, nullptr).count();
+            countedRows = currentTable->countRowsMatching(column, nullptr);
             break;
         default: assert(false);
     }
