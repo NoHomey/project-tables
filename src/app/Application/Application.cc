@@ -15,13 +15,7 @@
 #include "../Actions/Help/Help.h"
 #include "../Actions/Quit/Quit.h"
 
-std::mutex Application::commandMutex;
-
-std::condition_variable Application::condition;
-
-volatile bool Application::readCommand = false;
-
-ImmutableString Application::command;
+std::mutex Application::renderMutex;
 
 volatile bool Application::stop = false;
 
@@ -45,11 +39,9 @@ void Application::run() {
     Action::registerCommands(std::move(commands));
 
     std::thread reader{readFromStdin};
-    std::thread commandInterpreter{takeAction};
     std::thread reRenderer{reRenderOnWidnowResize};
 
     reader.join();
-    commandInterpreter.join();
     reRenderer.join();
 }
 
@@ -60,6 +52,7 @@ void Application::quit() {
 void Application::reRenderOnWidnowResize() {
     while(!stop) {
         if(Window::isResized()) {
+            std::unique_lock<std::mutex> lock{renderMutex};
             Window::syncSizes();
             Action::reRender();
         } else {
@@ -69,34 +62,17 @@ void Application::reRenderOnWidnowResize() {
     }
 }
 
-bool Application::waitForAction() {
-    return !readCommand;
-}
-
 void Application::readFromStdin() {
     DynamicArray<char> inputBuffer{initialCapacityOfBuffer};
     char symbol;
     while(!stop) {
         symbol = std::getchar();
         if(symbol == '\n') {
-            std::unique_lock<std::mutex> lock{commandMutex};
-            command = {inputBuffer.data(), inputBuffer.size()};
-            readCommand = true;
-            condition.wait(lock, waitForAction);
+            std::unique_lock<std::mutex> lock{renderMutex};
+            Action::takeAction({inputBuffer.data(), inputBuffer.size()});
             inputBuffer.empty();
         } else {
             inputBuffer.push(symbol);
-        }
-    }
-}
-
-void Application::takeAction() {
-    while(!stop) {
-        std::unique_lock<std::mutex> lock{commandMutex};
-        if(readCommand) {
-            Action::takeAction(command);
-            readCommand = false;
-            condition.notify_one();
         }
     }
 }

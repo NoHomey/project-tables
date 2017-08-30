@@ -5,7 +5,7 @@
 #include "../../Messages/TableExists/TableExists.h"
 #include "../../Messages/TableCreated/TableCreated.h"
 
-CreateTable CreateTable:: instance;
+CreateTable CreateTable::instance;
 
 ConstString CreateTable::actionString{"Create"};
 

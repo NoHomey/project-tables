@@ -2,7 +2,7 @@
 #include "../../ModelAdaptors/ListTableModelAdaptor/ListTableModelAdaptor.h"
 #include "../../../Components/List/ListComponent/ListComponent.h"
 
-Describe Describe:: instance;
+Describe Describe::instance;
 
 ConstString Describe::actionString{"Describe"};
 

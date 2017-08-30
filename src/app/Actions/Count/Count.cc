@@ -3,7 +3,7 @@
 
 #include "../../Messages/CountedRows/CountedRows.h"
 
-Count Count:: instance;
+Count Count::instance;
 
 ConstString Count::actionString{"Count"};
 

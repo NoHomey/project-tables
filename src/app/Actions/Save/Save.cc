@@ -6,7 +6,7 @@
 #include "../../Messages/TableSaved/TableSaved.h"
 #include "../../../FileIO/Writer/OutputFile/Exceptions/Exceptions.h"
 
-Save Save:: instance;
+Save Save::instance;
 
 ConstString Save::actionString{"Save"};
 

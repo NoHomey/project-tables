@@ -5,7 +5,7 @@
 #include "../../Messages/InvalidColumnType/InvalidColumnType.h"
 #include "../../Messages/NewColumnAdded/NewColumnAdded.h"
 
-AddColumn AddColumn:: instance;
+AddColumn AddColumn::instance;
 
 ConstString AddColumn::actionString{"AddColumn"};
 

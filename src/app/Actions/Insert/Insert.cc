@@ -4,7 +4,7 @@
 #include "../../Messages/InsertedIntoTable/InsertedIntoTable.h"
 #include <cassert>
 
-Insert Insert:: instance;
+Insert Insert::instance;
 
 ConstString Insert::actionString{"Insert"};
 

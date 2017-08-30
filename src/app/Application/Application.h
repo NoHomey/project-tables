@@ -1,6 +1,5 @@
 #pragma once
 
-#include <condition_variable>
 #include <mutex>
 #include "../../String/ConstString/ConstString.h"
 
@@ -22,25 +21,15 @@ public:
     static void quit();
 
 private:
-    static bool waitForAction();
-
     static void reRenderOnWidnowResize();
 
     static void readFromStdin();
-
-    static void takeAction();
 
 private:
     static const size_t initialCapacityOfBuffer = 100;
 
 private:
-    static std::mutex commandMutex;
-
-    static std::condition_variable condition;
-
-    static volatile bool readCommand;
-
-    static ImmutableString command;
+    static std::mutex renderMutex;
 
     static volatile bool stop;
 };

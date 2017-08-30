@@ -1,7 +1,7 @@
 #include "Quit.h"
 #include "../../Application/Application.h"
 
-Quit Quit:: instance;
+Quit Quit::instance;
 
 ConstString Quit::actionString{"quit"};
 

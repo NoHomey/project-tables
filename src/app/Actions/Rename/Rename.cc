@@ -4,7 +4,7 @@
 #include "../../Messages/NoRename/NoRename.h"
 #include "../../Messages/NewNameIsNotUnique/NewNameIsNotUnique.h"
 
-Rename Rename:: instance;
+Rename Rename::instance;
 
 ConstString Rename::actionString{"Rename"};
 
