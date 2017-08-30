@@ -14,6 +14,8 @@ List = $(Components)/List
 
 Info = $(Components)/Info
 
+TablePage = $(Components)/TablePage
+
 app = ../app
 
 ModelAdaptors = $(app)/ModelAdaptors
@@ -74,10 +76,10 @@ $(call Template,$(Actions),ActionRequiringTable)\
 $(call Template,$(Actions),ActionRequiringTableValue)\
 $(call Template,$(Actions),ActionRequiringTableColumnAndValue)\
 $(call Template,$(Actions),ActionUsingTableNameColumnAndValue)\
-$(call Template,$(Components),ComponentWithModel)\
+$(call Template,$(Components),ComponentWithPolymorphicModel)\
 $(call Template,$(Parsers),ParseResult)
 
-Objects = Window BasicRenderer CenteredRenderer Centered String ConstString FixedSizeString Model ListModel ListComponent\
+Objects = Window BasicRenderer CenteredRenderer Centered String ConstString FixedSizeString PolymorphicModel ListModel ListComponent\
 ListTablesModelAdaptor ColumnMetaData SharedPtr RowsFilterResult TableData Table Tables ListTableModelAdaptor\
 OutputFile Writer fpconv TypesOutputer CharSequenceParser Action ShowTables Argument InfoModel InfoComponent\
 UnknownQueryCommand MissingArgument MissingTableName MessageContainingTableName InvalidTableName TableNotFound\
@@ -91,7 +93,7 @@ InvalidFractionalNumber FractionalNumberDigitsLimit MissingDoubleQuotesInString 
 UnEscapedBackslashInString MissingDoubleQuotesInTheEnd WrongNumberOfColumns InsertIntoTableWithNoColumns InsertedIntoTable\
 Insert ColumnNumberCannotBe ColumnNumberCannotHaveSign ColumnNumberOutOfRange InvalidColumnNumber NullColumnNumber ZeroColumnNumber\
 MissingColumnNumber MissingColumnValue TableHasLessColumns RowsQueryResult CountedRows Count DeletedRows Delete\
-Help Quit Application 
+TablePageModel TablePageComponent Print Help Quit Application 
 
 compileAll: $(Templates) app
 
@@ -114,13 +116,13 @@ $(eval $(call Object,$(String),ConstString,String))
 
 $(eval $(call Object,$(String),FixedSizeString,String))
 
-$(eval $(call Object,$(Components),Model))
+$(eval $(call Object,$(Components),PolymorphicModel))
 
-$(eval $(call Object,$(List),ListModel,Model))
+$(eval $(call Object,$(List),ListModel,PolymorphicModel))
 
 $(eval $(call Object,$(List),ListComponent,Window CenteredRenderer TypesOutputer ListModel))
 
-$(eval $(call Object,$(Info),InfoModel,Model))
+$(eval $(call Object,$(Info),InfoModel,PolymorphicModel))
 
 $(eval $(call Object,$(Info),InfoComponent,Window CenteredRenderer TypesOutputer InfoModel))
 
@@ -311,6 +313,12 @@ $(eval $(call Object,$(Actions),Count,$(ActionUsingTableNameColumnAndValueDeps))
 $(eval $(call Object,$(Messages),DeletedRows,RowsQueryResult))
 
 $(eval $(call Object,$(Actions),Delete,$(ActionUsingTableNameColumnAndValueDeps)))
+
+$(eval $(call Object,$(TablePage),TablePageModel,Table))
+
+$(eval $(call Object,$(TablePage),TablePageComponent,Window CenteredRenderer TypesOutputer TablePageModel))
+
+$(eval $(call Object,$(Actions),Print,Action TableNameParser ParseTableName TablePageComponent))
 
 Application.o: $(call OwnDeps,$(app),Application)
 	$(COMPILER) -c -pthread $<

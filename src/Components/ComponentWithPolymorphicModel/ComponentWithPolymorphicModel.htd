@@ -1,0 +1,24 @@
+#pragma once
+
+#include "../Component.h"
+
+template<typename PolymorphicModelType>
+class ComponentWithPolymorphicModel: public Component {
+public:
+    ComponentWithPolymorphicModel(const PolymorphicModelType* model) noexcept;
+
+    virtual ~ComponentWithPolymorphicModel() noexcept;
+    
+    ComponentWithPolymorphicModel(const ComponentWithPolymorphicModel& other) = delete;
+    
+    ComponentWithPolymorphicModel(ComponentWithPolymorphicModel&& other) = delete;
+    
+    ComponentWithPolymorphicModel& operator=(const ComponentWithPolymorphicModel& other) = delete;
+    
+    ComponentWithPolymorphicModel& operator=(ComponentWithPolymorphicModel&& other) = delete;
+
+protected:
+    const PolymorphicModelType* model;
+};
+
+#include "ComponentWithPolymorphicModel.tci"

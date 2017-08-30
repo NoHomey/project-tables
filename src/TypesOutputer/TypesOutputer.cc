@@ -4,6 +4,7 @@
 #include "../String/ConstString/ConstString.h"
 #include "../dependencies/fpconv/fpconv.h"
 #include "../NullText.h"
+#include <cassert>
 
 char TypesOutputer::integerBuffer[StringifiedIntegerLimits::DigitsCountOfMin];
 
@@ -46,6 +47,18 @@ TypesOutputer::NumberLength TypesOutputer::outputCountOfInteger(TableTypes::Inte
 
 TypesOutputer::NumberLength TypesOutputer::outputCount(TableTypes::FractionalNumber fractionalNumber) noexcept {
     return fpconv_dtoa(fractionalNumber, fpconvBuffer);
+}
+
+size_t TypesOutputer::outputCount(const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType) {
+    if(sharedPtr.isNullPtr()) {
+        return NullText.length();
+    }
+    switch(columnType) {
+        case ColumnMetaData::Integer: return outputCount(sharedPtr.getCopy<TableTypes::Integer>());
+        case ColumnMetaData::FractionalNumber: return outputCount(sharedPtr.getCopy<TableTypes::FractionalNumber>());
+        case ColumnMetaData::String: return sharedPtr.getConstRef<TableTypes::String>().length();
+        default: assert(false);
+    }
 }
 
 void TypesOutputer::output(CharOutputStream& outputStream, TableTypes::Integer integer) {
@@ -114,7 +127,7 @@ void TypesOutputer::outputTableData(Output& outputStream, const SharedPtr& share
         case ColumnMetaData::Integer: return output(outputStream, sharedPtr.getCopy<TableTypes::Integer>());
         case ColumnMetaData::FractionalNumber: return output(outputStream, sharedPtr.getCopy<TableTypes::FractionalNumber>());
         case ColumnMetaData::String: return output(outputStream, sharedPtr.getConstRef<TableTypes::String>());
-        default: return output(outputStream, NullText);
+        default: assert(false);
     }
 }
 

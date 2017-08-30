@@ -2,9 +2,9 @@
 
 #include <cstddef>
 #include "../../../CharOutputStream/CharOutputStream.h"
-#include "../../Model/Model.h"
+#include "../../PolymorphicModel/PolymorphicModel.h"
 
-class InfoModel: public Model {
+class InfoModel: public PolymorphicModel {
 public:
     InfoModel(size_t length, bool deletable) noexcept;
 

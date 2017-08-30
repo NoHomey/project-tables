@@ -90,17 +90,18 @@ bool DynamicArrayBase<Derived, Element>::hasElementAt(size_t index) const noexce
 
 template<typename Derived, typename Element>
 Element& DynamicArrayBase<Derived, Element>::operator[](size_t index) noexcept {
+    assert(hasElementAt(index));
     return array[index];
 }
 
 template<typename Derived, typename Element>
 const Element& DynamicArrayBase<Derived, Element>::operator[](size_t index) const noexcept {
-    return array[index];
+    return const_cast<DynamicArrayBase<Derived, Element>* const>(this)->operator[](index);
 }
 
 template<typename Derived, typename Element>
 const Element& DynamicArrayBase<Derived, Element>::getElement(size_t index) const noexcept {
-    return array[index];
+    return operator[](index);
 }
 
 template<typename Derived, typename Element>

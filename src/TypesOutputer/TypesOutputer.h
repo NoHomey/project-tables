@@ -20,8 +20,6 @@ public:
 
     static void output(CharOutputStream& outputStream, const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType);
 
-    //static size_t outputCount(const SharedPtr& sharedPtr);
-
     static void output(CharOutputStream& outputStream, const String& string);
 
     static void output(CharOutputStream& outputStream, TableTypes::Integer integer);
@@ -41,6 +39,8 @@ public:
     static NumberLength outputCount(size_t size) noexcept;
 
     static NumberLength outputCount(TableTypes::FractionalNumber fractionalNumber) noexcept;
+
+    static size_t outputCount(const SharedPtr& sharedPtr, ColumnMetaData::ColumnType columnType);
 
 private:
     template<typename Output>

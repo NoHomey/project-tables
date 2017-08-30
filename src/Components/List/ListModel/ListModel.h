@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../Model/Model.h"
+#include "../../PolymorphicModel/PolymorphicModel.h"
 #include "../../../String/String.h"
 
-class ListModel: public Model {
+class ListModel: public PolymorphicModel {
 public:
     ListModel(bool deletable) noexcept;
 

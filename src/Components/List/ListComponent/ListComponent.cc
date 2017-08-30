@@ -3,7 +3,7 @@
 #include "../../../TypesOutputer/TypesOutputer.h"
 
 ListComponent::ListComponent(const ListModel* model) noexcept
-: ComponentWithModel<ListModel>{model}, minWidth{0}, minHeight{0}, width{0}, leftPadding{0} {
+: ComponentWithPolymorphicModel<ListModel>{model}, minWidth{0}, minHeight{0}, width{0}, leftPadding{0} {
     minHeight = model->itemsCount() + 2;
     calculateMinWidth();
 }
@@ -70,7 +70,7 @@ void ListComponent::renderList(Window::size padding) {
 }
 
 void ListComponent::render() {
-    Window::size padding = 5;
+    Window::size padding = maxHorizontalPadding;
     while(true) {
         if(CenteredRenderer::queryCentered(minWidth + (2 * padding), minHeight).bordered().atLeastMargin(1, 1).exec()) {
             renderList(padding);

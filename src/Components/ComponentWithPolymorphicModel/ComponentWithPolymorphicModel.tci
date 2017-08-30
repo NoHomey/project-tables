@@ -1,0 +1,13 @@
+#pragma once
+
+#include "ComponentWithPolymorphicModel.htd"
+#include "../PolymorphicModel/PolymorphicModel.h"
+
+template<typename PolymorphicModelType>
+ComponentWithPolymorphicModel<PolymorphicModelType>::ComponentWithPolymorphicModel(const PolymorphicModelType* model) noexcept
+: model{model} { }
+
+template<typename ModelType>
+ComponentWithPolymorphicModel<ModelType>::~ComponentWithPolymorphicModel() noexcept {
+    PolymorphicModel::deleteIfDeletable(model);
+}

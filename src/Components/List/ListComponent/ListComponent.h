@@ -1,10 +1,10 @@
 #pragma once
 
 #include "../ListModel/ListModel.h"
-#include "../../ComponentWithModel/ComponentWithModel.htd"
+#include "../../ComponentWithPolymorphicModel/ComponentWithPolymorphicModel.htd"
 #include "../../../Renderer/Window/Window.h"
 
-class ListComponent: public ComponentWithModel<ListModel> {
+class ListComponent: public ComponentWithPolymorphicModel<ListModel> {
 public:
     void render() final;
 
@@ -38,6 +38,9 @@ private:
     void addItems();
 
     void renderList(Window::size padding);
+
+private:
+    static const  Window::size maxHorizontalPadding = 5;
 
 private:
     Window::size minWidth;

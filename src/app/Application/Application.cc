@@ -13,6 +13,7 @@
 #include "../Actions/Insert/Insert.h"
 #include "../Actions/Count/Count.h"
 #include "../Actions/Delete/Delete.h"
+#include "../Actions/Print/Print.h"
 #include "../Actions/Help/Help.h"
 #include "../Actions/Quit/Quit.h"
 
@@ -26,7 +27,7 @@ void Application::run() {
     BasicRenderer::setup();
     BasicRenderer::getRenderer().clearWindow();
 
-    Action::Commands commands{11};
+    Action::Commands commands{12};
     commands.registerCommand<ShowTables>();
     commands.registerCommand<Describe>();
     commands.registerCommand<Rename>();
@@ -36,6 +37,7 @@ void Application::run() {
     commands.registerCommand<Insert>();
     commands.registerCommand<Count>();
     commands.registerCommand<Delete>();
+    commands.registerCommand<Print>();
     commands.registerCommand<Help>();
     commands.registerCommand<Quit>();
     Action::registerCommands(std::move(commands));
@@ -57,9 +59,6 @@ void Application::reRenderOnWidnowResize() {
             std::unique_lock<std::mutex> lock{renderMutex};
             Window::syncSizes();
             Action::reRender();
-        } else {
-            using namespace std::chrono_literals;
-            std::this_thread::sleep_for(1s);
         }
     }
 }

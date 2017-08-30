@@ -1,13 +1,14 @@
 #pragma once
 
 #include "../InfoModel/InfoModel.h"
-#include "../../ComponentWithModel/ComponentWithModel.htd"
+#include "../../ComponentWithPolymorphicModel/ComponentWithPolymorphicModel.htd"
 #include "../../../Renderer/Window/Window.h"
 
-class InfoComponent: public ComponentWithModel<InfoModel> {
+class InfoComponent: public ComponentWithPolymorphicModel<InfoModel> {
 private:
     struct Ratio {
         Window::size numerator;
+        
         Window::size denominator;
     };
 
