@@ -1,5 +1,6 @@
 #include "TableData.h"
 #include <new>
+#include <cassert>
 
 const SharedPtr TableData::NullValue{nullptr};
 
@@ -82,6 +83,7 @@ void TableData::addColumn() {
 
 template<typename Type>
 TableData::FindFirstResult TableData::findFirstInColumn(TableTypes::Column column, const Type& value) noexcept {
+    assert(column < columns);
     const size_t size = data.size();
     for(size_t index = column; index < size; index += columns) {
         SharedPtr& ptr = data[index];
@@ -103,21 +105,19 @@ SharedPtr TableData::obtainSharedPtrForValueInColumn(TableTypes::Column column, 
 
 template<typename Type>
 void TableData::insertValue(Type&& value) {
-    if(columns > 0) {
-        if(data.capacity() == 0) {
-            data.extend(initialCapacity);
-        }
-        data.push(obtainSharedPtrForValueInColumn<Type>(data.size() % columns, std::move(value)));
+    assert(columns > 0);
+    if(data.capacity() == 0) {
+         data.extend(initialCapacity);
     }
+    data.push(obtainSharedPtrForValueInColumn<Type>(data.size() % columns, std::move(value)));
 }
 
 void TableData::insert(std::nullptr_t) {
-    if(columns > 0) {
-        if(data.capacity() == 0) {
-            data.extend(initialCapacity);
-        }
-        data.push(NullValue);
+    assert(columns > 0);
+    if(data.capacity() == 0) {
+        data.extend(initialCapacity);
     }
+    data.push(NullValue);
 }
 
 void TableData::insert(TableTypes::Integer&& value) {
@@ -133,15 +133,14 @@ void TableData::insert(TableTypes::String&& value) {
 }
 
 size_t TableData::calculateIndexFor(TableTypes::Row row, TableTypes::Column column) const noexcept {
+    assert((row < rowsCount()) && (column < columns));
     return static_cast<size_t>(row) * static_cast<size_t>(columns) + static_cast<size_t>(column);
 }
 
 const SharedPtr& TableData::operator()(TableTypes::Row row, TableTypes::Column column) const noexcept {
     const size_t index = calculateIndexFor(row, column);
-    if((data.size() > index) && (rowsCount() > row) && (columns > column)) {
-        return data[index];
-    }
-    return NullValue;
+    assert(index < data.size());
+    return data[index];
 }
 
 const SharedPtr& TableData::get(TableTypes::Row row, TableTypes::Column column) const noexcept {
@@ -153,10 +152,12 @@ RowsFilterResult TableData::selectAllRows() const noexcept {
 }
 
 TableTypes::Row TableData::calculateRowFor(size_t index) const noexcept {
+    assert(columns > 0);
     return  index / columns;
 }
 
 RowsFilterResult TableData::selectRowsMatching(TableTypes::Column column, std::nullptr_t) const {
+    assert(column < columns);
     const size_t size = data.size();
     RowsFilterResult result;
     for(size_t index = column; index < size; index += columns) {
