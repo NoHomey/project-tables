@@ -54,6 +54,9 @@ size_t TableData::calculateOptimalExtending(TableTypes::Row rowsCount) noexcept 
 }
 
 void TableData::addColumn() {
+    if(columns == columnsLimit) {
+        throw ColumnsLimit{};
+    }
     const TableTypes::Row rows = rowsCount();
     if(rows > 0) {
         const size_t oldSize = data.size();

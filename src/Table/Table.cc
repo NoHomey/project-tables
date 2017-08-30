@@ -17,8 +17,8 @@ TableTypes::Column Table::columnsCount() const noexcept {
 }
 
 void Table::addColumn(const ColumnMetaData& metaData) {
-    columnsMetaData.push(metaData);
     tableData.addColumn();
+    columnsMetaData.push(metaData);
 }
 
 FixedSizeString Table::rename(FixedSizeString&& newName) noexcept {

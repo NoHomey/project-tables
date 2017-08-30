@@ -3,6 +3,7 @@
 #include "../../../Parsers/ColumnTypeParser/ColumnTypeParser.h"
 #include "../../Messages/MissingColumnType/MissingColumnType.h"
 #include "../../Messages/InvalidColumnType/InvalidColumnType.h"
+#include "../../Messages/ColumnsLimitReached/ColumnsLimitReached.h"
 #include "../../Messages/NewColumnAdded/NewColumnAdded.h"
 
 AddColumn AddColumn::instance;
@@ -25,7 +26,7 @@ Action* AddColumn::parseColumnType() {
     try {
         result = ColumnTypeParser::parse(command);
     } catch(const ColumnTypeParser::InvalidColumnType& error) {
-        return showMessage(new InvalidColumnType(error.getToken()));
+        return showMessage(new InvalidColumnType{error.getToken()});
     } catch(const Exception& error) {
         return showMessage(MissingColumnType::missingColumnType());
     }
@@ -38,8 +39,12 @@ Action* AddColumn::parseColumnType() {
 Action* AddColumn::addNewColumn() {
     const ColumnMetaData::ColumnType columnType
         = static_cast<ColumnMetaData::ColumnType>(arguments[1].asInteger());
-    currentTable->addColumn({columnType});
-    return showMessage(new NewColumnAdded(currentTable->getName(), columnType));
+    try {
+        currentTable->addColumn({columnType});
+    } catch(const TableData::ColumnsLimit& error) {
+        return showMessage(ColumnsLimitReached::columnsLimitReached());
+    }
+    return showMessage(new NewColumnAdded{currentTable->getName(), columnType});
 }
 
 Action* AddColumn::action() {

@@ -7,6 +7,9 @@
 
 class TableData {
 public:
+    class ColumnsLimit { };
+
+public:
     TableData() noexcept;
 
     ~TableData() noexcept = default;
@@ -57,6 +60,9 @@ public:
     void updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::String&& value);
 
     void deleteRows(const RowsFilterResult& filteredRows) noexcept;
+
+public:
+    static const TableTypes::Column columnsLimit = 10000;
 
 private:
     struct FindFirstResult {

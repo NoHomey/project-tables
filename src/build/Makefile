@@ -83,7 +83,7 @@ OutputFile Writer fpconv TypesOutputer CharSequenceParser Action ShowTables Argu
 UnknownQueryCommand MissingArgument MissingTableName MessageContainingTableName InvalidTableName TableNotFound\
 TokenException InvalidSymbolAtPosition TableNameParser ParseTableName Describe TableRenamed NoRename Rename\
 NewNameIsNotUnique TableCreated TableExists CreateTable InvalidColumnType ListCommandsModelAdaptor MissingColumnType\
-InvalidColumnType NewColumnAdded ColumnTypeParser AddColumn TableOutputerToFile MissingFileName ParseFileName\
+InvalidColumnType ColumnsLimitReached NewColumnAdded ColumnTypeParser AddColumn TableOutputerToFile MissingFileName ParseFileName\
 TableSaved FileIOMessage $(OpenMessages) $(WriteMessages) Save IntegerParser ColumnNumberParser\
 FractionalNumberParser StringParser ParserMessage SingleSign InvalidNumber InvalidInteger IntegerOutOfRange\
 SingleFloatingPoint FractionalNumberIsMissingPart FractionalNumberHasNoIntegerPart FractionalNumberHasNoFractionalPart\
@@ -204,7 +204,9 @@ $(eval $(call Object,$(Messages),MissingColumnType,String ConstString FixedSizeS
 
 $(eval $(call Object,$(Messages),NewColumnAdded,MessageContainingTableName))
 
-$(eval $(call Object,$(Actions),AddColumn,Action TableNameParser ParseTableName InvalidColumnType MissingColumnType NewColumnAdded ColumnMetaData))
+$(eval $(call Object,$(Messages),ColumnsLimitReached,String ConstString InfoModel TypesOutputer TableData))
+
+$(eval $(call Object,$(Actions),AddColumn,Action TableNameParser ParseTableName InvalidColumnType MissingColumnType ColumnsLimitReached NewColumnAdded ColumnMetaData))
 
 $(eval $(call Object,$(Actions),Help,ListComponent ListCommandsModelAdaptor))
 

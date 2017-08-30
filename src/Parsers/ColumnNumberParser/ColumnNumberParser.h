@@ -3,6 +3,7 @@
 #include "../IntegerParser/IntegerParser.h"
 #include "../Exceptions/InvalidSymbolAtPosition/InvalidSymbolAtPosition.h"
 #include "../../Table/TableTypes/TableTypes.h"
+#include "../../Table/TableData/TableData.h"
 
 class ColumnNumberParser: public IntegerParser {
 public:
@@ -35,7 +36,7 @@ public:
     };
 
 public:
-    static const TableTypes::Column Max = 10000;
+    static const TableTypes::Column Max = TableData::columnsLimit;
 
     static const TableTypes::Column Min = 1;
 
