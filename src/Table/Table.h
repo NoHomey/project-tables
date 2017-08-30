@@ -77,4 +77,15 @@ private:
     DynamicArray<ColumnMetaData> columnsMetaData;
 
     TableData tableData;
+
+private:
+#ifndef NDEBUG
+
+template<typename Type>
+ColumnMetaData::ColumnType typeMustMatch() const noexcept;
+
+template<typename Type>
+bool ensureColumnType(TableTypes::Column column) const;
+
+#endif
 };

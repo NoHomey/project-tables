@@ -62,6 +62,13 @@ public:
     void deleteRows(const RowsFilterResult& filteredRows) noexcept;
 
 public:
+#ifndef NDEBUG
+    TableTypes::Column insertColumn() const noexcept {
+        return data.size() % columns;
+    }
+#endif
+
+public:
     static const TableTypes::Column columnsLimit = 10000;
 
 private:
