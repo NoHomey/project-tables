@@ -1,6 +1,7 @@
 #include "Application.h"
 #include <cstdio>
 #include <thread>
+#include <chrono>
 #include "../../Renderer/Window/Window.h"
 #include "../../Renderer/BasicRenderer/BasicRenderer.h"
 #include "../Actions/Action/Action.h"
@@ -59,6 +60,9 @@ void Application::reRenderOnWidnowResize() {
             std::unique_lock<std::mutex> lock{renderMutex};
             Window::syncSizes();
             Action::reRender();
+        } else {
+            using namespace std::chrono_literals;
+            std::this_thread::sleep_for(1s);
         }
     }
 }

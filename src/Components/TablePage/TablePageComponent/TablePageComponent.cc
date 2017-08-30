@@ -3,7 +3,7 @@
 #include "../../../TypesOutputer/TypesOutputer.h"
 
 TablePageComponent::TablePageComponent(const Table& table, RowsFilterResult&& filteredRows) noexcept
-: model{table, std::move(filteredRows)}, columnLengths{} { }
+: model{table, std::move(filteredRows)}, columnLengths{}, pageStartRow{0}, pageStartColumn{0} { }
 
 size_t TablePageComponent::columnLength(TableTypes::Column column, TableTypes::Row begin, TableTypes::Row end) const noexcept {
     size_t maxLength = 0;
@@ -36,10 +36,19 @@ Window::size TablePageComponent::calculateColumnLengthsFittingInWindow(
     return width;
 }
 
-void TablePageComponent::addBlank(CharOutputStream& outputStream, Window::size count) {
+void TablePageComponent::loopSymbol(CharOutputStream& outputStream, Window::size count, char symbol) {
     for(Window::size counter = 0; counter < count; ++ counter) {
-        outputStream << ' ';
+        outputStream << symbol;
     }
+}
+ 
+void TablePageComponent::addBlank(CharOutputStream& outputStream, Window::size count) {
+    loopSymbol(outputStream, count, ' ');
+}
+
+void TablePageComponent::addHorizontalLine(CharOutputStream& outputStream) {
+    loopSymbol(outputStream, Window::getWidth() - 1, '-');
+    outputStream << '\n';
 }
 
 void TablePageComponent::renderWholeTable(Window::size padding) {
@@ -86,8 +95,89 @@ bool TablePageComponent::renderWholeTable() {
     return false;
 }
 
-void TablePageComponent::render() {
-    if(!renderWholeTable()) {
-        BasicRenderer::getRenderer().clearWindow();
+void TablePageComponent::renderTablePage() {
+    const Window::size windowWidth = Window::getWidth();
+    const Window::size windowHeight = Window::getHeight();
+    const TableTypes::Row rowsCount = model.rowsCount();
+    const TableTypes::Column columnsCount = model.columnsCount();
+    const TableTypes::Row rowsLeft = rowsCount - pageStartRow;
+    bool borderBottom = false;
+    Window::size height = windowHeight;
+    TableTypes::Row pageRows = height - 2;
+    if(pageRows > rowsLeft) {
+        pageRows = rowsLeft;
+        if(windowHeight > (rowsLeft + 3)) {
+            height = rowsLeft + 3;
+            borderBottom = true;
+        }
     }
+    const TableTypes::Row pageEndRow = pageStartRow + pageRows;
+    const Window::size rowsListWidth = TypesOutputer::outputCount(model.tableRowNumber(pageEndRow - 1)) + 1;
+    Window::size width = calculateColumnLengthsFittingInWindow(pageStartRow, pageEndRow, pageStartColumn, columnsCount);
+    width += (rowsListWidth + columnLengths.size()) + 2;
+    while(width > windowWidth) {
+        width -= (columnLengths.last() + 1);
+        columnLengths.pop();
+    }
+    const TableTypes::Column pageColumns = columnLengths.size();
+    const Window::size blank = windowWidth - width; 
+    Window::size padding = blank / pageColumns;
+    const Window::size reminder = (blank % pageColumns);
+    for(Window::size i = 0; i < reminder; ++i) {
+        ++columnLengths[i];
+    }
+    const Window::size leftPadding = padding / 2;
+    const Window::size rightPadding = leftPadding + padding % 2;
+    BasicRenderer& basicRenderer = BasicRenderer::getRenderer();
+    basicRenderer.ensureCapacity(height * windowWidth + (windowHeight - height));
+    basicRenderer.clear();
+    addBlank(basicRenderer, rowsListWidth);
+    basicRenderer << '|';
+    const TableTypes::Column pageEndColumn = pageStartColumn + pageColumns;
+    for(TableTypes::Column column = pageStartColumn; column < pageEndColumn; ++column) {
+        addBlank(basicRenderer, leftPadding);
+        TypesOutputer::output(basicRenderer, column + 1);
+        addBlank(basicRenderer, rightPadding + columnLengths[column] - TypesOutputer::outputCount(column + 1));
+        basicRenderer << '|';
+    }
+    basicRenderer << '\n';
+    addHorizontalLine(basicRenderer);
+    const TableTypes::Row lastRow = pageEndRow - 1;
+    TableTypes::Row rowNumber = 0;
+    for(TableTypes::Row row = pageStartRow; row < pageEndRow; ++row) {
+        rowNumber = model.tableRowNumber(row);
+        TypesOutputer::output(basicRenderer, rowNumber);
+        addBlank(basicRenderer, rowsListWidth - TypesOutputer::outputCount(rowNumber));
+        basicRenderer << '|';
+        for(TableTypes::Column column = pageStartColumn; column < pageEndColumn; ++ column) {
+            const SharedPtr& cell = model(row, column);
+            const ColumnMetaData::ColumnType columnType = model.columnType(column);
+            const Window::size count = TypesOutputer::outputCount(cell, columnType);
+            addBlank(basicRenderer, leftPadding);
+            TypesOutputer::output(basicRenderer, cell, columnType);
+            addBlank(basicRenderer, rightPadding + columnLengths[column] - count);
+            basicRenderer << '|';
+        }
+        if(row != lastRow) {
+            basicRenderer << '\n';
+        }
+    }
+    if(borderBottom) {
+        basicRenderer << '\n';
+        addHorizontalLine(basicRenderer);
+        loopSymbol(basicRenderer, (windowHeight - (height + 1)), '\n');
+    }
+    basicRenderer.render();
+}
+
+void TablePageComponent::renderTableOnPages() {
+    pageStartRow = 0;
+    pageStartColumn = 0;
+    renderTablePage();
+}
+
+void TablePageComponent::render() {
+    //if(!renderWholeTable()) {
+        TablePageComponent::renderTableOnPages();
+    //}
 }

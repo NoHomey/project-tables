@@ -1,4 +1,7 @@
 {
+    "clang.cxxflags": [
+        "-std=c++14"
+    ],
     "files.associations": {
         "cstddef": "cpp",
         "array": "cpp",

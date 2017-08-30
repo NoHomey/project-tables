@@ -28,11 +28,19 @@ private:
         TableTypes::Column columnBegin, TableTypes::Column columnEnd
     );
 
-    void addBlank(CharOutputStream& outputStream, Window::size count);
+    static void loopSymbol(CharOutputStream& outputStream, Window::size count, char symbol);
+
+    static void addBlank(CharOutputStream& outputStream, Window::size count);
+
+    static void addHorizontalLine(CharOutputStream& outputStream);
 
     void renderWholeTable(Window::size padding);
 
     bool renderWholeTable();
+
+    void renderTablePage();
+
+    void renderTableOnPages();
 
 private:
     static const Window::size maxWholeTableCellHorizontalPadding = 3; 
@@ -41,4 +49,8 @@ private:
     const TablePageModel model;
 
     DynamicArray<Window::size> columnLengths;
+
+    TableTypes::Row pageStartRow;
+
+    TableTypes::Column pageStartColumn;
 };

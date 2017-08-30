@@ -18,3 +18,7 @@ ColumnMetaData::ColumnType TablePageModel::columnType(TableTypes::Column column)
 const SharedPtr& TablePageModel::operator()(TableTypes::Row row, TableTypes::Column column) const noexcept {
     return tableData(filteredRows[row], column);
 }
+
+TableTypes::Row TablePageModel::tableRowNumber(TableTypes::Row row) const noexcept {
+    return filteredRows[row] + 1;
+}

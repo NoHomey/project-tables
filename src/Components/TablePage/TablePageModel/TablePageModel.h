@@ -23,6 +23,8 @@ public:
 
     const SharedPtr& operator()(TableTypes::Row row, TableTypes::Column column) const noexcept;
 
+    TableTypes::Row tableRowNumber(TableTypes::Row row) const noexcept;
+
 private:
     const Table& table;
 
