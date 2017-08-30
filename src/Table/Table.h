@@ -33,14 +33,6 @@ public:
     const TableData& data() const noexcept;
 
 public:
-    void insert(std::nullptr_t);
-    
-    void insert(TableTypes::Integer&& value);
-    
-    void insert(TableTypes::FractionalNumber&& value);
-    
-    void insert(TableTypes::String&& value);
-
     RowsFilterResult selectAllRows() const noexcept;
     
     RowsFilterResult selectRowsMatching(TableTypes::Column column, std::nullptr_t) const;
@@ -58,6 +50,26 @@ public:
     TableTypes::Row countRowsMatching(TableTypes::Column column, const TableTypes::FractionalNumber& value) const;
 
     TableTypes::Row countRowsMatching(TableTypes::Column column, const TableTypes::String& value) const;
+
+    void insert(std::nullptr_t);
+    
+    void insert(TableTypes::Integer&& value);
+    
+    void insert(TableTypes::FractionalNumber&& value);
+    
+    void insert(TableTypes::String&& value);
+
+    TableTypes::Row deleteRowsMatching(TableTypes::Column column, std::nullptr_t);
+    
+    TableTypes::Row deleteRowsMatching(TableTypes::Column column, const TableTypes::Integer& value);
+    
+    TableTypes::Row deleteRowsMatching(TableTypes::Column column, const TableTypes::FractionalNumber& value);
+    
+    TableTypes::Row deleteRowsMatching(TableTypes::Column column, const TableTypes::String& value);
+
+private:
+    template<typename Type>
+    TableTypes::Row deleteRowsMatchingAndReturnCount(TableTypes::Column column, const Type& value);
 
 private:
     FixedSizeString name;

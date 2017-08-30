@@ -1,10 +1,8 @@
 #pragma once
 
-#include "../../../Components/Info/InfoModel/InfoModel.h"
-#include "../../../String/ConstString/ConstString.h"
-#include "../../../Table/TableTypes/TableTypes.h"
+#include "../RowsQueryResult/RowsQueryResult.h"
 
-class CountedRows: public InfoModel {
+class CountedRows: public RowsQueryResult {
 public:
     CountedRows(TableTypes::Row rowsCounted) noexcept;
 
@@ -16,16 +14,6 @@ public:
 
     CountedRows& operator=(CountedRows&& other) = delete;
 
-public:
-    void output(CharOutputStream& outputStream) const final;
-
 private:
-    static ConstString textBeginning;
-
-    static ConstString textEnding;
-
-    static const size_t ownTextLength;
-
-private:
-    TableTypes::Row rowsCounted;
+    static ConstString textAction;
 };

@@ -7,6 +7,8 @@ class InvalidNumber: public ParserMessage {
 public:
     InvalidNumber(ConstString& columnType, ConstString& numberType, TableTypes::Column column, const InvalidSymbolAtPosition& error);
 
+    virtual ~InvalidNumber() noexcept = default;
+
     InvalidNumber(const InvalidNumber& other) = delete;
 
     InvalidNumber(InvalidNumber&& other) = delete;

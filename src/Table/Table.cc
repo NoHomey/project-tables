@@ -31,22 +31,6 @@ const TableData& Table::data() const noexcept {
     return tableData;
 }
 
-void Table::insert(std::nullptr_t) {
-    tableData.insert(nullptr);
-}
-
-void Table::insert(TableTypes::Integer&& value) {
-    tableData.insert(std::move(value));
-}
-
-void Table::insert(TableTypes::FractionalNumber&& value) {
-    tableData.insert(std::move(value));
-}
-
-void Table::insert(TableTypes::String&& value) {
-    tableData.insert(std::move(value));
-}
-
 RowsFilterResult Table::selectAllRows() const noexcept {
     return tableData.selectAllRows();
 }
@@ -81,4 +65,45 @@ TableTypes::Row Table::countRowsMatching(TableTypes::Column column, const TableT
 
 TableTypes::Row Table::countRowsMatching(TableTypes::Column column, const TableTypes::String& value) const {
     return selectRowsMatching(column, value).count();
+}
+
+void Table::insert(std::nullptr_t) {
+    tableData.insert(nullptr);
+}
+
+void Table::insert(TableTypes::Integer&& value) {
+    tableData.insert(std::move(value));
+}
+
+void Table::insert(TableTypes::FractionalNumber&& value) {
+    tableData.insert(std::move(value));
+}
+
+void Table::insert(TableTypes::String&& value) {
+    tableData.insert(std::move(value));
+}
+
+TableTypes::Row Table::deleteRowsMatching(TableTypes::Column column, std::nullptr_t) {
+    const RowsFilterResult filter = selectRowsMatching(column, nullptr);
+    tableData.deleteRows(filter);
+    return filter.count();
+}
+
+TableTypes::Row Table::deleteRowsMatching(TableTypes::Column column, const TableTypes::Integer& value) {
+    return deleteRowsMatchingAndReturnCount<TableTypes::Integer>(column, value);
+}
+
+TableTypes::Row Table::deleteRowsMatching(TableTypes::Column column, const TableTypes::FractionalNumber& value) {
+    return deleteRowsMatchingAndReturnCount<TableTypes::FractionalNumber>(column, value);
+}
+
+TableTypes::Row Table::deleteRowsMatching(TableTypes::Column column, const TableTypes::String& value) {
+    return deleteRowsMatchingAndReturnCount<TableTypes::String>(column, value);
+}
+
+template<typename Type>
+TableTypes::Row Table::deleteRowsMatchingAndReturnCount(TableTypes::Column column, const Type& value) {
+    const RowsFilterResult filter = selectRowsMatching(column, value);
+    tableData.deleteRows(filter);
+    return filter.count();
 }

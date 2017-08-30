@@ -1,0 +1,38 @@
+#pragma once
+
+#include "../ActionRequiringTableColumnAndValue/ActionRequiringTableColumnAndValue.htd"
+
+enum class ActionRequiringTableColumnAndValueState {
+    ParseTableName,
+    TableNotFound,
+    ParseColumnAndValue,
+    Action
+};
+
+template<typename Derived>
+class ActionUsingTableNameColumnAndValue: public
+    ActionRequiringTableColumnAndValue<Derived, ActionRequiringTableColumnAndValueState> {
+private:
+    using State = ActionRequiringTableColumnAndValueState;
+
+    using Base = ActionRequiringTableColumnAndValue<Derived, State>;
+
+public:
+    static Action* controller() noexcept;
+
+    Action* action() final;
+
+    Action* controlAction() noexcept final;
+
+protected:
+    ActionUsingTableNameColumnAndValue() noexcept;
+
+private:
+    Action* parseTableName();
+
+    Action* parseColumnAndValue();
+
+    static Action* finalAction();
+};
+
+#include "ActionUsingTableNameColumnAndValue.tci"

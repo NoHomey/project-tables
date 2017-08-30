@@ -6,6 +6,8 @@ class MissingDoubleQuotesInString: public ParserMessage {
 public:
     MissingDoubleQuotesInString(ConstString& missingPosition, TableTypes::Column column, ConstString& invlaidString);
 
+    virtual ~MissingDoubleQuotesInString() noexcept = default;
+
     MissingDoubleQuotesInString(const MissingDoubleQuotesInString& other) = delete;
 
     MissingDoubleQuotesInString(MissingDoubleQuotesInString&& other) = delete;

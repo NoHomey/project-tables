@@ -12,6 +12,7 @@
 #include "../Actions/Save/Save.h"
 #include "../Actions/Insert/Insert.h"
 #include "../Actions/Count/Count.h"
+#include "../Actions/Delete/Delete.h"
 #include "../Actions/Help/Help.h"
 #include "../Actions/Quit/Quit.h"
 
@@ -25,7 +26,7 @@ void Application::run() {
     BasicRenderer::setup();
     BasicRenderer::getRenderer().clearWindow();
 
-    Action::Commands commands{10};
+    Action::Commands commands{11};
     commands.registerCommand<ShowTables>();
     commands.registerCommand<Describe>();
     commands.registerCommand<Rename>();
@@ -34,6 +35,7 @@ void Application::run() {
     commands.registerCommand<Save>();
     commands.registerCommand<Insert>();
     commands.registerCommand<Count>();
+    commands.registerCommand<Delete>();
     commands.registerCommand<Help>();
     commands.registerCommand<Quit>();
     Action::registerCommands(std::move(commands));

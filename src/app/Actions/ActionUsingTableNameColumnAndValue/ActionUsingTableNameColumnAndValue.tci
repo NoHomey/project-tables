@@ -1,0 +1,39 @@
+#pragma once
+
+#include "ActionUsingTableNameColumnAndValue.htd"
+
+template<typename Derived>
+ActionUsingTableNameColumnAndValue<Derived>::ActionUsingTableNameColumnAndValue() noexcept
+: Base{State::ParseTableName} { }
+
+template<typename Derived>
+Action* ActionUsingTableNameColumnAndValue<Derived>::parseTableName() {
+    return Base::template parseTableName<Derived>(State::ParseColumnAndValue, State::TableNotFound);
+}
+
+template<typename Derived>
+Action* ActionUsingTableNameColumnAndValue<Derived>::parseColumnAndValue() {
+    return Base::parseColumnAndValue(State::Action);
+}
+
+template<typename Derived>
+Action* ActionUsingTableNameColumnAndValue<Derived>::finalAction() {
+    return Derived::finalAction(Action::arguments[1].asColumn() - 1, Action::arguments[2]);
+}
+
+template<typename Derived>
+Action* ActionUsingTableNameColumnAndValue<Derived>::action() {
+    switch(Base::getState()) {
+        case State::ParseTableName: return parseTableName();
+        case State::TableNotFound: return Base::tableNotFound();
+        case State::ParseColumnAndValue: return parseColumnAndValue();
+        case State::Action: return finalAction();
+        default: assert(false);
+    };
+}
+
+template<typename Derived>
+Action* ActionUsingTableNameColumnAndValue<Derived>::controlAction() noexcept {
+    Base::setState(State::ParseTableName);
+    return this;
+}

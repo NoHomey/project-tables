@@ -65,10 +65,6 @@ FileNameIsTooLong ItIsADirectory PermitionDenied
 
 WriteMessages = CannotWrite FileIsTooBig FileSystemDiskBlocksQuotaExhausted LowLevelException UnexpectedWriteError
 
-OpenMessageObjects = $(addsuffix .o,$(OpenMessages))
-
-WriteMessageObjects = $(addsuffix .o,$(WriteMessages))
-
 Templates =\
 $(call Template,$(Container),DynamicArrayBase)\
 $(call Template,$(Container),DynamicArray)\
@@ -77,27 +73,29 @@ $(call Template,..,SharedPtr)\
 $(call Template,$(Actions),ActionRequiringTable)\
 $(call Template,$(Actions),ActionRequiringTableValue)\
 $(call Template,$(Actions),ActionRequiringTableColumnAndValue)\
+$(call Template,$(Actions),ActionUsingTableNameColumnAndValue)\
 $(call Template,$(Components),ComponentWithModel)\
 $(call Template,$(Parsers),ParseResult)
 
-Objects = Window.o BasicRenderer.o CenteredRenderer.o Centered.o String.o ConstString.o FixedSizeString.o Model.o ListModel.o ListComponent.o\
-ListTablesModelAdaptor.o ColumnMetaData.o SharedPtr.o RowsFilterResult.o TableData.o Table.o Tables.o ListTableModelAdaptor.o\
-OutputFile.o Writer.o fpconv.o TypesOutputer.o CharSequenceParser.o Action.o ShowTables.o Argument.o InfoModel.o InfoComponent.o\
-UnknownQueryCommand.o MissingArgument.o MissingTableName.o MessageContainingTableName.o InvalidTableName.o TableNotFound.o\
-TokenException.o InvalidSymbolAtPosition.o TableNameParser.o ParseTableName.o Describe.o TableRenamed.o NoRename.o Rename.o\
-NewNameIsNotUnique.o TableCreated.o TableExists.o CreateTable.o InvalidColumnType.o ListCommandsModelAdaptor.o MissingColumnType.o\
-InvalidColumnType.o NewColumnAdded.o ColumnTypeParser.o AddColumn.o TableOutputerToFile.o MissingFileName.o ParseFileName.o\
-TableSaved.o FileIOMessage.o $(OpenMessageObjects) $(WriteMessageObjects) Save.o IntegerParser.o ColumnNumberParser.o\
-FractionalNumberParser.o StringParser.o ParserMessage.o SingleSign.o InvalidNumber.o InvalidInteger.o IntegerOutOfRange.o\
-SingleFloatingPoint.o FractionalNumberIsMissingPart.o FractionalNumberHasNoIntegerPart.o FractionalNumberHasNoFractionalPart.o\
-InvalidFractionalNumber.o FractionalNumberDigitsLimit.o MissingDoubleQuotesInString.o MissingDoubleQuotesInTheBeginning.o\
-UnEscapedBackslashInString.o MissingDoubleQuotesInTheEnd.o WrongNumberOfColumns.o InsertIntoTableWithNoColumns.o InsertedIntoTable.o\
-Insert.o ColumnNumberCannotBe.o ColumnNumberCannotHaveSign.o ColumnNumberOutOfRange.o InvalidColumnNumber.o NullColumnNumber.o ZeroColumnNumber.o\
-MissingColumnNumber.o MissingColumnValue.o TableHasLessColumns.o CountedRows.o Count.o Help.o Quit.o Application.o 
+Objects = Window BasicRenderer CenteredRenderer Centered String ConstString FixedSizeString Model ListModel ListComponent\
+ListTablesModelAdaptor ColumnMetaData SharedPtr RowsFilterResult TableData Table Tables ListTableModelAdaptor\
+OutputFile Writer fpconv TypesOutputer CharSequenceParser Action ShowTables Argument InfoModel InfoComponent\
+UnknownQueryCommand MissingArgument MissingTableName MessageContainingTableName InvalidTableName TableNotFound\
+TokenException InvalidSymbolAtPosition TableNameParser ParseTableName Describe TableRenamed NoRename Rename\
+NewNameIsNotUnique TableCreated TableExists CreateTable InvalidColumnType ListCommandsModelAdaptor MissingColumnType\
+InvalidColumnType NewColumnAdded ColumnTypeParser AddColumn TableOutputerToFile MissingFileName ParseFileName\
+TableSaved FileIOMessage $(OpenMessages) $(WriteMessages) Save IntegerParser ColumnNumberParser\
+FractionalNumberParser StringParser ParserMessage SingleSign InvalidNumber InvalidInteger IntegerOutOfRange\
+SingleFloatingPoint FractionalNumberIsMissingPart FractionalNumberHasNoIntegerPart FractionalNumberHasNoFractionalPart\
+InvalidFractionalNumber FractionalNumberDigitsLimit MissingDoubleQuotesInString MissingDoubleQuotesInTheBeginning\
+UnEscapedBackslashInString MissingDoubleQuotesInTheEnd WrongNumberOfColumns InsertIntoTableWithNoColumns InsertedIntoTable\
+Insert ColumnNumberCannotBe ColumnNumberCannotHaveSign ColumnNumberOutOfRange InvalidColumnNumber NullColumnNumber ZeroColumnNumber\
+MissingColumnNumber MissingColumnValue TableHasLessColumns RowsQueryResult CountedRows Count DeletedRows Delete\
+Help Quit Application 
 
 compileAll: $(Templates) app
 
-app: ../app/main.cc $(Objects)
+app: ../app/main.cc $(addsuffix .o,$(Objects))
 	$(COMPILER) -pthread $^
 
 all: stringifyIntegerLimits dependencies app
@@ -296,13 +294,21 @@ $(eval $(call Object,$(Messages),MissingColumnValue,MissingArgument))
 
 $(eval $(call Object,$(Messages),TableHasLessColumns,MessageContainingTableName Table))
 
-$(eval $(call Object,$(Messages),CountedRows,ConstString TypesOutputer InfoModel))
+$(eval $(call Object,$(Messages),RowsQueryResult,ConstString TypesOutputer InfoModel))
 
-$(eval $(call Object,$(Actions),Count,ColumnNumberCannotHaveSign ColumnNumberOutOfRange InvalidColumnNumber NullColumnNumber\
+$(eval $(call Object,$(Messages),CountedRows,RowsQueryResult))
+
+ActionUsingTableNameColumnAndValueDeps = ColumnNumberCannotHaveSign ColumnNumberOutOfRange InvalidColumnNumber NullColumnNumber\
 ZeroColumnNumber MissingColumnNumber MissingColumnValue TableHasLessColumns SingleSign InvalidInteger IntegerOutOfRange\
 SingleFloatingPoint FractionalNumberIsMissingPart FractionalNumberHasNoIntegerPart FractionalNumberHasNoFractionalPart\
 FractionalNumberDigitsLimit MissingDoubleQuotesInString MissingDoubleQuotesInTheBeginning UnEscapedBackslashInString\
-MissingDoubleQuotesInTheEnd ParseTableName))
+MissingDoubleQuotesInTheEnd ParseTableName
+
+$(eval $(call Object,$(Actions),Count,$(ActionUsingTableNameColumnAndValueDeps)))
+
+$(eval $(call Object,$(Messages),DeletedRows,RowsQueryResult))
+
+$(eval $(call Object,$(Actions),Delete,$(ActionUsingTableNameColumnAndValueDeps)))
 
 Application.o: $(call OwnDeps,$(app),Application)
 	$(COMPILER) -c -pthread $<

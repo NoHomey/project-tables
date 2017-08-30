@@ -43,6 +43,7 @@
         "condition_variable": "cpp",
         "mutex": "cpp",
         "ratio": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "cassert": "cpp"
     }
 }

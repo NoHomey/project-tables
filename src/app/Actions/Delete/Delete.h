@@ -2,17 +2,17 @@
 
 #include "../ActionUsingTableNameColumnAndValue/ActionUsingTableNameColumnAndValue.htd"
 
-class Count: public ActionUsingTableNameColumnAndValue<Count> {
+class Delete: public ActionUsingTableNameColumnAndValue<Delete> {
 private:
-    friend ActionUsingTableNameColumnAndValue<Count>;
+    friend ActionUsingTableNameColumnAndValue<Delete>;
 
-    using Base = ActionUsingTableNameColumnAndValue<Count>;
+    using Base = ActionUsingTableNameColumnAndValue<Delete>;
 
 public:
     static Action* controller() noexcept;
 
 private:
-    Count() noexcept = default;
+    Delete() noexcept = default;
 
 private:
     static Action* finalAction(TableTypes::Column column, Argument& argument);
@@ -21,5 +21,5 @@ public:
     static ConstString actionString;
 
 private:
-    static Count instance;
+    static Delete instance;
 };
