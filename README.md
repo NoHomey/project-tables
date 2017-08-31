@@ -6,9 +6,7 @@
 
 # building:
 
-`cd src/dependencies && make`
-
-`cd src/build && make stringifyIntegerLimits compileAll`
+`cd src/build && make build`
 
 # warning:
 

@@ -1,4 +1,4 @@
-.PHONY: clean leakCheck allocs run stringifyIntegerLimits dependencies removeDeps compileAll
+.PHONY: clean leakCheck allocs run stringifyIntegerLimits dependencies removeDeps compileAll build
 
 COMPILER = g++ -std=c++14 -Wall -Wextra -Wpedantic -g
 
@@ -102,7 +102,7 @@ compileAll: $(Templates) app
 app: ../app/main.cc $(addsuffix .o,$(Objects))
 	$(COMPILER) -pthread $^
 
-all: stringifyIntegerLimits dependencies app
+build: stringifyIntegerLimits dependencies app
 
 $(eval $(call Object,$(Renderer),Window))
 
