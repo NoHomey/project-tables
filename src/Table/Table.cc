@@ -17,6 +17,10 @@ TableTypes::Column Table::columnsCount() const noexcept {
     return columnsMetaData.size();
 }
 
+TableTypes::Row Table::rowsCount() const noexcept {
+    return tableData.rowsCount();
+}
+
 void Table::addColumn(const ColumnMetaData& metaData) {
     tableData.addColumn();
     columnsMetaData.push(metaData);

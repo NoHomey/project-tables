@@ -94,7 +94,8 @@ InvalidFractionalNumber FractionalNumberDigitsLimit MissingDoubleQuotesInString 
 UnEscapedBackslashInString MissingDoubleQuotesInTheEnd WrongNumberOfColumns InsertIntoTableWithNoColumns InsertedIntoTable\
 Insert ColumnNumberCannotBe ColumnNumberCannotHaveSign ColumnNumberOutOfRange InvalidColumnNumber NullColumnNumber ZeroColumnNumber\
 MissingColumnNumber MissingColumnValue TableHasLessColumns RowsQueryResult CountedRows Count DeletedRows Delete\
-TablePageModel TablePageComponent Print Help Quit Application 
+TablePageModel TablePageComponent TableHasNoNothingToBePrinted TableHasNoColumnsNothingToBePrinted TableHasNoRowsNothingToBePrinted\
+Print Help Quit Application 
 
 compileAll: $(Templates) app
 
@@ -319,7 +320,14 @@ $(eval $(call Object,$(TablePage),TablePageModel,Table))
 
 $(eval $(call Object,$(TablePage),TablePageComponent,Window CenteredRenderer TypesOutputer TablePageModel))
 
-$(eval $(call Object,$(Actions),Print,Action TableNameParser ParseTableName TablePageComponent))
+$(eval $(call Object,$(Messages),TableHasNoNothingToBePrinted,MessageContainingTableName))
+
+$(eval $(call Object,$(Messages),TableHasNoColumnsNothingToBePrinted,TableHasNoNothingToBePrinted))
+
+$(eval $(call Object,$(Messages),TableHasNoRowsNothingToBePrinted,TableHasNoNothingToBePrinted))
+
+$(eval $(call Object,$(Actions),Print,Action TableNameParser ParseTableName TablePageComponent\
+TableHasNoColumnsNothingToBePrinted TableHasNoRowsNothingToBePrinted))
 
 Application.o: $(call OwnDeps,$(app),Application)
 	$(COMPILER) -c -pthread $<

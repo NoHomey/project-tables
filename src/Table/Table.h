@@ -26,6 +26,8 @@ public:
 
     TableTypes::Column columnsCount() const noexcept;
 
+    TableTypes::Row rowsCount() const noexcept;
+
     void addColumn(const ColumnMetaData& metaData);
 
     FixedSizeString rename(FixedSizeString&& newName) noexcept;
