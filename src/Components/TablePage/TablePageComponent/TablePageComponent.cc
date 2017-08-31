@@ -51,17 +51,38 @@ void TablePageComponent::addHorizontalLine(CharOutputStream& outputStream) {
     outputStream << '\n';
 }
 
-void TablePageComponent::renderWholeTable(Window::size padding) {
+void TablePageComponent::renderWholeTable(Window::size padding, Window::size rowsListWidth, Window::size width) {
     const TableTypes::Row rowsCount = model.rowsCount();
     const TableTypes::Column columnsCount = model.columnsCount();
     CenteredRenderer& renderer = CenteredRenderer::getRenderer();
     const TableTypes::Column lastColumn = columnsCount - 1;
     CenteredRenderer::clear();
+    TableTypes::Column columnNumber;
+    Window::size count;
+    addBlank(renderer, rowsListWidth);
+    renderer << '|';
+    for(TableTypes::Column column = 0; column < columnsCount; ++column) {
+        columnNumber  = column + 1;
+        count = TypesOutputer::outputCount(columnNumber);
+        addBlank(renderer, padding);
+        TypesOutputer::output(renderer, columnNumber);
+        addBlank(renderer, columnLengths[column] - count + padding);
+        if(column != lastColumn) {
+            renderer << '|';
+        }
+    }
+    loopSymbol(renderer, width, '-');
+    ColumnMetaData::ColumnType columnType;
+    TableTypes::Row rowNumber;
     for(TableTypes::Row row = 0; row < rowsCount; ++row) {
+        rowNumber = model.tableRowNumber(row);
+        TypesOutputer::output(renderer, rowNumber);
+        addBlank(renderer, rowsListWidth - TypesOutputer::outputCount(rowNumber));
+        renderer << '|';
         for(TableTypes::Column column = 0; column < columnsCount; ++ column) {
             const SharedPtr& cell = model(row, column);
-            const ColumnMetaData::ColumnType columnType = model.columnType(column);
-            const Window::size count = TypesOutputer::outputCount(cell, columnType);
+            columnType = model.columnType(column);
+            count = TypesOutputer::outputCount(cell, columnType);
             addBlank(renderer, padding);
             TypesOutputer::output(renderer, cell, columnType);
             addBlank(renderer, columnLengths[column] - count + padding);
@@ -83,11 +104,16 @@ bool TablePageComponent::renderWholeTable() {
         return false;
     }
     width += columnsCount > 1 ? (columnsCount - 1) : 0;
+    const Window::size rowsListWidth = TypesOutputer::outputCount(model.tableRowNumber(rowsCount - 1)) + 1;
+    width += (rowsListWidth + 1);
+    const Window::size height = rowsCount + 2;    
     const Window::size columsPadding = 2 * columnsCount;
     Window::size padding = maxWholeTableCellHorizontalPadding * columsPadding;
+    Window::size queryWidth;
     for(Window::size reducePadding = 0; reducePadding <= maxWholeTableCellHorizontalPadding; ++reducePadding) {
-        if(CenteredRenderer::queryCentered(width + padding, rowsCount).bordered().atLeastMargin(1, 1).exec()) {
-            renderWholeTable(maxWholeTableCellHorizontalPadding - reducePadding);
+        queryWidth = width + padding;
+        if(CenteredRenderer::queryCentered(queryWidth, height).bordered().atLeastMargin(1, 1).exec()) {
+            renderWholeTable(maxWholeTableCellHorizontalPadding - reducePadding, rowsListWidth, queryWidth);
             return true;
         }
         padding -= columsPadding;

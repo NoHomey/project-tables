@@ -34,7 +34,7 @@ private:
 
     static void addHorizontalLine(CharOutputStream& outputStream);
 
-    void renderWholeTable(Window::size padding);
+    void renderWholeTable(Window::size padding, Window::size rowsListWidth, Window::size width);
 
     bool renderWholeTable();
 
