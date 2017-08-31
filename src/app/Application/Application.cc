@@ -17,6 +17,7 @@
 #include "../Actions/Print/Print.h"
 #include "../Actions/Help/Help.h"
 #include "../Actions/Quit/Quit.h"
+#include "../Actions/Welcome/Welcome.h"
 
 std::mutex Application::renderMutex;
 
@@ -26,7 +27,6 @@ void Application::run() {
     Window::syncSizes();
     Window::registerSignal();
     BasicRenderer::setup();
-    BasicRenderer::getRenderer().clearWindow();
 
     Action::Commands commands{12};
     commands.registerCommand<ShowTables>();
@@ -42,6 +42,8 @@ void Application::run() {
     commands.registerCommand<Help>();
     commands.registerCommand<Quit>();
     Action::registerCommands(std::move(commands));
+
+    Welcome::showWelcome();
 
     std::thread reader{readFromStdin};
     std::thread reRenderer{reRenderOnWidnowResize};

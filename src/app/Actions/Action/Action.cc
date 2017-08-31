@@ -1,6 +1,6 @@
 #include "Action.h"
 #include "../../../Parsers/CharSequenceParser/CharSequenceParser.h"
-#include "../../Messages/UnknownQueryCommand/UnknownQueryCommand.h"
+#include "../../Messages/UnknownCommand/UnknownCommand.h"
 #include "../../../Components/Info/InfoComponent/InfoComponent.h"
 
 Tables Action::allTables;
@@ -16,13 +16,17 @@ MoveDynamicArray<Argument> Action::arguments;
 Action::Commands Action::commands;
 
 Action::ActionCommand::ActionCommand() noexcept
-: command{}, action{nullptr} { }
+: command{}, description{}, action{nullptr} { }
 
-Action::ActionCommand::ActionCommand(ConstString& command, Action* action) noexcept
-: command{command}, action{action} { }
+Action::ActionCommand::ActionCommand(ConstString& command, ConstString& description, Action* action) noexcept
+: command{command}, description{description}, action{action} { }
 
 ConstString& Action::ActionCommand::getCommand() const noexcept {
     return command;
+}
+
+ConstString& Action::ActionCommand::getDescription() const noexcept {
+    return description;
 }
 
 Action* Action::ActionCommand::getAction() noexcept {
@@ -78,7 +82,7 @@ Action* Action::selectAction(ConstString& action) {
             return command.getAction()->controlAction();
         }
     }
-    return showMessage(new UnknownQueryCommand(action));
+    return showMessage(new UnknownCommand(action));
 }
 
 void Action::nullArguments() noexcept {

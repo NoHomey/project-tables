@@ -12,14 +12,18 @@ public:
     public:
         ActionCommand() noexcept;
 
-        ActionCommand(ConstString& command, Action* const action) noexcept;
+        ActionCommand(ConstString& command, ConstString& description, Action* const action) noexcept;
 
         ConstString& getCommand() const noexcept;
+
+        ConstString& getDescription() const noexcept;
 
         Action* getAction() noexcept;
 
     private:
         ImmutableString command;
+
+        ImmutableString description;
 
         Action* action;
     };
@@ -91,5 +95,5 @@ private:
 
 template<typename Type>
 void Action::Commands::registerCommand() {
-    commands.push({Type::actionString, Type::controller()});
+    commands.push({Type::actionString, Type::description, Type::controller()});
 }

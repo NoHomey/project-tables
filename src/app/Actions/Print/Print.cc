@@ -7,6 +7,8 @@ Print Print::instance;
 
 ConstString Print::actionString{"Print"};
 
+ConstString Print::description{"Command usage: 'Print <Table>'. Command description: Prints Table with name <Table>."};
+
 Action* Print::controller() noexcept {
     return &instance;
 }

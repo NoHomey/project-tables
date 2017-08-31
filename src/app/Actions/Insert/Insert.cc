@@ -8,6 +8,8 @@ Insert Insert::instance;
 
 ConstString Insert::actionString{"Insert"};
 
+ConstString Insert::description{"Command usage: 'Insert <Table> <Column value 1> ... <Column value n>'. Command description: Inserts new row into Table with name <Table> with values: <Column value 1> ... <Column value n>."};
+
 Insert::Insert() noexcept
 : Base{InsertState::ParseTableName} { }
 

@@ -7,6 +7,8 @@ Count Count::instance;
 
 ConstString Count::actionString{"Count"};
 
+ConstString Count::description{"Command usage: 'Count' <Table> <Column number> <Column value>'. Command description: Counts the number of rows which have value <Column value> in column with number <Column number>."};
+
 Action* Count::controller() noexcept {
     return &instance;
 }

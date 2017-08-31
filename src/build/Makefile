@@ -83,7 +83,7 @@ $(call Template,$(Parsers),ParseResult)
 Objects = Window BasicRenderer CenteredRenderer Centered String ConstString FixedSizeString PolymorphicModel ListModel ListComponent\
 ListTablesModelAdaptor ColumnMetaData SharedPtr RowsFilterResult TableData Table Tables ListTableModelAdaptor\
 OutputFile Writer fpconv TypesOutputer CharSequenceParser Action ShowTables Argument InfoModel InfoComponent\
-UnknownQueryCommand MissingArgument MissingTableName MessageContainingTableName InvalidTableName TableNotFound\
+UnknownCommand MissingArgument MissingTableName MessageContainingTableName InvalidTableName TableNotFound\
 TokenException InvalidSymbolAtPosition TableNameParser ParseTableName Describe TableRenamed NoRename Rename\
 NewNameIsNotUnique TableCreated TableExists CreateTable InvalidColumnType ListCommandsModelAdaptor MissingColumnType\
 InvalidColumnType ColumnsLimitReached NewColumnAdded ColumnTypeParser AddColumn TableOutputerToFile MissingFileName ParseFileName\
@@ -95,7 +95,7 @@ UnEscapedBackslashInString MissingDoubleQuotesInTheEnd WrongNumberOfColumns Inse
 Insert ColumnNumberCannotBe ColumnNumberCannotHaveSign ColumnNumberOutOfRange InvalidColumnNumber NullColumnNumber ZeroColumnNumber\
 MissingColumnNumber MissingColumnValue TableHasLessColumns RowsQueryResult CountedRows Count DeletedRows Delete\
 TablePageModel TablePageComponent TableHasNoNothingToBePrinted TableHasNoColumnsNothingToBePrinted TableHasNoRowsNothingToBePrinted\
-Print Help Quit Application 
+Print WelcomeInfo Welcome Help Quit Application 
 
 compileAll: $(Templates) app
 
@@ -168,9 +168,9 @@ $(eval $(call Object,$(Parsers),ColumnTypeParser,CharSequenceParser TokenExcepti
 
 $(eval $(call Object,$(Action),Argument,ConstString FixedSizeString))
 
-$(eval $(call Object,$(Messages),UnknownQueryCommand,ConstString FixedSizeString TypesOutputer InfoModel))
+$(eval $(call Object,$(Messages),UnknownCommand,ConstString FixedSizeString TypesOutputer InfoModel))
 
-$(eval $(call Object,$(Actions),Action,Tables ConstString CharSequenceParser UnknownQueryCommand))
+$(eval $(call Object,$(Actions),Action,Tables ConstString CharSequenceParser UnknownCommand))
 
 $(eval $(call Object,$(Actions),ShowTables,Action ListComponent))
 
@@ -212,7 +212,7 @@ $(eval $(call Object,$(Messages),ColumnsLimitReached,String ConstString InfoMode
 
 $(eval $(call Object,$(Actions),AddColumn,Action TableNameParser ParseTableName InvalidColumnType MissingColumnType ColumnsLimitReached NewColumnAdded ColumnMetaData))
 
-$(eval $(call Object,$(Actions),Help,ListComponent ListCommandsModelAdaptor))
+$(eval $(call Object,$(Actions),Help,Action InfoModel ListComponent ListCommandsModelAdaptor CharSequenceParser UnknownCommand TypesOutputer))
 
 $(eval $(call Object,$(Actions),Quit))
 
@@ -328,6 +328,10 @@ $(eval $(call Object,$(Messages),TableHasNoRowsNothingToBePrinted,TableHasNoNoth
 
 $(eval $(call Object,$(Actions),Print,Action TableNameParser ParseTableName TablePageComponent\
 TableHasNoColumnsNothingToBePrinted TableHasNoRowsNothingToBePrinted))
+
+$(eval $(call Object,$(Messages),WelcomeInfo,ConstString InfoModel))
+
+$(eval $(call Object,$(Actions),Welcome,Action WelcomeInfo))
 
 Application.o: $(call OwnDeps,$(app),Application)
 	$(COMPILER) -c -pthread $<

@@ -7,6 +7,8 @@ Delete Delete::instance;
 
 ConstString Delete::actionString{"Delete"};
 
+ConstString Delete::description{"Command usage: 'Delete <Table> <Column number> <Column value>'. Command description: Deletes all rows from Table with name <Tbale> which have <Column value> as value in column with number <Column number>."};
+
 Action* Delete::controller() noexcept {
     return &instance;
 }

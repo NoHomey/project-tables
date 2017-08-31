@@ -6,6 +6,8 @@ ShowTables ShowTables::instance;
 
 ConstString ShowTables::actionString{"Showtables"};
 
+ConstString ShowTables::description{"Command usage: 'Showtables'. Command description: Lists all names of each Table."};
+
 Action* ShowTables::controller() noexcept {
     return &instance; 
 }

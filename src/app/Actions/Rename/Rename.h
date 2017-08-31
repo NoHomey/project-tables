@@ -39,6 +39,8 @@ private:
 public:
     static ConstString actionString;
 
+    static ConstString description;
+
 private:
     static Rename instance;
 };

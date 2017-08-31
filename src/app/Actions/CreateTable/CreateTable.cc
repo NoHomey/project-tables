@@ -9,6 +9,8 @@ CreateTable CreateTable::instance;
 
 ConstString CreateTable::actionString{"Create"};
 
+ConstString CreateTable::description{"Command usage: 'Create <Table>'. Command description: Creates new Table with name <Table>."};
+
 CreateTable::CreateTable() noexcept
 : state{State::ParseTableName} { }
 

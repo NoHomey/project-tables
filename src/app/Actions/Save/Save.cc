@@ -9,6 +9,8 @@ Save Save::instance;
 
 ConstString Save::actionString{"Save"};
 
+ConstString Save::description{"Command usage: 'Save <Table> <Path to file>'. Command description: Saves Table with name <Table> to file with path <Path to file>."};
+
 Save::Save() noexcept
 : Base{SaveState::ParseTableName} { }
 

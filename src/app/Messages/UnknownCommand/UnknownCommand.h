@@ -4,17 +4,17 @@
 #include "../../../String/ConstString/ConstString.h"
 #include "../../../String/FixedSizeString/FixedSizeString.h"
 
-class UnknownQueryCommand: public InfoModel {
+class UnknownCommand: public InfoModel {
 public:
-    UnknownQueryCommand(const String& command);
+    UnknownCommand(const String& command);
 
-    UnknownQueryCommand(const UnknownQueryCommand& other) = delete;
+    UnknownCommand(const UnknownCommand& other) = delete;
 
-    UnknownQueryCommand(UnknownQueryCommand&& other) = delete;
+    UnknownCommand(UnknownCommand&& other) = delete;
 
-    UnknownQueryCommand& operator=(const UnknownQueryCommand& other) = delete;
+    UnknownCommand& operator=(const UnknownCommand& other) = delete;
 
-    UnknownQueryCommand& operator=(UnknownQueryCommand&& other) = delete;
+    UnknownCommand& operator=(UnknownCommand&& other) = delete;
 
 public:
     void output(CharOutputStream& outputStream) const final;

@@ -5,6 +5,8 @@ Quit Quit::instance;
 
 ConstString Quit::actionString{"quit"};
 
+ConstString Quit::description{"Command usage: 'quit'. Command description: it quits Project Tables."};
+
 Action* Quit::controller() noexcept {
     return &instance;
 }

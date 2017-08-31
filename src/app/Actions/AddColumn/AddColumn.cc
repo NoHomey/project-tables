@@ -9,6 +9,8 @@ AddColumn AddColumn::instance;
 
 ConstString AddColumn::actionString{"AddColumn"};
 
+ConstString AddColumn::description{"Command usage: 'AddColumn <Table> <Type>'. Where Type is one of: Integer, FractionalNumber and String. Command desciption: adds new column to a table with name <Table> with type <Type>."};
+
 AddColumn::AddColumn() noexcept
 : Base{AddColumnState::ParseTableName} { }
 

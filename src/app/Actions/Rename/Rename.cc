@@ -8,6 +8,8 @@ Rename Rename::instance;
 
 ConstString Rename::actionString{"Rename"};
 
+ConstString Rename::description{"Command usage: 'Rename <Table> <New name>'. Command description: Renames Table with name <Table> to <New name>."};
+
 Rename::Rename() noexcept
 : Base{RenameState::ParseTableName} { }
 
