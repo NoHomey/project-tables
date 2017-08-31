@@ -69,6 +69,14 @@ public:
     
     TableTypes::Row deleteRowsMatching(TableTypes::Column column, const TableTypes::String& value);
 
+    void updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, std::nullptr_t);
+    
+    void updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::Integer&& value);
+
+    void updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::FractionalNumber&& value);
+    
+    void updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::String&& value);
+
 private:
     template<typename Type>
     TableTypes::Row deleteRowsMatchingAndReturnCount(TableTypes::Column column, const Type& value);

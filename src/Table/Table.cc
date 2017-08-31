@@ -115,6 +115,25 @@ TableTypes::Row Table::deleteRowsMatching(TableTypes::Column column, const Table
     return deleteRowsMatchingAndReturnCount<TableTypes::String>(column, value);
 }
 
+void Table::updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, std::nullptr_t) {
+    tableData.updateRows(filteredRows, column, nullptr);
+}
+
+void Table::updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::Integer&& value) {
+    assert(ensureColumnType<TableTypes::Integer>(tableData.insertColumn()));
+    tableData.updateRows(filteredRows, column, std::move(value));
+}
+
+void Table::updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::FractionalNumber&& value) {
+    assert(ensureColumnType<TableTypes::FractionalNumber>(tableData.insertColumn()));
+    tableData.updateRows(filteredRows, column, std::move(value));
+}
+
+void Table::updateRows(const RowsFilterResult& filteredRows, TableTypes::Column column, TableTypes::String&& value) {
+    assert(ensureColumnType<TableTypes::String>(tableData.insertColumn()));
+    tableData.updateRows(filteredRows, column, std::move(value));
+}
+
 template<typename Type>
 TableTypes::Row Table::deleteRowsMatchingAndReturnCount(TableTypes::Column column, const Type& value) {
     assert(ensureColumnType<Type>(column));

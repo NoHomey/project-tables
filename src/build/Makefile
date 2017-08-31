@@ -95,7 +95,7 @@ UnEscapedBackslashInString MissingDoubleQuotesInTheEnd WrongNumberOfColumns Inse
 Insert ColumnNumberCannotBe ColumnNumberCannotHaveSign ColumnNumberOutOfRange InvalidColumnNumber NullColumnNumber ZeroColumnNumber\
 MissingColumnNumber MissingColumnValue TableHasLessColumns RowsQueryResult CountedRows Count DeletedRows Delete\
 TablePageModel TablePageComponent TableHasNoNothingToBePrinted TableHasNoColumnsNothingToBePrinted TableHasNoRowsNothingToBePrinted\
-Print NoRowsSelected Select WelcomeInfo Welcome Help Quit Application 
+Print NoRowsSelected Select WelcomeInfo UpdatedRows Update Welcome Help Quit Application 
 
 compileAll: $(Templates) app
 
@@ -334,6 +334,10 @@ $(eval $(call Object,$(Messages),WelcomeInfo,ConstString InfoModel))
 $(eval $(call Object,$(Messages),NoRowsSelected,MessageContainingTableName))
 
 $(eval $(call Object,$(Actions),Select,Action TableNameParser ParseTableName TablePageComponent NoRowsSelected))
+
+$(eval $(call Object,$(Messages),UpdatedRows,RowsQueryResult))
+
+$(eval $(call Object,$(Actions),Update,Action,UpdatedRows $(ActionUsingTableNameColumnAndValueDeps)))
 
 $(eval $(call Object,$(Actions),Welcome,Action WelcomeInfo))
 

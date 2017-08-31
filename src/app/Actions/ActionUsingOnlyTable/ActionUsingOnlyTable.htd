@@ -16,8 +16,6 @@ private:
     using Base = ActionRequiringTable<State>;
 
 public:
-    static Action* controller() noexcept;
-
     Action* action() final;
 
     Action* controlAction() noexcept final;
