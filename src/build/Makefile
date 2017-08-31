@@ -76,6 +76,7 @@ $(call Template,$(Actions),ActionRequiringTable)\
 $(call Template,$(Actions),ActionRequiringTableValue)\
 $(call Template,$(Actions),ActionRequiringTableColumnAndValue)\
 $(call Template,$(Actions),ActionUsingTableNameColumnAndValue)\
+$(call Template,$(Actions),ActionUsingOnlyTable)\
 $(call Template,$(Components),ComponentWithPolymorphicModel)\
 $(call Template,$(Parsers),ParseResult)
 

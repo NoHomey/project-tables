@@ -18,7 +18,8 @@ Action* ActionUsingTableNameColumnAndValue<Derived>::parseColumnAndValue() {
 
 template<typename Derived>
 Action* ActionUsingTableNameColumnAndValue<Derived>::finalAction() {
-    return Derived::finalAction(Action::arguments[1].asColumn() - 1, Action::arguments[2]);
+    Derived::finalAction(Action::arguments[1].asColumn() - 1, Action::arguments[2]);
+    return nullptr;
 }
 
 template<typename Derived>

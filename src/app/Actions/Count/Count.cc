@@ -11,7 +11,7 @@ Action* Count::controller() noexcept {
     return &instance;
 }
 
-Action* Count::finalAction(TableTypes::Column column, Argument& argument) {
+void Count::finalAction(TableTypes::Column column, Argument& argument) {
     TableTypes::Row countedRows = 0;
     switch(argument.getType()) {
         case Argument::ArgumentType::Integer:
@@ -28,5 +28,5 @@ Action* Count::finalAction(TableTypes::Column column, Argument& argument) {
             break;
         default: assert(false);
     }
-    return showMessage(new CountedRows{countedRows});
+    showMessage(new CountedRows{countedRows});
 }

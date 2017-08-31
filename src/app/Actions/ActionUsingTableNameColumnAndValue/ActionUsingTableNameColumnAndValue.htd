@@ -27,6 +27,8 @@ public:
 protected:
     ActionUsingTableNameColumnAndValue() noexcept;
 
+    virtual ~ActionUsingTableNameColumnAndValue() noexcept = default;
+
 private:
     Action* parseTableName();
 

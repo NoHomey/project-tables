@@ -1,0 +1,34 @@
+#pragma once
+
+#include "ActionUsingOnlyTable.htd"
+
+template<typename Derived>
+ActionUsingOnlyTable<Derived>::ActionUsingOnlyTable() noexcept
+: Base{State::ParseTableName} { }
+
+template<typename Derived>
+Action* ActionUsingOnlyTable<Derived>::parseTableName() {
+    return Base::template parseTableName<Derived>(State::Action, State::TableNotFound);
+}
+
+template<typename Derived>
+Action* ActionUsingOnlyTable<Derived>::finalAction() {
+    Derived::finalAction();
+    return nullptr;
+}
+
+template<typename Derived>
+Action* ActionUsingOnlyTable<Derived>::action() {
+    switch(Base::getState()) {
+        case State::ParseTableName: return parseTableName();
+        case State::TableNotFound: return Base::tableNotFound();
+        case State::Action: return finalAction();
+        default: assert(false);
+    };
+}
+
+template<typename Derived>
+Action* ActionUsingOnlyTable<Derived>::controlAction() noexcept {
+    Base::setState(State::ParseTableName);
+    return this;
+}

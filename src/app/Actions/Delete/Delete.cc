@@ -11,7 +11,7 @@ Action* Delete::controller() noexcept {
     return &instance;
 }
 
-Action* Delete::finalAction(TableTypes::Column column, Argument& argument) {
+void Delete::finalAction(TableTypes::Column column, Argument& argument) {
     TableTypes::Row deletedRows = 0;
     switch(argument.getType()) {
         case Argument::ArgumentType::Integer:
@@ -28,5 +28,5 @@ Action* Delete::finalAction(TableTypes::Column column, Argument& argument) {
             break;
         default: assert(false);
     }
-    return showMessage(new DeletedRows{deletedRows});
+    showMessage(new DeletedRows{deletedRows});
 }

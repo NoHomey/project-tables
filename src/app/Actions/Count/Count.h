@@ -15,7 +15,7 @@ private:
     Count() noexcept = default;
 
 private:
-    static Action* finalAction(TableTypes::Column column, Argument& argument);
+    static void finalAction(TableTypes::Column column, Argument& argument);
 
 public:
     static ConstString actionString;

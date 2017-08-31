@@ -1,0 +1,36 @@
+#pragma once
+
+#include "../ActionRequiringTable/ActionRequiringTable.htd"
+
+enum class ActionUsingOnlyTableState {
+    ParseTableName,
+    TableNotFound,
+    Action
+};
+
+template<typename Derived>
+class ActionUsingOnlyTable: public ActionRequiringTable<ActionUsingOnlyTableState> {
+private:
+    using State = ActionUsingOnlyTableState;
+
+    using Base = ActionRequiringTable<State>;
+
+public:
+    static Action* controller() noexcept;
+
+    Action* action() final;
+
+    Action* controlAction() noexcept final;
+
+protected:
+    ActionUsingOnlyTable() noexcept;
+
+    virtual ~ActionUsingOnlyTable() noexcept = default;
+
+private:
+    Action* parseTableName();
+
+    static Action* finalAction();
+};
+
+#include "ActionUsingOnlyTable.tci"

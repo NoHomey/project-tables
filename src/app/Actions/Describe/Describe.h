@@ -1,31 +1,21 @@
 #pragma once
 
-#include "../ActionRequiringTable/ActionRequiringTable.htd"
+#include "../ActionUsingOnlyTable/ActionUsingOnlyTable.htd"
 
-enum class DescribeState {
-    ParseTableName,
-    TableNotFound,
-    DescribeTable
-};
-
-class Describe: public ActionRequiringTable<DescribeState> {
+class Describe: public ActionUsingOnlyTable<Describe> {
 private:
-    using Base = ActionRequiringTable<DescribeState>;
+    friend ActionUsingOnlyTable<Describe>;
+
+    using Base = ActionUsingOnlyTable<Describe>;
 
 public:
     static Action* controller() noexcept;
 
-    Action* action() final;
-
-    Action* controlAction() noexcept final;
+private:
+    Describe() noexcept = default;
 
 private:
-    Describe() noexcept;
-
-private:
-    Action* parseTableName();
-
-    Action* describeTable();
+    static void finalAction();
 
 public:
     static ConstString actionString;

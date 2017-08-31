@@ -6,32 +6,10 @@ Describe Describe::instance;
 
 ConstString Describe::actionString{"Describe"};
 
-Describe::Describe() noexcept
-: Base{DescribeState::ParseTableName} { }
-
 Action* Describe::controller() noexcept {
     return &instance;
 }
 
-Action* Describe::parseTableName() {
-    return Base::parseTableName<Describe>(DescribeState::DescribeTable, DescribeState::TableNotFound);
-}
-
-Action* Describe::describeTable() {
+void Describe::finalAction() {
     setComponent(new ListComponent(new ListTableModelAdaptor(currentTable)));
-    return nullptr;
-}
-
-Action* Describe::action() {
-    switch(getState()) {
-        case DescribeState::ParseTableName: return parseTableName();
-        case DescribeState::TableNotFound: return tableNotFound();
-        case DescribeState::DescribeTable: return describeTable();
-        default: return nullptr;
-    };
-}
-
-Action* Describe::controlAction() noexcept {
-    setState(DescribeState::ParseTableName);
-    return this;
 }

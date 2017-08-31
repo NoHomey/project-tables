@@ -1,31 +1,21 @@
 #pragma once
 
-#include "../ActionRequiringTable/ActionRequiringTable.htd"
+#include "../ActionUsingOnlyTable/ActionUsingOnlyTable.htd"
 
-enum class PrintState {
-    ParseTableName,
-    TableNotFound,
-    PrintTable
-};
-
-class Print: public ActionRequiringTable<PrintState> {
+class Print: public ActionUsingOnlyTable<Print> {
 private:
-    using Base = ActionRequiringTable<PrintState>;
+    friend ActionUsingOnlyTable<Print>;
+
+    using Base = ActionUsingOnlyTable<Print>;
 
 public:
     static Action* controller() noexcept;
 
-    Action* action() final;
-
-    Action* controlAction() noexcept final;
+private:
+    Print() noexcept = default;
 
 private:
-    Print() noexcept;
-
-private:
-    Action* parseTableName();
-
-    Action* printTable();
+    static void finalAction();
 
 public:
     static ConstString actionString;
