@@ -17,8 +17,7 @@ Action* CreateTable::controller() noexcept {
 }
 
 Action* CreateTable::parseTableName() {
-    Action* parseAction = ParseTableName{actionString}.action();
-    if(parseAction != nullptr) {
+    if(!ParseTableName::parseTableName(actionString)) {
         return nullptr;
     }
     Table* table = allTables.getTableByName(arguments[0].asTemporaryString());

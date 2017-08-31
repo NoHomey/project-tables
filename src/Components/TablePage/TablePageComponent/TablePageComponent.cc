@@ -177,7 +177,7 @@ void TablePageComponent::renderTableOnPages() {
 }
 
 void TablePageComponent::render() {
-    //if(!renderWholeTable()) {
+    if(!renderWholeTable()) {
         TablePageComponent::renderTableOnPages();
-    //}
+    }
 }

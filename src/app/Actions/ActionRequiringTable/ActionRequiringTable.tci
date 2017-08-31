@@ -21,8 +21,7 @@ State ActionRequiringTable<State>::getState() const noexcept {
 template<typename State>
 template<typename Derived>
 Action* ActionRequiringTable<State>::parseTableName(State tableFound, State tableNotFound) {
-    Action* parseAction = ParseTableName{Derived::actionString}.action();
-    if(parseAction != nullptr) {
+    if(!ParseTableName::parseTableName(Derived::actionString)) {
         return nullptr;
     }
     Table* table = allTables.getTableByName(arguments.last().asTemporaryString());

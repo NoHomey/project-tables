@@ -1,5 +1,4 @@
 #include "Save.h"
-#include "../ParseTableName/ParseTableName.h"
 #include "../ParseFileName/ParseFileName.h"
 #include "../../../Table/TableOutputerToFile/TableOutputerToFile.h"
 #include "../../Messages/FileIO/WriterMessages.h"
@@ -22,12 +21,11 @@ Action* Save::parseTableName() {
 }
 
 Action* Save::parseFileName() {
-    Action* parseAction = ParseFileName{actionString}.action();
-    if(parseAction != nullptr) {
-        return nullptr;
+    if(ParseFileName::parseFileName(actionString)) {
+        setState(SaveState::SaveTable);
+        return this;
     }
-    setState(SaveState::SaveTable);
-    return this;
+    return nullptr;
 }
 
 Action* Save::saveTable() {

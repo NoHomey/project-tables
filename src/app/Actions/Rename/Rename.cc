@@ -20,8 +20,7 @@ Action* Rename::parseTableName() {
 }
 
 Action* Rename::parseNewTableName() {
-    Action* parseAction = ParseTableName{actionString}.action();
-    if(parseAction != nullptr) {
+    if(!ParseTableName::parseTableName(actionString)) {
         return nullptr;
     }
     ConstString& newName = arguments[1].asTemporaryString();

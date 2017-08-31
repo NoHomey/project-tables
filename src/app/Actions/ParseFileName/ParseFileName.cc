@@ -2,18 +2,19 @@
 #include "../../../Parsers/CharSequenceParser/CharSequenceParser.h"
 #include "../../Messages/MissingFileName/MissingFileName.h"
 
-ParseFileName::ParseFileName(ConstString& commandName) noexcept
-: commandName{commandName} { }
-
 Action* ParseFileName::action() {
+    return nullptr;
+}
+
+bool ParseFileName::parseFileName(ConstString& commandName) {
     CharSequenceParser::ParseResult result;
     try {
         result = CharSequenceParser::parseSeparatedByWhiteSpaces(command);
     } catch(const Exception& error) {
         showMessage(new MissingFileName(commandName, arguments.size()));
-        return this;
+        return false;
     }
     Action::command = result.getRest();
     arguments.push(result.getParsed());
-    return nullptr;
+    return true;
 }

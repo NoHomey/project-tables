@@ -1,5 +1,4 @@
 #include "AddColumn.h"
-#include "../ParseTableName/ParseTableName.h"
 #include "../../../Parsers/ColumnTypeParser/ColumnTypeParser.h"
 #include "../../Messages/MissingColumnType/MissingColumnType.h"
 #include "../../Messages/InvalidColumnType/InvalidColumnType.h"

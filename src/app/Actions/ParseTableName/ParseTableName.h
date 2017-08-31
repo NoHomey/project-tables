@@ -5,7 +5,7 @@
 
 class ParseTableName: public Action {
 public:
-    ParseTableName(ConstString& commandName) noexcept;
+    ParseTableName() noexcept = default;
 
     ParseTableName(const ParseTableName& other) = delete;
 
@@ -16,8 +16,8 @@ public:
     ParseTableName& operator=(ParseTableName&& other) = delete;
 
 public:
-    Action* action() final;
+    static bool parseTableName(ConstString& commandName);
 
-private:
-    ConstString& commandName;
+public:
+    Action* action() final;
 };
