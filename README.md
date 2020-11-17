@@ -15,4 +15,4 @@ Project for the OOP course in FMI at SU (Simple Table Database implementation as
 
 #$ Repository:
 
-https://github.com/NoHomey/projec-tables
+https://github.com/NoHomey/project-tables
