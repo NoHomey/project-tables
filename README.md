@@ -1,17 +1,18 @@
 # projec-tables
+Project for the OOP course in FMI at SU (Simple Table Database implementation as  CLI app)
 
-# external dependencies:
+## external dependencies:
 
 - [fpconv](https://github.com/night-shift/fpconv.git)
 
-# building:
+## building:
 
-`cd src/build && make build`
+`$ cd src/build && make build`
 
-# warning:
+## warning:
 
 - Project uses system calls and terminal escape code so it might not work on all Operating systems!
 
-# Repository:
+#$ Repository:
 
 https://github.com/NoHomey/projec-tables
